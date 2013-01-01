@@ -12,7 +12,7 @@
   <groupId>sonia.scm.plugins</groupId>
   <artifactId>scm-script-plugin</artifactId>
   <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0</version>
   <name>${project.artifactId}</name>
   <description>plugin description</description>
 
@@ -72,4 +72,8 @@
   
   </repositories>
 
+
+  <scm>
+    <tag>1.0</tag>
+  </scm>
 </project>
