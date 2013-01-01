@@ -110,7 +110,7 @@ Sonia.panel.Console = Ext.extend(Ext.Panel, {
     
     if (debug){
       console.debug('execute script with type:');
-      console.debug(record);
+      console.debug(record.data);
     }
     
     Ext.Ajax.request({
