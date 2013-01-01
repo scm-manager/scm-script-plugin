@@ -34,12 +34,16 @@ Ext.ns('Sonia.panel');
 
 Sonia.panel.CodeEditorPanel = Ext.extend(Ext.Panel, {
   
+  modeMappingTable: [],
+  
   editor: null,
   editorId: null,
   editorTheme: 'ace/theme/textmate',
   editorMode: 'ace/mode/groovy',
   
   initComponent: function(){
+    this.modeMappingTable['ace/mode/ecmascript'] = 'ace/mode/javascript';
+    
     this.editorId = 'ace-' + Ext.id();
     var config = {
       html: '<div style="width: 100%; height: 100%;" id="' + this.editorId +  '"></div>',
@@ -63,6 +67,15 @@ Sonia.panel.CodeEditorPanel = Ext.extend(Ext.Panel, {
       this.renderEditor, 
       this
     );
+  },
+  
+  setMode: function(mode){
+    var m = this.modeMappingTable[mode];
+    if (!m){
+      m = mode;
+    }
+    this.editorMode = m;
+    this.editor.getSession().setMode(m);
   },
   
   renderEditor: function(){

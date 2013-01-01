@@ -53,6 +53,18 @@ Sonia.panel.Console = Ext.extend(Ext.Panel, {
       bodyCssClass: 'x-panel-mc'
     });
     
+    var scriptTypeStore = new Sonia.rest.JsonStore({
+      proxy: new Ext.data.HttpProxy({
+        url: restUrl + 'plugins/script/supported-types.json',
+        method: 'GET'
+      }),
+      fields: ['name', 'display-name', 'mime-type'],
+      root: 'types',
+      idProperty: 'name',
+      autoLoad: false,
+      autoDestroy: true
+    });
+    
     var config = {
       title: 'Console',
       layout: 'border',
@@ -61,6 +73,22 @@ Sonia.panel.Console = Ext.extend(Ext.Panel, {
         text: 'Execute',
         handler: this.execute,
         scope: this
+      },{
+        id: 'typeCombobox',
+        xtype: 'combo',
+        name: 'type',
+        triggerAction: 'all',
+        editable: false,
+        displayField: 'name',
+        valueField: 'name',
+        value: 'Groovy',
+        store: scriptTypeStore,
+        listeners: {
+          select: {
+            fn: this.changeScriptLanguage,
+            scope: this
+          }
+        }
       }],
       items: [this.editorPanel, this.outputPanel]
     };
@@ -69,9 +97,21 @@ Sonia.panel.Console = Ext.extend(Ext.Panel, {
     Sonia.panel.Console.superclass.initComponent.apply(this, arguments);
   },
   
+  changeScriptLanguage: function(combo, record){
+    this.editorPanel.setMode('ace/mode/' + record.get('name').toLowerCase());
+  },
+  
   execute: function(){
     var el = this.el;
     var tid = setTimeout( function(){el.mask('Loading ...');}, 100);
+    
+    var cmp = Ext.getCmp('typeCombobox');
+    var record = cmp.getStore().getById( cmp.getValue() );
+    
+    if (debug){
+      console.debug('execute script with type:');
+      console.debug(record);
+    }
     
     Ext.Ajax.request({
       url: restUrl + 'plugins/script',
@@ -79,7 +119,7 @@ Sonia.panel.Console = Ext.extend(Ext.Panel, {
       params: this.editorPanel.getValue(),
       scope: this,
       headers: {
-        'Content-Type': 'application/x-groovy'
+        'Content-Type': record.get('mime-type')[0]
       },
       success: function(response){
         this.outputPanel.update('<pre>' + response.responseText + '</pre>');
