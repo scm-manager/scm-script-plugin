@@ -61,7 +61,7 @@ Sonia.panel.Console = Ext.extend(Ext.Panel, {
       fields: ['name', 'display-name', 'mime-type'],
       root: 'types',
       idProperty: 'name',
-      autoLoad: false,
+      autoLoad: true,
       autoDestroy: true
     });
     
@@ -73,7 +73,11 @@ Sonia.panel.Console = Ext.extend(Ext.Panel, {
         text: 'Execute',
         handler: this.execute,
         scope: this
-      },{
+      },'-',{
+        xtype: 'label',
+        text: 'Type: ',
+        cls: 'ytb-text'
+      },'  ',{
         id: 'typeCombobox',
         xtype: 'combo',
         name: 'type',
@@ -107,11 +111,6 @@ Sonia.panel.Console = Ext.extend(Ext.Panel, {
     
     var cmp = Ext.getCmp('typeCombobox');
     var record = cmp.getStore().getById( cmp.getValue() );
-    
-    if (debug){
-      console.debug('execute script with type:');
-      console.debug(record.data);
-    }
     
     Ext.Ajax.request({
       url: restUrl + 'plugins/script',
