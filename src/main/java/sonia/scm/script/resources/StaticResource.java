@@ -46,7 +46,7 @@ import javax.ws.rs.core.Response.Status;
  *
  * @author Sebastian Sdorra
  */
-@Path("plugins/console/static")
+@Path("plugins/script/static")
 public class StaticResource
 {
 

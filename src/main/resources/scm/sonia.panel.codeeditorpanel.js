@@ -59,7 +59,7 @@ Sonia.panel.CodeEditorPanel = Ext.extend(Ext.Panel, {
   
   loadBodyContent: function(){
     main.loadScript(
-      restUrl + 'plugins/console/static/ace/ace.js', 
+      restUrl + 'plugins/script/static/ace/ace.js', 
       this.renderEditor, 
       this
     );

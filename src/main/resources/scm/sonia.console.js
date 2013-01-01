@@ -36,9 +36,9 @@ loginCallbacks.push(function(){
     navPanel.insertSection(count, {
       title: 'Development',
       links: [{
-        label: 'Console',
+        label: 'Script Console',
         fn: function(){
-          main.addTabPanel('console', 'console', 'Console');
+          main.addTabPanel('console', 'console', 'Script Console');
         }
       }]
     });

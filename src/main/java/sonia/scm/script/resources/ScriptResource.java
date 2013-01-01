@@ -63,15 +63,15 @@ import javax.ws.rs.core.Response;
  *
  * @author Sebastian Sdorra
  */
-@Path("plugins/console")
-public class ConsoleResource
+@Path("plugins/script")
+public class ScriptResource
 {
 
   /**
    * the logger for ConsoleResource
    */
   private static final Logger logger =
-    LoggerFactory.getLogger(ConsoleResource.class);
+    LoggerFactory.getLogger(ScriptResource.class);
 
   //~--- constructors ---------------------------------------------------------
 
@@ -82,7 +82,7 @@ public class ConsoleResource
    * @param executor
    */
   @Inject
-  public ConsoleResource(ScriptManager executor)
+  public ScriptResource(ScriptManager executor)
   {
     this.executor = executor;
   }

@@ -74,7 +74,7 @@ Sonia.panel.Console = Ext.extend(Ext.Panel, {
     var tid = setTimeout( function(){el.mask('Loading ...');}, 100);
     
     Ext.Ajax.request({
-      url: restUrl + 'plugins/console',
+      url: restUrl + 'plugins/script',
       method: 'POST',
       params: this.editorPanel.getValue(),
       scope: this,
