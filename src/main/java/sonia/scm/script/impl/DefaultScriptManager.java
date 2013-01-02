@@ -85,7 +85,8 @@ public class DefaultScriptManager implements ScriptManager
 {
 
   /** Field description */
-  private static final String[] RESOURCES = { "/samples/clearcaches.xml" };
+  private static final String[] RESOURCES = { "/samples/clear-caches.xml",
+    "/samples/latest-changesets.xml" };
 
   /**
    * the logger for DefaultScriptManager

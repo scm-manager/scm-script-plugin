@@ -64,6 +64,18 @@ Sonia.panel.Console = Ext.extend(Ext.Panel, {
       autoDestroy: true
     });
     
+    var scriptsStore = new Sonia.rest.JsonStore({
+      proxy: new Ext.data.HttpProxy({
+        url: restUrl + 'plugins/script/stored-scripts.json',
+        method: 'GET'
+      }),
+      fields: ['id', 'name', 'description', 'type', 'content'],
+      root: 'script',
+      idProperty: 'id',
+      autoLoad: false,
+      autoDestroy: true
+    });
+    
     var config = {
       title: 'Console',
       layout: 'border',
@@ -92,12 +104,54 @@ Sonia.panel.Console = Ext.extend(Ext.Panel, {
             scope: this
           }
         }
+      },'-',{
+        xtype: 'label',
+        text: 'Samples: ',
+        cls: 'ytb-text'
+      },'  ',{
+        id: 'storedScriptsCombobox',
+        xtype: 'combo',
+        name: 'stored-script',
+        triggerAction: 'all',
+        editable: false,
+        displayField: 'name',
+        valueField: 'id',
+        store: scriptsStore,
+        listeners: {
+          select: {
+            fn: this.changeStoredScript,
+            scope: this
+          }
+        }
       }],
       items: [this.editorPanel, this.outputPanel]
     };
     
     Ext.apply(this, Ext.apply(this.initialConfig, config));
     Sonia.panel.Console.superclass.initComponent.apply(this, arguments);
+  },
+  
+  changeStoredScript: function(combo, record){
+    var cmp = Ext.getCmp('typeCombobox');
+    var type = record.get('type');
+    var index = cmp.getStore().findBy(function(r){
+      var mt = r.get('mime-type');
+      var result = false;
+      for ( var i=0; i<mt.length; i++ ){
+        if (mt[i] == type){
+          result = true;
+          break;
+        }
+      }
+      return result;
+    });
+    if ( index ){
+      var r = cmp.getStore().getAt(index);
+      cmp.setValue(r.get('name'));
+      this.changeScriptLanguage(cmp, r);
+    }
+    this.editorPanel.setValue(record.get('content'));
+    
   },
   
   changeScriptLanguage: function(combo, record){

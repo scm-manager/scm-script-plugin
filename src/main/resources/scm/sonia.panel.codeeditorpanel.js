@@ -85,6 +85,10 @@ Sonia.panel.CodeEditorPanel = Ext.extend(Ext.Panel, {
   
   getValue: function(){
     return this.editor.getValue();
+  },
+  
+  setValue: function(value){
+    this.editor.setValue(value);
   }
   
 });
