@@ -33,15 +33,17 @@
 
 package sonia.scm.script;
 
+//~--- non-JDK imports --------------------------------------------------------
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 //~--- JDK imports ------------------------------------------------------------
 
 import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.io.PrintWriter;
+import java.io.StringReader;
+import java.io.StringWriter;
 
 import javax.script.ScriptException;
 
@@ -49,38 +51,61 @@ import javax.script.ScriptException;
  *
  * @author Sebastian Sdorra
  */
-public interface ScriptManager
+public class ScriptUtil
 {
+
+  /**
+   * the logger for Scripts
+   */
+  private static final Logger logger = LoggerFactory.getLogger(ScriptUtil.class);
+
+  //~--- methods --------------------------------------------------------------
 
   /**
    * Method description
    *
    *
-   * @param language
-   * @param reader
-   * @param writer
+   * @param executor
+   * @param script
+   *
+   * @return
    *
    * @throws IOException
    * @throws ScriptException
    */
-  public void execute(String language, Reader reader, Writer writer)
-    throws IOException, ScriptException;
+  public static String execute(ScriptManager executor, Script script)
+    throws IOException, ScriptException
+  {
+    logger.debug("execute script {}", script.getName());
 
-  //~--- get methods ----------------------------------------------------------
-
-  /**
-   * Method description
-   *
-   *
-   * @return
-   */
-  public Map<String, Script> getStoredScripts();
+    return execute(executor, script.getType(), script.getContent());
+  }
 
   /**
    * Method description
    *
    *
+   * @param executor
+   * @param mimeType
+   * @param script
+   *
    * @return
+   *
+   * @throws IOException
+   * @throws ScriptException
    */
-  public Set<ScriptType> getSupportedTypes();
+  public static String execute(ScriptManager executor, String mimeType,
+    String script)
+    throws IOException, ScriptException
+  {
+    StringReader reader = new StringReader(script);
+    StringWriter writer = new StringWriter();
+    PrintWriter printWriter = new PrintWriter(writer);
+
+    executor.execute(mimeType, reader, printWriter);
+
+    printWriter.close();
+
+    return writer.toString();
+  }
 }

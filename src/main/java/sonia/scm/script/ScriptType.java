@@ -30,6 +30,7 @@
  */
 
 
+
 package sonia.scm.script;
 
 //~--- non-JDK imports --------------------------------------------------------
@@ -37,6 +38,8 @@ package sonia.scm.script;
 import com.google.common.base.Objects;
 
 //~--- JDK imports ------------------------------------------------------------
+
+import java.io.Serializable;
 
 import java.util.List;
 
@@ -52,8 +55,13 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name = "script-type")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ScriptType
+public final class ScriptType implements Serializable
 {
+
+  /** Field description */
+  private static final long serialVersionUID = 2014232471565306812L;
+
+  //~--- constructors ---------------------------------------------------------
 
   /**
    * Constructs ...

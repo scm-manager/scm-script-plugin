@@ -30,10 +30,13 @@
  */
 
 
+
 package sonia.scm.script.impl;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSet.Builder;
 import com.google.inject.Inject;
@@ -41,7 +44,11 @@ import com.google.inject.Inject;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import sonia.scm.script.EnvironmentBuilder;
+import sonia.scm.script.Script;
 import sonia.scm.script.ScriptManager;
 import sonia.scm.script.ScriptType;
 import sonia.scm.script.ScriptWrapperException;
@@ -52,6 +59,8 @@ import sonia.scm.security.Role;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+
+import java.net.URL;
 
 import java.util.List;
 import java.util.Map;
@@ -65,12 +74,26 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import javax.script.SimpleScriptContext;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+
 /**
  *
  * @author Sebastian Sdorra
  */
 public class DefaultScriptManager implements ScriptManager
 {
+
+  /** Field description */
+  private static final String[] RESOURCES = { "/samples/clearcaches.xml" };
+
+  /**
+   * the logger for DefaultScriptManager
+   */
+  private static final Logger logger =
+    LoggerFactory.getLogger(DefaultScriptManager.class);
+
+  //~--- constructors ---------------------------------------------------------
 
   /**
    * Constructs ...
@@ -147,6 +170,23 @@ public class DefaultScriptManager implements ScriptManager
    * @return
    */
   @Override
+  public Map<String, Script> getStoredScripts()
+  {
+    if (storedScripts == null)
+    {
+      storedScripts = createScripts();
+    }
+
+    return storedScripts;
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @return
+   */
+  @Override
   public Set<ScriptType> getSupportedTypes()
   {
     if (supportedTypes == null)
@@ -168,10 +208,81 @@ public class DefaultScriptManager implements ScriptManager
     return supportedTypes;
   }
 
+  //~--- methods --------------------------------------------------------------
+
+  /**
+   * Method description
+   *
+   *
+   * @param context
+   * @param resource
+   *
+   * @return
+   */
+  private Script createScript(JAXBContext context, String resource)
+  {
+    Script script = null;
+    URL url = DefaultScriptManager.class.getResource(resource);
+
+    if (url != null)
+    {
+      try
+      {
+        script = (Script) context.createUnmarshaller().unmarshal(url);
+      }
+      catch (JAXBException ex)
+      {
+        logger.error("could not unmarshall ".concat(resource), ex);
+      }
+    }
+    else
+    {
+      logger.warn("could not find script resource at {}", resource);
+    }
+
+    return script;
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @return
+   */
+  private Map<String, Script> createScripts()
+  {
+    ImmutableMap.Builder<String, Script> builder = ImmutableMap.builder();
+
+    try
+    {
+      JAXBContext context = JAXBContext.newInstance(Script.class);
+
+      for (String resource : RESOURCES)
+      {
+        Script script = createScript(context, resource);
+
+        if (script != null)
+        {
+          builder.put(script.getId(), script);
+        }
+      }
+
+    }
+    catch (JAXBException ex)
+    {
+      logger.error("could create jaxb context", ex);
+    }
+
+    return builder.build();
+  }
+
   //~--- fields ---------------------------------------------------------------
 
   /** Field description */
   private EnvironmentBuilder environmentBuilder;
+
+  /** Field description */
+  private Map<String, Script> storedScripts;
 
   /** Field description */
   private Set<ScriptType> supportedTypes;

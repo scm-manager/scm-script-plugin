@@ -30,6 +30,7 @@
  */
 
 
+
 package sonia.scm.script.resources;
 
 //~--- non-JDK imports --------------------------------------------------------
@@ -40,8 +41,10 @@ import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sonia.scm.script.Script;
 import sonia.scm.script.ScriptManager;
 import sonia.scm.script.ScriptTypes;
+import sonia.scm.script.ScriptUtil;
 import sonia.scm.script.ScriptWrapperException;
 import sonia.scm.script.Scripts;
 
@@ -56,6 +59,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -80,12 +84,12 @@ public class ScriptResource
    * Constructs ...
    *
    *
-   * @param executor
+   * @param manager
    */
   @Inject
-  public ScriptResource(ScriptManager executor)
+  public ScriptResource(ScriptManager manager)
   {
-    this.executor = executor;
+    this.manager = manager;
   }
 
   //~--- methods --------------------------------------------------------------
@@ -112,7 +116,7 @@ public class ScriptResource
 
     try
     {
-      String result = Scripts.execute(executor, request.getContentType(),
+      String result = ScriptUtil.execute(manager, request.getContentType(),
                         content);
 
       if (logger.isTraceEnabled())
@@ -153,15 +157,45 @@ public class ScriptResource
    * @return
    */
   @GET
+  @Path("stored-scripts")
+  @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+  public Scripts getStoreScripts()
+  {
+    return new Scripts(manager.getStoredScripts().values());
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @param name
+   *
+   * @return
+   */
+  @GET
+  @Path("stored-scripts/{id}")
+  @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+  public Script getStoredScript(@QueryParam("id") String id)
+  {
+    return manager.getStoredScripts().get(id);
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @return
+   */
+  @GET
   @Path("supported-types")
-  @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON })
+  @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
   public ScriptTypes getSupportedTypes()
   {
-    return new ScriptTypes(executor.getSupportedTypes());
+    return new ScriptTypes(manager.getSupportedTypes());
   }
 
   //~--- fields ---------------------------------------------------------------
 
   /** Field description */
-  private ScriptManager executor;
+  private ScriptManager manager;
 }

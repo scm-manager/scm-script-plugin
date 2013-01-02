@@ -34,54 +34,71 @@ package sonia.scm.script;
 //~--- non-JDK imports --------------------------------------------------------
 
 import com.google.common.base.Objects;
-import com.google.common.collect.Sets;
 
 //~--- JDK imports ------------------------------------------------------------
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.io.Serializable;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author Sebastian Sdorra
  */
-@XmlRootElement(name = "scripts")
+@XmlRootElement(name = "script")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Scripts
+public final class Script implements Serializable
 {
 
+  /** Field description */
+  private static final long serialVersionUID = -322431605781198934L;
+
+  //~--- constructors ---------------------------------------------------------
+
   /**
    * Constructs ...
    *
    */
-  public Scripts() {}
+  public Script() {}
 
   /**
    * Constructs ...
    *
    *
-   * @param scripts
+   *
+   * @param id
+   * @param name
+   * @param description
+   * @param type
+   * @param content
    */
-  public Scripts(Collection<Script> scripts)
+  public Script(String id, String name, String description, ScriptType type,
+    String content)
   {
-    this.scripts = new HashSet<Script>(scripts);
+    this(id, name, description, type.getMimeTypes().get(0), content);
   }
 
   /**
    * Constructs ...
    *
    *
-   * @param scripts
+   *
+   * @param id
+   * @param name
+   * @param description
+   * @param type
+   * @param content
    */
-  public Scripts(Set<Script> scripts)
+  public Script(String id, String name, String description, String type,
+    String content)
   {
-    this.scripts = scripts;
+    this.id = id;
+    this.name = name;
+    this.description = description;
+    this.type = type;
+    this.content = content;
   }
 
   //~--- methods --------------------------------------------------------------
@@ -107,9 +124,15 @@ public class Scripts
       return false;
     }
 
-    final Scripts other = (Scripts) obj;
+    final Script other = (Script) obj;
 
-    return Objects.equal(scripts, other.scripts);
+    //J-
+    return Objects.equal(id, other.id) 
+      && Objects.equal(name, other.name) 
+      && Objects.equal(description, other.description)
+      && Objects.equal(type, other.type)
+      && Objects.equal(content, other.content);
+    //J+
   }
 
   /**
@@ -121,7 +144,7 @@ public class Scripts
   @Override
   public int hashCode()
   {
-    return Objects.hashCode(scripts);
+    return Objects.hashCode(id, name, description, type, content);
   }
 
   /**
@@ -135,7 +158,11 @@ public class Scripts
   {
     //J-
     return Objects.toStringHelper(this)
-                  .add("scripts", scripts)
+                  .add("id", id)
+                  .add("name", name)
+                  .add("description", description)
+                  .add("type", type)
+                  .add("content", content)
                   .toString();
     //J+
   }
@@ -148,14 +175,69 @@ public class Scripts
    *
    * @return
    */
-  public Set<Script> getScripts()
+  public String getContent()
   {
-    return scripts;
+    return content;
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @return
+   */
+  public String getDescription()
+  {
+    return description;
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @return
+   */
+  public String getId()
+  {
+    return id;
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @return
+   */
+  public String getName()
+  {
+    return name;
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @return
+   */
+  public String getType()
+  {
+    return type;
   }
 
   //~--- fields ---------------------------------------------------------------
 
   /** Field description */
-  @XmlElement(name = "script")
-  private Set<Script> scripts;
+  private String content;
+
+  /** Field description */
+  private String description;
+
+  /** Field description */
+  private String id;
+
+  /** Field description */
+  private String name;
+
+  /** Field description */
+  private String type;
 }
