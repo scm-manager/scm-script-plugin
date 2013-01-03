@@ -60,6 +60,6 @@ for ( var i=0; i<repositories.size(); i++ ){
     }
     repositoryService.close();
 }
-}]]>
+]]>
   </content>
 </script>
