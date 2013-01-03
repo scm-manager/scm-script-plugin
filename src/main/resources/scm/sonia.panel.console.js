@@ -35,6 +35,7 @@ Sonia.panel.Console = Ext.extend(Ext.Panel, {
   
   editorPanel: null,
   outputPanel: null,
+  typeCombobox: null,
   
   initComponent: function(){
     this.editorPanel = new Sonia.panel.CodeEditorPanel({
@@ -131,8 +132,15 @@ Sonia.panel.Console = Ext.extend(Ext.Panel, {
     Sonia.panel.Console.superclass.initComponent.apply(this, arguments);
   },
   
+  getTypeCombobox: function(){
+    if ( ! this.typeCombobox ){
+      this.typeCombobox = Ext.getCmp('typeCombobox');
+    }
+    return this.typeCombobox;
+  },
+  
   changeStoredScript: function(combo, record){
-    var cmp = Ext.getCmp('typeCombobox');
+    var cmp = this.getTypeCombobox();
     var type = record.get('type');
     var index = cmp.getStore().findBy(function(r){
       var mt = r.get('mime-type');
@@ -145,16 +153,20 @@ Sonia.panel.Console = Ext.extend(Ext.Panel, {
       }
       return result;
     });
-    if ( index ){
+    if ( index >= 0 ){
       var r = cmp.getStore().getAt(index);
-      cmp.setValue(r.get('name'));
-      this.changeScriptLanguage(cmp, r);
+      if (r){
+        cmp.setValue(r.get('name'));
+        this.changeScriptLanguage(cmp, r);
+      }
     }
     this.editorPanel.setValue(record.get('content'));
-    
   },
   
   changeScriptLanguage: function(combo, record){
+    if (debug){
+      console.debug('change script language to ' + record.get('name'));
+    }
     this.editorPanel.setMode('ace/mode/' + record.get('name').toLowerCase());
   },
   
@@ -162,7 +174,7 @@ Sonia.panel.Console = Ext.extend(Ext.Panel, {
     var el = this.el;
     var tid = setTimeout( function(){el.mask('Loading ...');}, 100);
     
-    var cmp = Ext.getCmp('typeCombobox');
+    var cmp = this.getTypeCombobox();
     var record = cmp.getStore().getById( cmp.getValue() );
     
     Ext.Ajax.request({
