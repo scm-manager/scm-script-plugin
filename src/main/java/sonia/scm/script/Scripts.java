@@ -34,7 +34,6 @@ package sonia.scm.script;
 //~--- non-JDK imports --------------------------------------------------------
 
 import com.google.common.base.Objects;
-import com.google.common.collect.Sets;
 
 //~--- JDK imports ------------------------------------------------------------
 
