@@ -30,6 +30,7 @@
  */
 
 
+
 package sonia.scm.script.resources;
 
 //~--- JDK imports ------------------------------------------------------------
@@ -52,6 +53,9 @@ public class StaticResource
 {
 
   /** Field description */
+  private static final String MEDIA_TYPE = "text/javascript";
+
+  /** Field description */
   private static final String PATTERN_RESOURCE = "/ace/%s.js";
 
   //~--- get methods ----------------------------------------------------------
@@ -68,17 +72,17 @@ public class StaticResource
   @Path("ace/{name}.js")
   public Response getResource(@PathParam("name") String name)
   {
+
     // TODO caching
     Response response;
     String resource = String.format(PATTERN_RESOURCE, name);
 
-    InputStream input =
-      StaticResource.class.getResourceAsStream(resource);
+    InputStream input = StaticResource.class.getResourceAsStream(resource);
 
     if (input != null)
     {
       response = Response.ok(new ResourceStreamingOutput(input),
-        MediaType.APPLICATION_JSON_TYPE).build();
+        MEDIA_TYPE).build();
     }
     else
     {
