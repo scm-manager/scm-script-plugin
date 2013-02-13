@@ -33,14 +33,21 @@
 
 package sonia.scm.script.resources;
 
+//~--- non-JDK imports --------------------------------------------------------
+
+import com.google.inject.Singleton;
+
 //~--- JDK imports ------------------------------------------------------------
 
 import java.io.InputStream;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -48,6 +55,7 @@ import javax.ws.rs.core.Response.Status;
  *
  * @author Sebastian Sdorra
  */
+@Singleton
 @Path("plugins/script/static")
 public class StaticResource
 {
@@ -57,6 +65,20 @@ public class StaticResource
 
   /** Field description */
   private static final String PATTERN_RESOURCE = "/ace/%s.js";
+
+  /** Field description */
+  private static final String TIMEZONE = "GMT";
+
+  //~--- constructors ---------------------------------------------------------
+
+  /**
+   * Constructs ...
+   *
+   */
+  public StaticResource()
+  {
+    lastModified = createLastModifiedDate();
+  }
 
   //~--- get methods ----------------------------------------------------------
 
@@ -72,8 +94,6 @@ public class StaticResource
   @Path("ace/{name}.js")
   public Response getResource(@PathParam("name") String name)
   {
-
-    // TODO caching
     Response response;
     String resource = String.format(PATTERN_RESOURCE, name);
 
@@ -82,7 +102,7 @@ public class StaticResource
     if (input != null)
     {
       response = Response.ok(new ResourceStreamingOutput(input),
-        MEDIA_TYPE).build();
+        MEDIA_TYPE).lastModified(lastModified).build();
     }
     else
     {
@@ -91,4 +111,31 @@ public class StaticResource
 
     return response;
   }
+
+  //~--- methods --------------------------------------------------------------
+
+  /**
+   * Method description
+   *
+   *
+   * @return
+   */
+  private Date createLastModifiedDate()
+  {
+    Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone(TIMEZONE));
+
+    calendar.set(Calendar.YEAR, 2013);
+    calendar.set(Calendar.MONTH, Calendar.JANUARY);
+    calendar.set(Calendar.DAY_OF_MONTH, 1);
+    calendar.set(Calendar.HOUR_OF_DAY, 15);
+    calendar.set(Calendar.MINUTE, 16);
+    calendar.set(Calendar.SECOND, 22);
+
+    return calendar.getTime();
+  }
+
+  //~--- fields ---------------------------------------------------------------
+
+  /** Field description */
+  private Date lastModified;
 }
