@@ -35,6 +35,7 @@ package sonia.scm.script.resources;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 import com.google.inject.Inject;
 
@@ -116,7 +117,7 @@ public class ScriptResource
 
     try
     {
-      String result = ScriptUtil.execute(manager, request.getContentType(),
+      String result = ScriptUtil.execute(manager, getContentType(request),
                         content);
 
       if (logger.isTraceEnabled())
@@ -170,6 +171,8 @@ public class ScriptResource
    *
    * @param name
    *
+   * @param id
+   *
    * @return
    */
   @GET
@@ -192,6 +195,31 @@ public class ScriptResource
   public ScriptTypes getSupportedTypes()
   {
     return new ScriptTypes(manager.getSupportedTypes());
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @param request
+   *
+   * @return
+   */
+  private String getContentType(HttpServletRequest request)
+  {
+    String contentType = request.getContentType();
+
+    if (!Strings.isNullOrEmpty(contentType))
+    {
+      int index = contentType.indexOf(";");
+
+      if (index > 0)
+      {
+        contentType = contentType.substring(0, index);
+      }
+    }
+
+    return contentType;
   }
 
   //~--- fields ---------------------------------------------------------------
