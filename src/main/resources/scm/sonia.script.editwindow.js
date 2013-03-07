@@ -56,7 +56,7 @@ Sonia.script.EditWindow = Ext.extend(Ext.Window,{
     var config = {
       layout:'fit',
       width: 300,
-      height: 150,
+      height: 170,
       closable: true,
       resizable: false,
       plain: true,
