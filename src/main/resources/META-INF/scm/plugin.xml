@@ -50,6 +50,7 @@
     <script>/scm/sonia.script.js</script>
     <script>/scm/sonia.script.grid.js</script>
     <script>/scm/sonia.script.console.js</script>
+    <script>/scm/sonia.script.editwindow.js</script>
     <script>/scm/sonia.panel.codeeditorpanel.js</script>
   </resources>
 

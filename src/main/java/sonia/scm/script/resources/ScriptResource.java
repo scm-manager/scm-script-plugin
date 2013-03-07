@@ -50,6 +50,7 @@ import sonia.scm.script.ScriptWrapperException;
 
 //~--- JDK imports ------------------------------------------------------------
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -96,6 +97,21 @@ public class ScriptResource
   }
 
   //~--- methods --------------------------------------------------------------
+
+  /**
+   * Method description
+   *
+   *
+   * @param metadata
+   *
+   * @throws IOException
+   */
+  @POST
+  @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+  public void addScript(ScriptMetadata metadata) throws IOException
+  {
+    manager.add(metadata, new ByteArrayInputStream(new byte[0]));
+  }
 
   /**
    * Method description
@@ -217,8 +233,6 @@ public class ScriptResource
   public Response getStoredScriptContent(@PathParam("id") String id)
     throws IOException
   {
-    System.out.println("ID: " + id);
-
     Response response = null;
     ScriptContent content = manager.getScriptContent(id);
 

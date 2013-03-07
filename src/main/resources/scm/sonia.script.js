@@ -28,6 +28,23 @@
  * http://bitbucket.org/sdorra/scm-manager
  *
  */
+
+Ext.ns('Sonia.script');
+
+Sonia.script.createTypeStore = function(){
+  return new Sonia.rest.JsonStore({
+    proxy: new Ext.data.HttpProxy({
+      url: restUrl + 'plugins/script/types.json',
+      method: 'GET'
+    }),
+    fields: ['name', 'display-name', 'mime-type'],
+    root: 'types',
+    idProperty: 'name',
+    autoLoad: true,
+    autoDestroy: true
+  });
+};
+
 loginCallbacks.push(function(){
   if (admin){
     var navPanel = Ext.getCmp('navigationPanel');

@@ -112,6 +112,9 @@ Sonia.script.Grid = Ext.extend(Sonia.rest.Grid, {
           
   addScript: function(){
     this.toggleSelectButtons(true);
+    var window = new Sonia.script.EditWindow();
+    window.on('store', this.reload, this);
+    window.show();
   },
   
   editScript: function(){

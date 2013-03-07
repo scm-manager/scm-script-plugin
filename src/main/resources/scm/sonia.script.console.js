@@ -36,8 +36,11 @@ Sonia.script.Console = Ext.extend(Ext.Panel, {
   editorPanel: null,
   outputPanel: null,
   typeCombobox: null,
+  typeStore: null,
   
   initComponent: function(){
+    this.typeStore = Sonia.script.createTypeStore();
+    
     this.editorPanel = new Sonia.panel.CodeEditorPanel({
       region: 'center',
       layout: 'fit'
@@ -51,18 +54,6 @@ Sonia.script.Console = Ext.extend(Ext.Panel, {
       split: true,
       autoScroll: true,
       bodyCssClass: 'x-panel-mc'
-    });
-    
-    var scriptTypeStore = new Sonia.rest.JsonStore({
-      proxy: new Ext.data.HttpProxy({
-        url: restUrl + 'plugins/script/types.json',
-        method: 'GET'
-      }),
-      fields: ['name', 'display-name', 'mime-type'],
-      root: 'types',
-      idProperty: 'name',
-      autoLoad: true,
-      autoDestroy: true
     });
     
     var scriptsStore = new Sonia.rest.JsonStore({
@@ -98,7 +89,7 @@ Sonia.script.Console = Ext.extend(Ext.Panel, {
         displayField: 'name',
         valueField: 'name',
         value: 'Groovy',
-        store: scriptTypeStore,
+        store: this.typeStore,
         listeners: {
           select: {
             fn: this.changeScriptLanguage,
@@ -192,8 +183,7 @@ Sonia.script.Console = Ext.extend(Ext.Panel, {
     var el = this.el;
     var tid = setTimeout( function(){el.mask('Loading ...');}, 100);
     
-    var cmp = this.getTypeCombobox();
-    var record = cmp.getStore().getById( cmp.getValue() );
+    var record = this.typeStore.getById( cmp.getValue() );
     
     Ext.Ajax.request({
       url: restUrl + 'plugins/script',
