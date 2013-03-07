@@ -44,7 +44,6 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 
 import sonia.scm.script.EnvironmentBuilder;
-import sonia.scm.security.Role;
 
 //~--- JDK imports ------------------------------------------------------------
 
