@@ -30,6 +30,7 @@
  */
 
 
+
 package sonia.scm.script.impl;
 
 //~--- non-JDK imports --------------------------------------------------------
@@ -82,8 +83,6 @@ public class DefaultEnvironmentBuilder implements EnvironmentBuilder
   public Map<String, Object> createEnvironment()
   {
     Subject subject = SecurityUtils.getSubject();
-
-    subject.checkRole(Role.ADMIN);
 
     Builder<String, Object> builder = ImmutableMap.builder();
 
