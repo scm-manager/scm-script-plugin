@@ -188,37 +188,8 @@ public class DefaultScriptManager implements ScriptManager
   public void execute(String mimeType, Reader reader, Writer writer)
     throws IOException, ScriptWrapperException
   {
-    ScriptEngineManager manager = new ScriptEngineManager();
-    ScriptEngine engine = manager.getEngineByMimeType(mimeType);
-
-    if (engine == null)
-    {
-      throw new IOException(
-        "no script engine available, for mimetype ".concat(mimeType));
-    }
-
-    SimpleScriptContext context = new SimpleScriptContext();
-
-    // context.setReader(reader);
-    context.setWriter(writer);
-    context.setErrorWriter(writer);
-
-    Map<String, Object> env = environmentBuilder.createEnvironment();
-
-    for (Entry<String, Object> e : env.entrySet())
-    {
-      context.setAttribute(e.getKey(), e.getValue(),
-        ScriptContext.ENGINE_SCOPE);
-    }
-
-    try
-    {
-      engine.eval(reader, context);
-    }
-    catch (ScriptException ex)
-    {
-      throw new ScriptWrapperException(ex);
-    }
+    assertIsAdmin();
+    executeScript(mimeType, reader, writer);
   }
 
   /**
@@ -242,7 +213,7 @@ public class DefaultScriptManager implements ScriptManager
     try
     {
       reader = new InputStreamReader(blob.getInputStream());
-      execute(metadata.getType(), reader, writer);
+      executeScript(metadata.getType(), reader, writer);
     }
     finally
     {
@@ -464,6 +435,53 @@ public class DefaultScriptManager implements ScriptManager
     Subject subject = SecurityUtils.getSubject();
 
     subject.checkRole(Role.ADMIN);
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @param mimeType
+   * @param reader
+   * @param writer
+   *
+   * @throws IOException
+   * @throws ScriptWrapperException
+   */
+  private void executeScript(String mimeType, Reader reader, Writer writer)
+    throws IOException, ScriptWrapperException
+  {
+    ScriptEngineManager manager = new ScriptEngineManager();
+    ScriptEngine engine = manager.getEngineByMimeType(mimeType);
+
+    if (engine == null)
+    {
+      throw new IOException(
+        "no script engine available, for mimetype ".concat(mimeType));
+    }
+
+    SimpleScriptContext context = new SimpleScriptContext();
+
+    // context.setReader(reader);
+    context.setWriter(writer);
+    context.setErrorWriter(writer);
+
+    Map<String, Object> env = environmentBuilder.createEnvironment();
+
+    for (Entry<String, Object> e : env.entrySet())
+    {
+      context.setAttribute(e.getKey(), e.getValue(),
+        ScriptContext.ENGINE_SCOPE);
+    }
+
+    try
+    {
+      engine.eval(reader, context);
+    }
+    catch (ScriptException ex)
+    {
+      throw new ScriptWrapperException(ex);
+    }
   }
 
   //~--- fields ---------------------------------------------------------------
