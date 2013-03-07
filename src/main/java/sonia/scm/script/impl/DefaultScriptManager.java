@@ -146,6 +146,7 @@ public class DefaultScriptManager implements ScriptManager
   public String add(ScriptMetadata metadata, InputStream content)
     throws IOException
   {
+    assertIsAdmin();
     Preconditions.checkNotNull(metadata, "parameter metadata is required");
     Preconditions.checkNotNull(content, "parameter content is required");
 
@@ -187,10 +188,6 @@ public class DefaultScriptManager implements ScriptManager
   public void execute(String mimeType, Reader reader, Writer writer)
     throws IOException, ScriptWrapperException
   {
-    Subject subject = SecurityUtils.getSubject();
-
-    subject.checkRole(Role.ADMIN);
-
     ScriptEngineManager manager = new ScriptEngineManager();
     ScriptEngine engine = manager.getEngineByMimeType(mimeType);
 
@@ -262,6 +259,7 @@ public class DefaultScriptManager implements ScriptManager
   @Override
   public void remove(String id)
   {
+    assertIsAdmin();
     metadataStore.remove(id);
     contentStore.remove(id);
   }
@@ -279,6 +277,8 @@ public class DefaultScriptManager implements ScriptManager
   public void update(ScriptMetadata script, InputStream content)
     throws IOException
   {
+    assertIsAdmin();
+
     String key = script.getId();
 
     metadataStore.put(key, script);
@@ -311,6 +311,8 @@ public class DefaultScriptManager implements ScriptManager
   @Override
   public ScriptMetadata get(String id)
   {
+    assertIsAdmin();
+
     return metadataStore.get(id);
   }
 
@@ -323,6 +325,8 @@ public class DefaultScriptManager implements ScriptManager
   @Override
   public Collection<ScriptMetadata> getAll()
   {
+    assertIsAdmin();
+
     return metadataStore.getAll().values();
   }
 
@@ -335,6 +339,8 @@ public class DefaultScriptManager implements ScriptManager
   @Override
   public int getSampleVersion()
   {
+    assertIsAdmin();
+
     int version = -1;
 
     Blob blob = contentStore.get(SAMPLEVERSION_STORE);
@@ -374,6 +380,8 @@ public class DefaultScriptManager implements ScriptManager
   @Override
   public ScriptContent getScriptContent(String id) throws IOException
   {
+    assertIsAdmin();
+
     ScriptMetadata metadata = metadataStore.get(id);
 
     return new ScriptContent(metadata.getType(),
@@ -419,6 +427,8 @@ public class DefaultScriptManager implements ScriptManager
   @Override
   public void setSampleVersion(int version)
   {
+    assertIsAdmin();
+
     Blob blob = contentStore.get(SAMPLEVERSION_STORE);
 
     if (blob == null)
@@ -441,6 +451,19 @@ public class DefaultScriptManager implements ScriptManager
     {
       Closeables.closeQuietly(versionContent);
     }
+  }
+
+  //~--- methods --------------------------------------------------------------
+
+  /**
+   * Method description
+   *
+   */
+  private void assertIsAdmin()
+  {
+    Subject subject = SecurityUtils.getSubject();
+
+    subject.checkRole(Role.ADMIN);
   }
 
   //~--- fields ---------------------------------------------------------------
