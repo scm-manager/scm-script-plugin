@@ -31,11 +31,13 @@
 
 
 
-package sonia.scm.script;
+package sonia.scm.script.resources;
 
 //~--- non-JDK imports --------------------------------------------------------
 
 import com.google.common.base.Objects;
+
+import sonia.scm.script.ScriptType;
 
 //~--- JDK imports ------------------------------------------------------------
 

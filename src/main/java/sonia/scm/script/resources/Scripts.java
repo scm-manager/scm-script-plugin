@@ -29,12 +29,14 @@
 
 
 
-package sonia.scm.script;
+package sonia.scm.script.resources;
 
 //~--- non-JDK imports --------------------------------------------------------
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
+
+import sonia.scm.script.ScriptMetadata;
 
 //~--- JDK imports ------------------------------------------------------------
 

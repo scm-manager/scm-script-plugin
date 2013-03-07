@@ -45,10 +45,8 @@ import org.slf4j.LoggerFactory;
 import sonia.scm.script.ScriptContent;
 import sonia.scm.script.ScriptManager;
 import sonia.scm.script.ScriptMetadata;
-import sonia.scm.script.ScriptTypes;
 import sonia.scm.script.ScriptUtil;
 import sonia.scm.script.ScriptWrapperException;
-import sonia.scm.script.Scripts;
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -156,8 +154,8 @@ public class ScriptResource
 
   /**
    *   Method description
-   *  
-   *  
+   *
+   *
    *
    * @param id
    *   @return
