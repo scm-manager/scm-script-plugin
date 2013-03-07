@@ -33,99 +33,35 @@ package sonia.scm.script;
 
 //~--- non-JDK imports --------------------------------------------------------
 
-import com.google.common.base.Objects;
-import com.google.common.collect.Lists;
 
 //~--- JDK imports ------------------------------------------------------------
 
-import java.util.Collection;
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import java.io.InputStream;
 
 /**
  *
  * @author Sebastian Sdorra
  */
-@XmlRootElement(name = "scripts")
-@XmlAccessorType(XmlAccessType.FIELD)
-public class Scripts
+public final class ScriptContent
 {
 
   /**
    * Constructs ...
    *
-   */
-  public Scripts() {}
-
-  /**
-   * Constructs ...
    *
    *
-   * @param scripts
+   * @param id
+   * @param name
+   * @param description
+   * @param type
+   *
+   * @param mimetype
+   * @param content
    */
-  public Scripts(Collection<ScriptMetadata> scripts)
+  public ScriptContent(String mimetype, InputStream content)
   {
-    this.scripts = Lists.newArrayList(scripts);
-  }
-
-  //~--- methods --------------------------------------------------------------
-
-  /**
-   * Method description
-   *
-   *
-   * @param obj
-   *
-   * @return
-   */
-  @Override
-  public boolean equals(Object obj)
-  {
-    if (obj == null)
-    {
-      return false;
-    }
-
-    if (getClass() != obj.getClass())
-    {
-      return false;
-    }
-
-    final Scripts other = (Scripts) obj;
-
-    return Objects.equal(scripts, other.scripts);
-  }
-
-  /**
-   * Method description
-   *
-   *
-   * @return
-   */
-  @Override
-  public int hashCode()
-  {
-    return Objects.hashCode(scripts);
-  }
-
-  /**
-   * Method description
-   *
-   *
-   * @return
-   */
-  @Override
-  public String toString()
-  {
-    //J-
-    return Objects.toStringHelper(this)
-                  .add("scripts", scripts)
-                  .toString();
-    //J+
+    this.mimetype = mimetype;
+    this.content = content;
   }
 
   //~--- get methods ----------------------------------------------------------
@@ -136,14 +72,27 @@ public class Scripts
    *
    * @return
    */
-  public List<ScriptMetadata> getScripts()
+  public InputStream getContent()
   {
-    return scripts;
+    return content;
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @return
+   */
+  public String getMimetype()
+  {
+    return mimetype;
   }
 
   //~--- fields ---------------------------------------------------------------
 
   /** Field description */
-  @XmlElement(name = "script")
-  private List<ScriptMetadata> scripts;
+  private InputStream content;
+
+  /** Field description */
+  private String mimetype;
 }

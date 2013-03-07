@@ -47,13 +47,13 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author Sebastian Sdorra
  */
-@XmlRootElement(name = "script")
 @XmlAccessorType(XmlAccessType.FIELD)
-public final class Script implements Serializable
+@XmlRootElement(name = "script-metadata")
+public class ScriptMetadata implements Serializable
 {
 
   /** Field description */
-  private static final long serialVersionUID = -322431605781198934L;
+  private static final long serialVersionUID = 1805862592574917531L;
 
   //~--- constructors ---------------------------------------------------------
 
@@ -61,44 +61,36 @@ public final class Script implements Serializable
    * Constructs ...
    *
    */
-  public Script() {}
+  public ScriptMetadata() {}
 
   /**
    * Constructs ...
-   *
    *
    *
    * @param id
    * @param name
    * @param description
    * @param type
-   * @param content
    */
-  public Script(String id, String name, String description, ScriptType type,
-    String content)
+  public ScriptMetadata(String name, String description, ScriptType type)
   {
-    this(id, name, description, type.getMimeTypes().get(0), content);
+    this(name, description, type.getFirstMimeType());
   }
 
   /**
    * Constructs ...
    *
    *
-   *
    * @param id
    * @param name
    * @param description
    * @param type
-   * @param content
    */
-  public Script(String id, String name, String description, String type,
-    String content)
+  public ScriptMetadata(String name, String description, String type)
   {
-    this.id = id;
     this.name = name;
     this.description = description;
     this.type = type;
-    this.content = content;
   }
 
   //~--- methods --------------------------------------------------------------
@@ -124,14 +116,13 @@ public final class Script implements Serializable
       return false;
     }
 
-    final Script other = (Script) obj;
+    final ScriptMetadata other = (ScriptMetadata) obj;
 
     //J-
     return Objects.equal(id, other.id) 
       && Objects.equal(name, other.name) 
       && Objects.equal(description, other.description)
-      && Objects.equal(type, other.type)
-      && Objects.equal(content, other.content);
+      && Objects.equal(type, other.type);
     //J+
   }
 
@@ -144,7 +135,7 @@ public final class Script implements Serializable
   @Override
   public int hashCode()
   {
-    return Objects.hashCode(id, name, description, type, content);
+    return Objects.hashCode(id, name, description, type);
   }
 
   /**
@@ -162,23 +153,11 @@ public final class Script implements Serializable
                   .add("name", name)
                   .add("description", description)
                   .add("type", type)
-                  .add("content", content)
                   .toString();
     //J+
   }
 
   //~--- get methods ----------------------------------------------------------
-
-  /**
-   * Method description
-   *
-   *
-   * @return
-   */
-  public String getContent()
-  {
-    return content;
-  }
 
   /**
    * Method description
@@ -224,10 +203,20 @@ public final class Script implements Serializable
     return type;
   }
 
-  //~--- fields ---------------------------------------------------------------
+  //~--- set methods ----------------------------------------------------------
 
-  /** Field description */
-  private String content;
+  /**
+   * Method description
+   *
+   *
+   * @param id
+   */
+  public void setId(String id)
+  {
+    this.id = id;
+  }
+
+  //~--- fields ---------------------------------------------------------------
 
   /** Field description */
   private String description;

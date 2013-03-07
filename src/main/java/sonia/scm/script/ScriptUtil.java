@@ -41,6 +41,8 @@ import org.slf4j.LoggerFactory;
 //~--- JDK imports ------------------------------------------------------------
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -57,7 +59,8 @@ public class ScriptUtil
   /**
    * the logger for Scripts
    */
-  private static final Logger logger = LoggerFactory.getLogger(ScriptUtil.class);
+  private static final Logger logger =
+    LoggerFactory.getLogger(ScriptUtil.class);
 
   //~--- methods --------------------------------------------------------------
 
@@ -73,12 +76,12 @@ public class ScriptUtil
    * @throws IOException
    * @throws ScriptException
    */
-  public static String execute(ScriptManager executor, Script script)
+  public static String execute(ScriptManager executor, ScriptContent script)
     throws IOException, ScriptException
   {
-    logger.debug("execute script {}", script.getName());
+    logger.debug("execute script of type {}", script.getMimetype());
 
-    return execute(executor, script.getType(), script.getContent());
+    return execute(executor, script.getMimetype(), script.getContent());
   }
 
   /**
@@ -88,6 +91,7 @@ public class ScriptUtil
    * @param executor
    * @param mimeType
    * @param script
+   * @param content
    *
    * @return
    *
@@ -95,10 +99,10 @@ public class ScriptUtil
    * @throws ScriptException
    */
   public static String execute(ScriptManager executor, String mimeType,
-    String script)
+    InputStream content)
     throws IOException, ScriptException
   {
-    StringReader reader = new StringReader(script);
+    InputStreamReader reader = new InputStreamReader(content);
     StringWriter writer = new StringWriter();
     PrintWriter printWriter = new PrintWriter(writer);
 

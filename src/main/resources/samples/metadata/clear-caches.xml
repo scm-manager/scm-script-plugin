@@ -31,35 +31,8 @@ http://bitbucket.org/sdorra/scm-manager
 -->
 
 
-<script>
-  <id>251f3fe54d2e</id>
-  <name>Latest Changesets</name>
-  <description>Prints the latest 5 changesets of each repository. Written in JavaScript.</description>
-  <type>application/javascript</type>
-  <content><![CDATA[
-importPackage(Packages.sonia.scm.repository);
-importPackage(Packages.sonia.scm.repository.api);
-
-var repositoryManager = injector.getInstance(RepositoryManager);
-var repositoryServiceFactory = injector.getInstance(RepositoryServiceFactory);
-
-var repositories = repositoryManager.getAll();
-for ( var i=0; i<repositories.size(); i++ ){
-    var repository = repositories.get(i);
-    println("<b>" + repository.type + "/" + repository.name + "</b>");
-    
-    var repositoryService = repositoryServiceFactory.create(repository);
-    var changesets = repositoryService.getLogCommand()
-                                      .setPagingLimit(5)
-                                      .getChangesets()
-                                      .getChangesets();
-    
-    for ( var j=0; j<changesets.size(); j++){
-        var changeset = changesets.get(j);
-        println(" - " + changeset.description);
-    }
-    repositoryService.close();
-}
-]]>
-  </content>
-</script>
+<script-metadata>
+  <name>Clear Caches</name>
+  <description>Clears each cache for a repository. Written in Groovy.</description>
+  <type>application/x-groovy</type>
+</script-metadata>

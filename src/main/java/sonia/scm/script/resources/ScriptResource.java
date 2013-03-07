@@ -42,8 +42,9 @@ import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sonia.scm.script.Script;
+import sonia.scm.script.ScriptContent;
 import sonia.scm.script.ScriptManager;
+import sonia.scm.script.ScriptMetadata;
 import sonia.scm.script.ScriptTypes;
 import sonia.scm.script.ScriptUtil;
 import sonia.scm.script.ScriptWrapperException;
@@ -52,6 +53,7 @@ import sonia.scm.script.Scripts;
 //~--- JDK imports ------------------------------------------------------------
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -59,11 +61,12 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 /**
  *
@@ -110,7 +113,8 @@ public class ScriptResource
   @POST
   @Produces(MediaType.TEXT_PLAIN)
   @Consumes(MediaType.WILDCARD)
-  public Response execute(@Context HttpServletRequest request, String content)
+  public Response execute(@Context HttpServletRequest request,
+    InputStream content)
     throws IOException
   {
     Response response;
@@ -158,11 +162,11 @@ public class ScriptResource
    * @return
    */
   @GET
-  @Path("stored-scripts")
+  @Path("metadata")
   @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
   public Scripts getStoreScripts()
   {
-    return new Scripts(manager.getStoredScripts().values());
+    return new Scripts(manager.getAll());
   }
 
   /**
@@ -176,11 +180,44 @@ public class ScriptResource
    * @return
    */
   @GET
-  @Path("stored-scripts/{id}")
+  @Path("metadata/{id}")
   @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-  public Script getStoredScript(@QueryParam("id") String id)
+  public ScriptMetadata getStoredScript(@PathParam("id") String id)
   {
-    return manager.getStoredScripts().get(id);
+    return manager.get(id);
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @param id
+   *
+   * @return
+   *
+   * @throws IOException
+   */
+  @GET
+  @Path("content/{id}")
+  public Response getStoredScriptContent(@PathParam("id") String id)
+    throws IOException
+  {
+    System.out.println("ID: " + id);
+
+    Response response = null;
+    ScriptContent content = manager.getScriptContent(id);
+
+    if (content != null)
+    {
+      response = Response.ok(content.getContent(),
+        content.getMimetype()).build();
+    }
+    else
+    {
+      response = Response.status(Status.NOT_FOUND).build();
+    }
+
+    return response;
   }
 
   /**
@@ -190,7 +227,7 @@ public class ScriptResource
    * @return
    */
   @GET
-  @Path("supported-types")
+  @Path("types")
   @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
   public ScriptTypes getSupportedTypes()
   {

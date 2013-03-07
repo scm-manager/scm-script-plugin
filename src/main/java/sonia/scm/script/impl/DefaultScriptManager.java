@@ -35,10 +35,13 @@ package sonia.scm.script.impl;
 
 //~--- non-JDK imports --------------------------------------------------------
 
-import com.google.common.collect.ImmutableMap;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSet.Builder;
+import com.google.common.io.ByteStreams;
+import com.google.common.io.Closeables;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -47,20 +50,31 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sonia.scm.script.EnvironmentBuilder;
-import sonia.scm.script.Script;
+import sonia.scm.script.ScriptContent;
 import sonia.scm.script.ScriptManager;
+import sonia.scm.script.ScriptMetadata;
 import sonia.scm.script.ScriptType;
 import sonia.scm.script.ScriptWrapperException;
+import sonia.scm.security.KeyGenerator;
 import sonia.scm.security.Role;
+import sonia.scm.store.Blob;
+import sonia.scm.store.BlobStore;
+import sonia.scm.store.BlobStoreFactory;
+import sonia.scm.store.DataStore;
+import sonia.scm.store.DataStoreFactory;
 
 //~--- JDK imports ------------------------------------------------------------
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
 
-import java.net.URL;
-
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -73,19 +87,19 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import javax.script.SimpleScriptContext;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-
 /**
  *
  * @author Sebastian Sdorra
  */
+@Singleton
 public class DefaultScriptManager implements ScriptManager
 {
 
   /** Field description */
-  private static final String[] RESOURCES = { "/samples/clear-caches.xml",
-    "/samples/latest-changesets.xml" };
+  private static final String SAMPLEVERSION_STORE = "__sampleversion";
+
+  /** Field description */
+  private static final String STORE_NAME = "script";
 
   /**
    * the logger for DefaultScriptManager
@@ -100,14 +114,63 @@ public class DefaultScriptManager implements ScriptManager
    *
    *
    * @param environmentBuilder
+   * @param keyGenerator
+   * @param dataStoreFactory
+   * @param blobStoreFactory
    */
   @Inject
-  public DefaultScriptManager(EnvironmentBuilder environmentBuilder)
+  public DefaultScriptManager(EnvironmentBuilder environmentBuilder,
+    KeyGenerator keyGenerator, DataStoreFactory dataStoreFactory,
+    BlobStoreFactory blobStoreFactory)
   {
     this.environmentBuilder = environmentBuilder;
+    this.keyGenerator = keyGenerator;
+    metadataStore = dataStoreFactory.getStore(ScriptMetadata.class, STORE_NAME);
+    contentStore = blobStoreFactory.getBlobStore(STORE_NAME);
   }
 
   //~--- methods --------------------------------------------------------------
+
+  /**
+   * Method description
+   *
+   *
+   * @param metadata
+   * @param content
+   *
+   * @return
+   *
+   * @throws IOException
+   */
+  @Override
+  public String add(ScriptMetadata metadata, InputStream content)
+    throws IOException
+  {
+    Preconditions.checkNotNull(metadata, "parameter metadata is required");
+    Preconditions.checkNotNull(content, "parameter content is required");
+
+    String key = keyGenerator.createKey();
+
+    metadata.setId(key);
+    metadataStore.put(key, metadata);
+
+    Blob blob = contentStore.create(key);
+    OutputStream out = null;
+
+    try
+    {
+      out = blob.getOutputStream();
+      ByteStreams.copy(content, out);
+      blob.commit();
+    }
+    finally
+    {
+      Closeables.closeQuietly(content);
+      Closeables.closeQuietly(out);
+    }
+
+    return key;
+  }
 
   /**
    * Method description
@@ -161,7 +224,95 @@ public class DefaultScriptManager implements ScriptManager
     }
   }
 
+  /**
+   * Method description
+   *
+   *
+   * @param id
+   * @param writer
+   *
+   * @throws IOException
+   * @throws ScriptException
+   */
+  @Override
+  public void execute(String id, Writer writer)
+    throws IOException, ScriptException
+  {
+    ScriptMetadata metadata = get(id);
+    Blob blob = contentStore.get(id);
+    InputStreamReader reader = null;
+
+    try
+    {
+      reader = new InputStreamReader(blob.getInputStream());
+      execute(metadata.getType(), reader, writer);
+    }
+    finally
+    {
+      Closeables.closeQuietly(reader);
+    }
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @param id
+   */
+  @Override
+  public void remove(String id)
+  {
+    metadataStore.remove(id);
+    contentStore.remove(id);
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @param script
+   * @param content
+   *
+   * @throws IOException
+   */
+  @Override
+  public void update(ScriptMetadata script, InputStream content)
+    throws IOException
+  {
+    String key = script.getId();
+
+    metadataStore.put(key, script);
+
+    Blob blob = contentStore.get(key);
+    OutputStream out = null;
+
+    try
+    {
+      out = blob.getOutputStream();
+      ByteStreams.copy(content, out);
+    }
+    finally
+    {
+      Closeables.closeQuietly(content);
+      Closeables.closeQuietly(out);
+    }
+  }
+
   //~--- get methods ----------------------------------------------------------
+
+  /**
+   * Method description
+   *
+   *
+   * @param id
+   *
+   * @return
+   */
+  @Override
+  public ScriptMetadata get(String id)
+  {
+    return metadataStore.get(id);
+  }
 
   /**
    * Method description
@@ -170,14 +321,63 @@ public class DefaultScriptManager implements ScriptManager
    * @return
    */
   @Override
-  public Map<String, Script> getStoredScripts()
+  public Collection<ScriptMetadata> getAll()
   {
-    if (storedScripts == null)
+    return metadataStore.getAll().values();
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @return
+   */
+  @Override
+  public int getSampleVersion()
+  {
+    int version = -1;
+
+    Blob blob = contentStore.get(SAMPLEVERSION_STORE);
+
+    if (blob != null)
     {
-      storedScripts = createScripts();
+      DataInputStream versionContent = null;
+
+      try
+      {
+        versionContent = new DataInputStream(blob.getInputStream());
+        version = versionContent.readInt();
+      }
+      catch (Exception ex)
+      {
+        logger.error("could not read sample version", ex);
+      }
+      finally
+      {
+        Closeables.closeQuietly(versionContent);
+      }
     }
 
-    return storedScripts;
+    return version;
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @param id
+   *
+   * @return
+   *
+   * @throws IOException
+   */
+  @Override
+  public ScriptContent getScriptContent(String id) throws IOException
+  {
+    ScriptMetadata metadata = metadataStore.get(id);
+
+    return new ScriptContent(metadata.getType(),
+      contentStore.get(id).getInputStream());
   }
 
   /**
@@ -208,81 +408,54 @@ public class DefaultScriptManager implements ScriptManager
     return supportedTypes;
   }
 
-  //~--- methods --------------------------------------------------------------
+  //~--- set methods ----------------------------------------------------------
 
   /**
    * Method description
    *
    *
-   * @param context
-   * @param resource
-   *
-   * @return
+   * @param version
    */
-  private Script createScript(JAXBContext context, String resource)
+  @Override
+  public void setSampleVersion(int version)
   {
-    Script script = null;
-    URL url = DefaultScriptManager.class.getResource(resource);
+    Blob blob = contentStore.get(SAMPLEVERSION_STORE);
 
-    if (url != null)
+    if (blob == null)
     {
-      try
-      {
-        script = (Script) context.createUnmarshaller().unmarshal(url);
-      }
-      catch (JAXBException ex)
-      {
-        logger.error("could not unmarshall ".concat(resource), ex);
-      }
-    }
-    else
-    {
-      logger.warn("could not find script resource at {}", resource);
+      blob = contentStore.create(SAMPLEVERSION_STORE);
     }
 
-    return script;
-  }
-
-  /**
-   * Method description
-   *
-   *
-   * @return
-   */
-  private Map<String, Script> createScripts()
-  {
-    ImmutableMap.Builder<String, Script> builder = ImmutableMap.builder();
+    DataOutputStream versionContent = null;
 
     try
     {
-      JAXBContext context = JAXBContext.newInstance(Script.class);
-
-      for (String resource : RESOURCES)
-      {
-        Script script = createScript(context, resource);
-
-        if (script != null)
-        {
-          builder.put(script.getId(), script);
-        }
-      }
-
+      versionContent = new DataOutputStream(blob.getOutputStream());
+      versionContent.writeInt(version);
     }
-    catch (JAXBException ex)
+    catch (Exception ex)
     {
-      logger.error("could create jaxb context", ex);
+      logger.error("could not read sample version", ex);
     }
-
-    return builder.build();
+    finally
+    {
+      Closeables.closeQuietly(versionContent);
+    }
   }
 
   //~--- fields ---------------------------------------------------------------
 
   /** Field description */
+  private BlobStore contentStore;
+
+  /** Field description */
   private EnvironmentBuilder environmentBuilder;
 
   /** Field description */
-  private Map<String, Script> storedScripts;
+  private KeyGenerator keyGenerator;
+
+  /** Field description */
+  private DataStore<ScriptMetadata> metadataStore;
 
   /** Field description */
   private Set<ScriptType> supportedTypes;

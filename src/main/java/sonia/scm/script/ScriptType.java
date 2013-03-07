@@ -164,6 +164,17 @@ public final class ScriptType implements Serializable
    *
    * @return
    */
+  public String getFirstMimeType()
+  {
+    return mimeTypes.get(0);
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @return
+   */
   public List<String> getMimeTypes()
   {
     return mimeTypes;

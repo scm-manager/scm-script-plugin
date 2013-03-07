@@ -36,10 +36,11 @@ package sonia.scm.script;
 //~--- JDK imports ------------------------------------------------------------
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 import java.io.Writer;
 
-import java.util.Map;
+import java.util.Collection;
 import java.util.Set;
 
 import javax.script.ScriptException;
@@ -55,6 +56,20 @@ public interface ScriptManager
    * Method description
    *
    *
+   * @param metadata
+   * @param content
+   *
+   * @return
+   *
+   * @throws IOException
+   */
+  public String add(ScriptMetadata metadata, InputStream content)
+    throws IOException;
+
+  /**
+   * Method description
+   *
+   *
    * @param language
    * @param reader
    * @param writer
@@ -65,7 +80,50 @@ public interface ScriptManager
   public void execute(String language, Reader reader, Writer writer)
     throws IOException, ScriptException;
 
+  /**
+   * Method description
+   *
+   *
+   * @param id
+   * @param writer
+   *
+   * @throws IOException
+   * @throws ScriptException
+   */
+  public void execute(String id, Writer writer)
+    throws IOException, ScriptException;
+
+  /**
+   * Method description
+   *
+   *
+   * @param id
+   */
+  public void remove(String id);
+
+  /**
+   * Method description
+   *
+   *
+   * @param script
+   * @param content
+   *
+   * @throws IOException
+   */
+  public void update(ScriptMetadata script, InputStream content)
+    throws IOException;
+
   //~--- get methods ----------------------------------------------------------
+
+  /**
+   * Method description
+   *
+   *
+   * @param id
+   *
+   * @return
+   */
+  public ScriptMetadata get(String id);
 
   /**
    * Method description
@@ -73,7 +131,27 @@ public interface ScriptManager
    *
    * @return
    */
-  public Map<String, Script> getStoredScripts();
+  public Collection<ScriptMetadata> getAll();
+
+  /**
+   * Method description
+   *
+   *
+   * @return
+   */
+  public int getSampleVersion();
+
+  /**
+   * Method description
+   *
+   *
+   * @param id
+   *
+   * @return
+   *
+   * @throws IOException
+   */
+  public ScriptContent getScriptContent(String id) throws IOException;
 
   /**
    * Method description
@@ -82,4 +160,14 @@ public interface ScriptManager
    * @return
    */
   public Set<ScriptType> getSupportedTypes();
+
+  //~--- set methods ----------------------------------------------------------
+
+  /**
+   * Method description
+   *
+   *
+   * @param version
+   */
+  public void setSampleVersion(int version);
 }

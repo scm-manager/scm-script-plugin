@@ -55,7 +55,7 @@ Sonia.panel.Console = Ext.extend(Ext.Panel, {
     
     var scriptTypeStore = new Sonia.rest.JsonStore({
       proxy: new Ext.data.HttpProxy({
-        url: restUrl + 'plugins/script/supported-types.json',
+        url: restUrl + 'plugins/script/types.json',
         method: 'GET'
       }),
       fields: ['name', 'display-name', 'mime-type'],
@@ -67,7 +67,7 @@ Sonia.panel.Console = Ext.extend(Ext.Panel, {
     
     var scriptsStore = new Sonia.rest.JsonStore({
       proxy: new Ext.data.HttpProxy({
-        url: restUrl + 'plugins/script/stored-scripts.json',
+        url: restUrl + 'plugins/script/metadata.json',
         method: 'GET'
       }),
       fields: ['id', 'name', 'description', 'type', 'content'],
@@ -146,7 +146,7 @@ Sonia.panel.Console = Ext.extend(Ext.Panel, {
       var mt = r.get('mime-type');
       var result = false;
       for ( var i=0; i<mt.length; i++ ){
-        if (mt[i] == type){
+        if (mt[i] === type){
           result = true;
           break;
         }
@@ -160,6 +160,24 @@ Sonia.panel.Console = Ext.extend(Ext.Panel, {
         this.changeScriptLanguage(cmp, r);
       }
     }
+    
+    var contentUrl = restUrl + 'plugins/script/content/' + record.get('id');
+    
+    Ext.Ajax.request({
+      url: contentUrl,
+      method: 'GET',
+      scope: this,
+      success: function(response){
+        this.editorPanel.setValue(response.responseText);
+      },
+      failure: function(response){
+        main.handleFailure(
+          response.status, 
+          this.errorTitleText, 
+          this.errorArchiveMsgText
+        );
+      }
+    });
     this.editorPanel.setValue(record.get('content'));
   },
   
