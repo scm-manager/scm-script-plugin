@@ -35,6 +35,11 @@ loginCallbacks.push(function(){
     navPanel.insertSection(count, {
       title: 'Development',
       links: [{
+        label: 'Scripts',
+        fn: function(){
+          main.addTabPanel('scriptGrid', 'scriptGrid', 'Scripts');
+        }          
+      },{
         label: 'Script Console',
         fn: function(){
           main.addTabPanel('console', 'console', 'Script Console');

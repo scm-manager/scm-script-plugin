@@ -29,9 +29,9 @@
  *
  */
 
-Ext.ns('Sonia.panel');
+Ext.ns('Sonia.script');
 
-Sonia.panel.Console = Ext.extend(Ext.Panel, {
+Sonia.script.Console = Ext.extend(Ext.Panel, {
   
   editorPanel: null,
   outputPanel: null,
@@ -129,7 +129,7 @@ Sonia.panel.Console = Ext.extend(Ext.Panel, {
     };
     
     Ext.apply(this, Ext.apply(this.initialConfig, config));
-    Sonia.panel.Console.superclass.initComponent.apply(this, arguments);
+    Sonia.script.Console.superclass.initComponent.apply(this, arguments);
   },
   
   getTypeCombobox: function(){
@@ -223,4 +223,4 @@ Sonia.panel.Console = Ext.extend(Ext.Panel, {
   
 });
 
-Ext.reg('console', Sonia.panel.Console);
+Ext.reg('console', Sonia.script.Console);

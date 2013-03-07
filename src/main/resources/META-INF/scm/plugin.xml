@@ -43,12 +43,13 @@
   </conditions>
 
   <packages>
-    <package>sonia.scm.console</package>
+    <package>sonia.scm.script</package>
   </packages>
 
   <resources>
-    <script>/scm/sonia.console.js</script>
-    <script>/scm/sonia.panel.console.js</script>
+    <script>/scm/sonia.script.js</script>
+    <script>/scm/sonia.script.grid.js</script>
+    <script>/scm/sonia.script.console.js</script>
     <script>/scm/sonia.panel.codeeditorpanel.js</script>
   </resources>
 

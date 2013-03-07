@@ -58,6 +58,7 @@ import java.io.InputStream;
 import javax.servlet.http.HttpServletRequest;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -151,6 +152,22 @@ public class ScriptResource
     }
 
     return response;
+  }
+
+  /**
+   *   Method description
+   *  
+   *  
+   *
+   * @param id
+   *   @return
+   */
+  @DELETE
+  @Path("{id}")
+  @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+  public void remove(@PathParam("id") String id)
+  {
+    manager.remove(id);
   }
 
   //~--- get methods ----------------------------------------------------------
