@@ -118,7 +118,17 @@ Sonia.script.Grid = Ext.extend(Sonia.rest.Grid, {
   },
   
   editScript: function(){
-    
+    var selected = this.getSelectionModel().getSelected();
+    if ( selected ){
+      main.addTab({
+        id: 'console-' + selected.data.id,
+        xtype: 'console',
+        title: selected.data.name,
+        script: selected.data,
+        closable: true,
+        autoScroll: true
+      });
+    }
   },
   
   removeScript: function(){

@@ -33,13 +33,20 @@ Ext.ns('Sonia.script');
 
 Sonia.script.Console = Ext.extend(Ext.Panel, {
   
+  title: 'Console',
+  
   editorPanel: null,
   outputPanel: null,
   typeCombobox: null,
   typeStore: null,
   
+  script: null,
+  
   initComponent: function(){
     this.typeStore = Sonia.script.createTypeStore();
+    if ( this.script ){
+      this.typeStore.on('load', this.switchEditorMode, this);
+    }
     
     this.editorPanel = new Sonia.panel.CodeEditorPanel({
       region: 'center',
@@ -57,7 +64,7 @@ Sonia.script.Console = Ext.extend(Ext.Panel, {
     });
 
     var config = {
-      title: 'Console',
+      title: this.title,
       layout: 'border',
       tbar: [{
         xtype: 'tbbutton',
@@ -92,6 +99,67 @@ Sonia.script.Console = Ext.extend(Ext.Panel, {
     Sonia.script.Console.superclass.initComponent.apply(this, arguments);
   },
   
+  switchEditorMode: function(){
+    var typeName = this.getTypeNameFromMimetype(this.script.type);
+    this.editorPanel.setMode(typeName);
+  },
+          
+  getTypeNameFromMimetype: function(mimetype){
+    var name = mimetype;
+    var index = this.typeStore.findBy(function(r){
+      var mt = r.get('mime-type');
+      if (debug){
+        console.debug('prepare console for mimetype: ' + mimetype);
+      }
+      var result = false;
+      for ( var i=0; i<mt.length; i++ ){
+        if (mt[i] === mimetype){
+          result = true;
+          break;
+        }
+      }
+      return result;
+    });
+    
+    if ( index >= 0 ){
+      var r = this.typeStore.getAt(index);
+      if (r){
+        name = r.get('name');
+      }
+    } else if (debug){
+      console.debug('could not find script type for ' + this.script.type);
+    }
+    return name;
+  },
+          
+  loadScriptContent: function(){
+    if (debug){
+      console.debug('try to load script: ');
+      console.debug(this.script);
+    }
+    
+    var contentUrl = restUrl + 'plugins/script/content/' + this.script.id;
+    
+    Ext.Ajax.request({
+      url: contentUrl,
+      method: 'GET',
+      scope: this,
+      success: function(response){
+        if ( debug ){
+          console.debug('loaded script, from ' + contentUrl);
+        }
+        this.editorPanel.setValue(response.responseText);
+      },
+      failure: function(response){
+        main.handleFailure(
+          response.status, 
+          this.errorTitleText, 
+          this.errorArchiveMsgText
+        );
+      }
+    });
+  },
+  
   getTypeCombobox: function(){
     if ( ! this.typeCombobox ){
       this.typeCombobox = Ext.getCmp('typeCombobox');
@@ -103,7 +171,7 @@ Sonia.script.Console = Ext.extend(Ext.Panel, {
     if (debug){
       console.debug('change script language to ' + record.get('name'));
     }
-    this.editorPanel.setMode('ace/mode/' + record.get('name').toLowerCase());
+    this.editorPanel.setMode(record.get('name'));
   },
   
   execute: function(){

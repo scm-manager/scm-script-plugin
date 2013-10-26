@@ -58,7 +58,20 @@ Sonia.panel.CodeEditorPanel = Ext.extend(Ext.Panel, {
     
     Ext.apply(this, Ext.apply(this.initialConfig, config));
     Sonia.panel.CodeEditorPanel.superclass.initComponent.apply(this, arguments);
-  }, 
+  },
+          
+  getEditorMode: function(){
+    var mode = this.editorMode;
+    if ( mode.indexOf('ace/mode/') !== 0 ){
+      mode = 'ace/mode/' + mode;
+    }
+    mode = mode.toLowerCase();
+    var m = this.modeMappingTable[mode];
+    if (!m){
+      m = mode;
+    }
+    return m;
+  },
   
   loadBodyContent: function(){
     main.loadScript(
@@ -69,18 +82,14 @@ Sonia.panel.CodeEditorPanel = Ext.extend(Ext.Panel, {
   },
   
   setMode: function(mode){
-    var m = this.modeMappingTable[mode];
-    if (!m){
-      m = mode;
-    }
-    this.editorMode = m;
-    this.editor.getSession().setMode(m);
+    this.editorMode = mode;
+    this.editor.getSession().setMode(this.getEditorMode());
   },
   
   renderEditor: function(){
     this.editor = ace.edit(this.editorId);
     this.editor.setTheme(this.editorTheme);
-    this.editor.getSession().setMode(this.editorMode);
+    this.editor.getSession().setMode(this.getEditorMode());
   },
   
   getValue: function(){
