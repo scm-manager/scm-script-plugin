@@ -121,6 +121,7 @@ Sonia.panel.CodeEditorPanel = Ext.extend(Ext.Panel, {
     this.editor.setTheme(this.editorTheme);
     this.editor.getSession().setMode(editorMode);
     this.editor.focus();
+    this.fireEvent('editorRendered', this);
   },
   
   getValue: function(){

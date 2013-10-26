@@ -50,7 +50,17 @@ Sonia.script.Console = Ext.extend(Ext.Panel, {
     
     this.editorPanel = new Sonia.panel.CodeEditorPanel({
       region: 'center',
-      layout: 'fit'
+      layout: 'fit',
+      listeners: {
+        editorRendered: {
+          fn: function(){
+            if (this.script){
+              this.loadScriptContent();
+            }
+          },
+          scope: this
+        }
+      }
     });
     
     this.outputPanel = new Ext.Panel({
