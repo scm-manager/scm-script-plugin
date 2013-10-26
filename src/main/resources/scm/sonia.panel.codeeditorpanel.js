@@ -49,8 +49,16 @@ Sonia.panel.CodeEditorPanel = Ext.extend(Ext.Panel, {
       layout:'fit',
       autoScroll: true,
       listeners: {
+        afterlayout: {
+          fn: this.resizeEditor,
+          scope: this
+        },
         afterrender: {
           fn: this.loadBodyContent,
+          scope: this
+        },
+        destroy: {
+          fn: this.destroyEditor,
           scope: this
         }
       }
@@ -58,6 +66,24 @@ Sonia.panel.CodeEditorPanel = Ext.extend(Ext.Panel, {
     
     Ext.apply(this, Ext.apply(this.initialConfig, config));
     Sonia.panel.CodeEditorPanel.superclass.initComponent.apply(this, arguments);
+  },
+  
+  resizeEditor: function(){
+    if (this.editor){
+      if (debug){
+        console.log('resize editor: ' + this.editorId);
+      }
+      this.editor.resize();
+    }
+  },
+  
+  destroyEditor: function(){
+    if (this.editor){
+      if (debug){
+        console.log('destroy editor: ' + this.editorId);
+      }
+      this.editor.destroy();
+    }
   },
           
   getEditorMode: function(){
@@ -87,9 +113,14 @@ Sonia.panel.CodeEditorPanel = Ext.extend(Ext.Panel, {
   },
   
   renderEditor: function(){
+    var editorMode = this.getEditorMode();
+    if (debug){
+      console.log('render editor ' + this.editorId + ', mode: ' + editorMode + ', theme: ' + this.editorTheme);
+    }
     this.editor = ace.edit(this.editorId);
     this.editor.setTheme(this.editorTheme);
-    this.editor.getSession().setMode(this.getEditorMode());
+    this.editor.getSession().setMode(editorMode);
+    this.editor.focus();
   },
   
   getValue: function(){
