@@ -28,24 +28,23 @@
  * http://bitbucket.org/sdorra/scm-manager
  *
  */
-
-
-
 package sonia.scm.script;
 
 //~--- non-JDK imports --------------------------------------------------------
-
+import com.google.common.io.Files;
+import java.io.File;
+import java.io.FileReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 //~--- JDK imports ------------------------------------------------------------
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 
 import javax.script.ScriptException;
+import sonia.scm.util.IOUtil;
 
 /**
  *
@@ -60,7 +59,6 @@ public class ScriptUtil
   private static final Logger logger = LoggerFactory.getLogger(ScriptUtil.class);
 
   //~--- methods --------------------------------------------------------------
-
   /**
    * Method description
    *
@@ -74,7 +72,7 @@ public class ScriptUtil
    * @throws ScriptException
    */
   public static String execute(ScriptManager executor, Script script)
-    throws IOException, ScriptException
+          throws IOException, ScriptException
   {
     logger.debug("execute script {}", script.getName());
 
@@ -95,8 +93,8 @@ public class ScriptUtil
    * @throws ScriptException
    */
   public static String execute(ScriptManager executor, String mimeType,
-    String script)
-    throws IOException, ScriptException
+          String script)
+          throws IOException, ScriptException
   {
     StringReader reader = new StringReader(script);
     StringWriter writer = new StringWriter();
@@ -107,5 +105,41 @@ public class ScriptUtil
     printWriter.close();
 
     return writer.toString();
+  }
+
+  public static String execute(ScriptManager executor, String mimeType, File script)
+          throws IOException, ScriptException
+  {
+    StringWriter writer = new StringWriter();
+    PrintWriter printWriter = new PrintWriter(writer);
+    FileReader reader = null;
+    try
+    {
+      reader = new FileReader(script);
+      executor.execute(mimeType, reader, printWriter);
+    } 
+    finally
+    {
+      IOUtil.close(reader);
+    }
+
+    printWriter.close();
+
+    return writer.toString();
+  }
+
+  public static ScriptType getTypeFromFile(ScriptManager executor, File file)
+  {
+    ScriptType type = null;
+    String extension = Files.getFileExtension(file.getName());
+    for (ScriptType t : executor.getSupportedTypes())
+    {
+      if (t.getExtensions().contains(extension))
+      {
+        type = t;
+        break;
+      }
+    }
+    return type;
   }
 }
