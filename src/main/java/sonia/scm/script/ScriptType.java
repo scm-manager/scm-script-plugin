@@ -64,37 +64,30 @@ public final class ScriptType implements Serializable
   //~--- constructors ---------------------------------------------------------
 
   /**
-   * Constructs ...
+   * Constructs a new ScriptType. This constructor should only be used by JAXB.
    *
    */
   public ScriptType() {}
 
   /**
-   * Constructs ...
+   * Constructs a new ScriptType.
    *
    *
-   * @param name
-   * @param displayName
-   * @param mimeType
-   * @param mimeTypes
+   * @param name name of type
+   * @param displayName display name of the script type
+   * @param mimeTypes supported mime types
+   * @param extensions supported file extensions
    */
-  public ScriptType(String name, String displayName, List<String> mimeTypes)
+  public ScriptType(String name, String displayName, List<String> mimeTypes, List<String> extensions)
   {
     this.name = name;
     this.displayName = displayName;
     this.mimeTypes = mimeTypes;
+    this.extensions = extensions;
   }
 
   //~--- methods --------------------------------------------------------------
 
-  /**
-   * Method description
-   *
-   *
-   * @param obj
-   *
-   * @return
-   */
   @Override
   public boolean equals(Object obj)
   {
@@ -112,27 +105,16 @@ public final class ScriptType implements Serializable
 
     return Objects.equal(name, other.displayName)
       && Objects.equal(displayName, other.displayName)
-      && Objects.equal(mimeTypes, other.mimeTypes);
+      && Objects.equal(mimeTypes, other.mimeTypes)
+      && Objects.equal(extensions, other.extensions);
   }
 
-  /**
-   * Method description
-   *
-   *
-   * @return
-   */
   @Override
   public int hashCode()
   {
-    return Objects.hashCode(name, displayName, mimeTypes);
+    return Objects.hashCode(name, displayName, mimeTypes, extensions);
   }
-
-  /**
-   * Method description
-   *
-   *
-   * @return
-   */
+  
   @Override
   public String toString()
   {
@@ -141,6 +123,7 @@ public final class ScriptType implements Serializable
                   .add("name", name)
                   .add("displayName", displayName)
                   .add("mimeTypes", mimeTypes)
+                  .add("extensions", extensions)
                   .toString();
     //J+
   }
@@ -148,10 +131,10 @@ public final class ScriptType implements Serializable
   //~--- get methods ----------------------------------------------------------
 
   /**
-   * Method description
+   * Returns the display name of the script type.
    *
    *
-   * @return
+   * @return display name
    */
   public String getDisplayName()
   {
@@ -159,21 +142,21 @@ public final class ScriptType implements Serializable
   }
 
   /**
-   * Method description
+   * Returns the first supported mime type from the list of mimetypes.
    *
    *
-   * @return
-   */
+   * @return first mime type
+   */  
   public String getFirstMimeType()
   {
-    return mimeTypes.get(0);
+    return mimeTypes.iterator().next();
   }
 
   /**
-   * Method description
+   * Returns list mime types, which are supported by the script type.
    *
    *
-   * @return
+   * @return list of mime tpyes
    */
   public List<String> getMimeTypes()
   {
@@ -181,14 +164,24 @@ public final class ScriptType implements Serializable
   }
 
   /**
-   * Method description
+   * Returns name of the script type
    *
    *
-   * @return
+   * @return name
    */
   public String getName()
   {
     return name;
+  }
+
+  /**
+   * Returns list of extensions, which are supported by the script type.
+   *
+   *
+   * @return list of extensions
+   */
+  public List<String> getExtensions() {
+    return extensions;
   }
 
   //~--- fields ---------------------------------------------------------------
@@ -201,6 +194,10 @@ public final class ScriptType implements Serializable
   @XmlElement(name = "mime-types")
   @XmlElementWrapper(name = "mime-type")
   private List<String> mimeTypes;
+  
+  @XmlElement(name = "extensions")
+  @XmlElementWrapper(name = "extension")
+  private List<String> extensions;
 
   /** Field description */
   private String name;

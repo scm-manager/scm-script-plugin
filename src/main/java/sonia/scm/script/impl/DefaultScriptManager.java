@@ -377,8 +377,12 @@ public class DefaultScriptManager implements ScriptManager
 
       for (ScriptEngineFactory factory : factories)
       {
-        builder.add(new ScriptType(factory.getLanguageName(),
-          factory.getEngineName(), factory.getMimeTypes()));
+        builder.add(new ScriptType(
+          factory.getLanguageName(),
+          factory.getEngineName(), 
+          factory.getMimeTypes(), 
+          factory.getExtensions()
+        ));
       }
 
       supportedTypes = builder.build();
