@@ -1,6 +1,5 @@
 /**
- * *
- * Copyright (c) 2015, Sebastian Sdorra
+ * Copyright (c) 2010, Sebastian Sdorra
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,7 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * https://bitbucket.org/sdorra/scm-manager
+ * http://bitbucket.org/sdorra/scm-manager
  *
  */
 package sonia.scm.script.impl;
