@@ -12,7 +12,7 @@
   <groupId>sonia.scm.plugins</groupId>
   <artifactId>scm-script-plugin</artifactId>
   <packaging>jar</packaging>
-  <version>1.6</version>
+  <version>1.7-SNAPSHOT</version>
   <name>${project.artifactId}</name>
   <description>Script support for scm-manager.</description>
   <url>https://bitbucket.org/sdorra/scm-script-plugin</url>
@@ -107,9 +107,4 @@
       </build>
     </profile>
   </profiles>
-
-
-  <scm>
-    <tag>1.6</tag>
-  </scm>
 </project>
