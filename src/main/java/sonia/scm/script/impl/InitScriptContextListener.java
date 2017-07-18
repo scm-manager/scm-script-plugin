@@ -31,25 +31,21 @@
  */
 package sonia.scm.script.impl;
 
-import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
-import com.google.common.collect.Lists;
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import sonia.scm.plugin.ext.Extension;
+import sonia.scm.script.ScriptManager;
+import sonia.scm.script.ScriptUtil;
+import sonia.scm.web.security.AdministrationContext;
+import sonia.scm.web.security.PrivilegedAction;
+
 import javax.inject.Inject;
 import javax.script.ScriptException;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import sonia.scm.SCMContext;
-import sonia.scm.plugin.ext.Extension;
-import sonia.scm.script.ScriptManager;
-import sonia.scm.script.ScriptType;
-import sonia.scm.script.ScriptUtil;
-import sonia.scm.web.security.AdministrationContext;
-import sonia.scm.web.security.PrivilegedAction;
+import java.io.IOException;
+import java.util.List;
 
 /**
  * The InitScriptContextListener executes init scripts from the init.script.d directory of scm-manager. The directory is
@@ -65,10 +61,7 @@ public class InitScriptContextListener implements ServletContextListener
 
   private static final Logger logger = LoggerFactory.getLogger(InitScriptContextListener.class);
 
-  public static final String PROPERTY_DIRECTORY = "sonia.scm.init.script.d";
-
   private final ScriptManager manager;
-
   private final AdministrationContext administrationContext;
 
   @Inject
@@ -79,59 +72,15 @@ public class InitScriptContextListener implements ServletContextListener
   }
 
   @Override
-  public void contextInitialized(ServletContextEvent sce)
-  {
-    File directory = getDirectory();
-    if (directory.exists())
-    {
-      List<InitScript> scripts = getInitScripts(directory);
-      if (!scripts.isEmpty())
-      {
-        administrationContext.runAsAdmin(new InitScriptExecutor(manager, scripts));
-      } 
-      else
-      {
-        logger.debug("no init scripts to execute");
-      }
-    } else
-    {
-      logger.debug("init script directory {}, does not exists", directory);
+  public void contextInitialized(ServletContextEvent sce) {
+    InitScriptCollector collector = new InitScriptCollector(manager);
+    List<InitScript> initScripts = collector.collect();
+
+    if (!initScripts.isEmpty()) {
+      administrationContext.runAsAdmin(new InitScriptExecutor(manager, initScripts));
+    }  else  {
+      logger.debug("no init scripts to execute");
     }
-  }
-
-  private List<InitScript> getInitScripts(File directory)
-  {
-    List<InitScript> scripts = Lists.newArrayList();
-
-    for (File file : directory.listFiles())
-    {
-      ScriptType type = ScriptUtil.getTypeFromFile(manager, file);
-      if (type != null)
-      {
-        scripts.add(new InitScript(type, file));
-      } 
-      else
-      {
-        logger.warn("could not find engine for script {}", file);
-      }
-    }
-
-    return scripts;
-  }
-
-  private File getDirectory()
-  {
-    File directory;
-    String path = System.getProperty(PROPERTY_DIRECTORY);
-    if (Strings.isNullOrEmpty(path))
-    {
-      directory = new File(SCMContext.getContext().getBaseDirectory(), "init.script.d");
-    } 
-    else
-    {
-      directory = new File(path);
-    }
-    return directory;
   }
 
   @Override
@@ -159,8 +108,8 @@ public class InitScriptContextListener implements ServletContextListener
       {
         for (InitScript script : scripts)
         {
-          logger.info("executing script {} with engine {}", script.file, script.type.getName());
-          String output = ScriptUtil.execute(manager, script.type.getFirstMimeType(), script.file);
+          logger.info("executing script {} with engine {}", script.getFile(), script.getType().getName());
+          String output = ScriptUtil.execute(manager, script.getType().getFirstMimeType(), script.getFile());
           logger.info("script output: {}", output);
         }
       } 
@@ -174,24 +123,5 @@ public class InitScriptContextListener implements ServletContextListener
       }
     }
 
-  }
-
-  private static class InitScript implements Comparable<InitScript>
-  {
-
-    private final ScriptType type;
-    private final File file;
-
-    public InitScript(ScriptType type, File file)
-    {
-      this.type = type;
-      this.file = file;
-    }
-
-    @Override
-    public int compareTo(InitScript o)
-    {
-      return file.getName().compareTo(o.file.getName());
-    }
   }
 }
