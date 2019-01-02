@@ -33,6 +33,7 @@ package sonia.scm.script;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 //~--- JDK imports ------------------------------------------------------------
@@ -148,7 +149,7 @@ public class ScriptMetadata implements Serializable
   public String toString()
   {
     //J-
-    return Objects.toStringHelper(this)
+    return MoreObjects.toStringHelper(this)
                   .add("id", id)
                   .add("name", name)
                   .add("description", description)

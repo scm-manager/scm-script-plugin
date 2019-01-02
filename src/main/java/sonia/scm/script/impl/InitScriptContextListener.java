@@ -33,7 +33,7 @@ package sonia.scm.script.impl;
 import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sonia.scm.plugin.ext.Extension;
+import sonia.scm.plugin.Extension;
 import sonia.scm.script.ScriptManager;
 import sonia.scm.script.ScriptUtil;
 import sonia.scm.web.security.AdministrationContext;
@@ -112,11 +112,7 @@ public class InitScriptContextListener implements ServletContextListener
           logger.info("script output: {}", output);
         }
       } 
-      catch (IOException ex)
-      {
-        throw Throwables.propagate(ex);
-      } 
-      catch (ScriptException ex)
+      catch (IOException | ScriptException ex)
       {
         throw Throwables.propagate(ex);
       }

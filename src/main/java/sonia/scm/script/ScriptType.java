@@ -35,6 +35,7 @@ package sonia.scm.script;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 //~--- JDK imports ------------------------------------------------------------
@@ -119,7 +120,7 @@ public final class ScriptType implements Serializable
   public String toString()
   {
     //J-
-    return Objects.toStringHelper(this)
+    return MoreObjects.toStringHelper(this)
                   .add("name", name)
                   .add("displayName", displayName)
                   .add("mimeTypes", mimeTypes)

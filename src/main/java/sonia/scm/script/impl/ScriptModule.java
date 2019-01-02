@@ -38,7 +38,7 @@ import com.google.inject.AbstractModule;
 
 import sonia.scm.script.EnvironmentBuilder;
 import sonia.scm.script.ScriptManager;
-import sonia.scm.plugin.ext.Extension;
+import sonia.scm.plugin.Extension;
 
 /**
  *

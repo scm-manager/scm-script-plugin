@@ -33,6 +33,7 @@ package sonia.scm.script.resources;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
@@ -124,7 +125,7 @@ public class Scripts
   public String toString()
   {
     //J-
-    return Objects.toStringHelper(this)
+    return MoreObjects.toStringHelper(this)
                   .add("scripts", scripts)
                   .toString();
     //J+

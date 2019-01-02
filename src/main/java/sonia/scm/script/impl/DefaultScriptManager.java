@@ -62,6 +62,7 @@ import sonia.scm.store.BlobStore;
 import sonia.scm.store.BlobStoreFactory;
 import sonia.scm.store.DataStore;
 import sonia.scm.store.DataStoreFactory;
+import sonia.scm.util.IOUtil;
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -125,8 +126,8 @@ public class DefaultScriptManager implements ScriptManager
   {
     this.environmentBuilder = environmentBuilder;
     this.keyGenerator = keyGenerator;
-    metadataStore = dataStoreFactory.getStore(ScriptMetadata.class, STORE_NAME);
-    contentStore = blobStoreFactory.getBlobStore(STORE_NAME);
+    metadataStore = dataStoreFactory.withType(ScriptMetadata.class).withName(STORE_NAME).build();
+    contentStore = blobStoreFactory.withName(STORE_NAME).build();
   }
 
   //~--- methods --------------------------------------------------------------
@@ -167,7 +168,7 @@ public class DefaultScriptManager implements ScriptManager
     finally
     {
       Closeables.closeQuietly(content);
-      Closeables.closeQuietly(out);
+      Closeables.close(out, true);
     }
 
     return key;
@@ -265,7 +266,7 @@ public class DefaultScriptManager implements ScriptManager
     finally
     {
       Closeables.closeQuietly(content);
-      Closeables.closeQuietly(out);
+      Closeables.close(out, true);
     }
   }
 
@@ -400,8 +401,7 @@ public class DefaultScriptManager implements ScriptManager
    * @param version
    */
   @Override
-  public void setSampleVersion(int version)
-  {
+  public void setSampleVersion(int version) {
     assertIsAdmin();
 
     Blob blob = contentStore.get(SAMPLEVERSION_STORE);
@@ -424,7 +424,7 @@ public class DefaultScriptManager implements ScriptManager
     }
     finally
     {
-      Closeables.closeQuietly(versionContent);
+      IOUtil.close(versionContent);
     }
   }
 
