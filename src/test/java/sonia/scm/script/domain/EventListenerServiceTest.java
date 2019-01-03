@@ -66,7 +66,7 @@ class EventListenerServiceTest {
   }
 
   private Script script() {
-    return new Script(Type.valueOf("groovy"), Description.valueOf("Heart Of Gold"), Content.valueOf("print 'Hello';"));
+    return new Script(Type.valueOf("groovy"), Content.valueOf("print 'Hello';"));
   }
 
 }

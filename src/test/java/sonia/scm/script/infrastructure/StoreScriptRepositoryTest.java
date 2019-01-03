@@ -25,7 +25,7 @@ class StoreScriptRepositoryTest {
   }
 
   private Script createSample() {
-    return new Script(Type.valueOf("groovy"), Description.valueOf("sample"), Content.valueOf("print 'Hello'"));
+    return new Script(Type.valueOf("groovy"), Content.valueOf("print 'Hello'"));
   }
 
   @Test

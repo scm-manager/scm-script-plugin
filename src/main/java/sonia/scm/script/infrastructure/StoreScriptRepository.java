@@ -43,7 +43,7 @@ public class StoreScriptRepository implements ScriptRepository {
     return new Script(
       Id.valueOf(idValue),
       script.getType(),
-      script.getDescription(),
+      script.getDescription().orElse(null),
       script.getContent(),
       script.getListeners()
     );

@@ -14,9 +14,8 @@ public final class Script {
   private Content content;
   private List<Listener> listeners = new ArrayList<>();
 
-  public Script(Type type, Description description, Content content) {
+  public Script(Type type, Content content) {
     this.type = type;
-    this.description = description;
     this.content = content;
   }
 
@@ -36,8 +35,8 @@ public final class Script {
     return type;
   }
 
-  public Description getDescription() {
-    return description;
+  public Optional<Description> getDescription() {
+    return Optional.ofNullable(description);
   }
 
   public Content getContent() {

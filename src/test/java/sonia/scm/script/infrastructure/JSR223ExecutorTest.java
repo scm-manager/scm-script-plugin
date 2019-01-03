@@ -3,7 +3,6 @@ package sonia.scm.script.infrastructure;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import sonia.scm.script.domain.Content;
-import sonia.scm.script.domain.Description;
 import sonia.scm.script.domain.ExecutionContext;
 import sonia.scm.script.domain.Script;
 import sonia.scm.script.domain.ScriptExecutionException;
@@ -53,18 +52,18 @@ class JSR223ExecutorTest {
 
   @Test
   void shouldThrowScriptTypeNotFoundException() {
-    Script script = new Script(Type.valueOf("hitchhikerScripting"), Description.valueOf("ka"), Content.valueOf(""));
+    Script script = new Script(Type.valueOf("hitchhikerScripting"), Content.valueOf(""));
     assertThrows(ScriptTypeNotFoundException.class, () -> executor.execute(script, ExecutionContext.builder().build()));
   }
 
   @Test
   void shouldThrowScriptExecutionException() {
-    Script script = new Script(Type.valueOf("Groovy"), Description.valueOf("ka"), Content.valueOf("should fail"));
+    Script script = new Script(Type.valueOf("Groovy"), Content.valueOf("should fail"));
     assertThrows(ScriptExecutionException.class, () -> executor.execute(script, ExecutionContext.builder().build()));
   }
 
   private Script createScript(String content) {
-    return new Script(Type.valueOf("Groovy"), Description.valueOf("some value"), Content.valueOf(content));
+    return new Script(Type.valueOf("Groovy"), Content.valueOf(content));
   }
 
   private String execute(Script script) {

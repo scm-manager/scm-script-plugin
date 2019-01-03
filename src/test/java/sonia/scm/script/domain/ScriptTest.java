@@ -8,7 +8,7 @@ class ScriptTest {
 
   @Test
   void shouldHandleListeners() {
-    Script script = new Script(Type.valueOf("groovy"), Description.valueOf("simple"), Content.valueOf(null));
+    Script script = new Script(Type.valueOf("groovy"), Content.valueOf(null));
 
     Listener listener = Listener.valueOf(Number.class, false);
     script.addListener(listener);
