@@ -7,8 +7,6 @@ public interface ScriptRepository {
 
   Script store(Script script);
 
-  void modify(Script script);
-
   void remove(Id id);
 
   Optional<Script> findById(Id id);

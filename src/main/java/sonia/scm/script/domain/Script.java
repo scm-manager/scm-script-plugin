@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public final class Script {
 
@@ -27,8 +28,8 @@ public final class Script {
     this.listeners = listeners;
   }
 
-  public Id getId() {
-    return id;
+  public Optional<Id> getId() {
+    return Optional.ofNullable(id);
   }
 
   public Type getType() {
@@ -72,5 +73,9 @@ public final class Script {
       }
     }
     return null;
+  }
+
+  public void changeDescription(Description description) {
+    this.description = description;
   }
 }
