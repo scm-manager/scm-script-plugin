@@ -1,5 +1,6 @@
 package sonia.scm.script.infrastructure;
 
+import com.google.inject.Injector;
 import sonia.scm.script.domain.Content;
 import sonia.scm.script.domain.ExecutionContext;
 import sonia.scm.script.domain.Executor;
@@ -20,10 +21,12 @@ import java.util.List;
 public class JSR223Executor implements Executor {
 
   private final ScriptEngineManagerProvider scriptEngineManagerProvider;
+  private final Injector injector;
 
   @Inject
-  public JSR223Executor(ScriptEngineManagerProvider scriptEngineManagerProvider) {
+  public JSR223Executor(ScriptEngineManagerProvider scriptEngineManagerProvider, Injector injector) {
     this.scriptEngineManagerProvider = scriptEngineManagerProvider;
+    this.injector = injector;
   }
 
   @Override
@@ -48,6 +51,7 @@ public class JSR223Executor implements Executor {
     scriptContext.setWriter(context.getOutput());
     scriptContext.setErrorWriter(context.getOutput());
 
+    scriptContext.setAttribute("injector", injector, ScriptContext.ENGINE_SCOPE);
     context.getAttributes().forEach((key, value) -> scriptContext.setAttribute(key, value, ScriptContext.ENGINE_SCOPE));
     return scriptContext;
   }

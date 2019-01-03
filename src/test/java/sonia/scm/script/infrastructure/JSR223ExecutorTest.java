@@ -1,7 +1,11 @@
 package sonia.scm.script.infrastructure;
 
+import com.google.inject.Injector;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import sonia.scm.script.domain.Content;
 import sonia.scm.script.domain.ExecutionContext;
 import sonia.scm.script.domain.Script;
@@ -15,13 +19,16 @@ import java.io.StringWriter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@ExtendWith(MockitoExtension.class)
 class JSR223ExecutorTest {
 
   private JSR223Executor executor;
+  @Mock
+  private Injector injector;
 
   @BeforeEach
   void beforeEach() {
-    executor = new JSR223Executor(ScriptEngineManagerProvider.context());
+    executor = new JSR223Executor(ScriptEngineManagerProvider.context(), injector);
   }
 
   @Test
@@ -34,6 +41,12 @@ class JSR223ExecutorTest {
   void shouldPassInput() {
     Script script = createScript("print context.reader.readLine()");
     assertThat(execute(script, "Don't Panic").trim()).isEqualTo("Don't Panic");
+  }
+
+  @Test
+  void shouldPassInjector() {
+    Script script = createScript("print injector != null");
+    assertThat(execute(script)).isEqualTo("true");
   }
 
   @Test
