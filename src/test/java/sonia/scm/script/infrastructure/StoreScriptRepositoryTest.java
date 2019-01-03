@@ -44,7 +44,7 @@ class StoreScriptRepositoryTest {
 
     Optional<Script> byId = scriptRepository.findById(script.getId().get());
 
-    assertThat(byId.get().getDescription()).isEqualTo(Description.valueOf("My Sample"));
+    assertThat(byId.get().getDescription()).contains(Description.valueOf("My Sample"));
   }
 
   @Test
