@@ -1,0 +1,20 @@
+{
+  "name": "@scm-manager/script-plugin",
+  "license": "BSD-3-Clause",
+  "main": "src/main/js/index.js",
+  "scripts": {
+    "build": "ui-bundler plugin",
+    "watch": "ui-bundler plugin -w",
+    "lint": "ui-bundler lint",
+    "flow": "flow check"
+  },
+  "dependencies": {
+    "@scm-manager/ui-components": "latest",
+    "@scm-manager/ui-extensions": "^0.1.1",
+    "@scm-manager/ui-types": "latest",
+    "react-ace": "^6.3.2"
+  },
+  "devDependencies": {
+    "@scm-manager/ui-bundler": "^0.0.21"
+  }
+}

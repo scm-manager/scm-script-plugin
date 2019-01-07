@@ -15,6 +15,7 @@ import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
@@ -35,7 +36,7 @@ public class ScriptResource {
   @Path("run")
   @Produces(MediaType.TEXT_PLAIN)
   @Consumes(MediaType.TEXT_PLAIN)
-  public void run(@Context HttpServletResponse response, @HeaderParam("X-Language") Type type, Content content) throws IOException {
+  public void run(@Context HttpServletResponse response, @QueryParam("lang") Type type, Content content) throws IOException {
     Script script = new Script(type, content);
 
     try (PrintWriter writer = response.getWriter()) {
@@ -43,7 +44,7 @@ public class ScriptResource {
     }
   }
 
-  private void execute(@Context Writer writer, Script script) throws IOException {
+  private void execute(Writer writer, Script script) throws IOException {
     try {
       executor.execute(
         script,

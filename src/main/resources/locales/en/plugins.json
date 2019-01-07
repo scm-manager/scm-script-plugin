@@ -1,0 +1,12 @@
+{
+  "scm-script-plugin": {
+    "primary-navigation": "Scripts",
+    "overview": {
+      "title": "Scripts",
+      "subtitle": "Execute scripts with the scm-manager api"
+    },
+    "editor": {
+      "submit": "Run"
+    }
+  }
+}
