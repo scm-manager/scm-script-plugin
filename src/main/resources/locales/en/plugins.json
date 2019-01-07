@@ -1,6 +1,11 @@
 {
   "scm-script-plugin": {
     "primary-navigation": "Scripts",
+    "navigation": {
+      "run": "Run",
+      "stored": "Stored",
+      "samples": "Samples"
+    },
     "overview": {
       "title": "Scripts",
       "subtitle": "Execute scripts with the scm-manager api"

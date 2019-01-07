@@ -5,14 +5,13 @@ import {
   PrimaryNavigationLink
 } from "@scm-manager/ui-components";
 import { translate } from "react-i18next";
-
-import Overview from "./Overview";
+import Main from "./Main";
 
 const ScriptRoute = ({ authenticated }) => {
   return (
     <ProtectedRoute
       path="/scripts"
-      component={Overview}
+      component={Main}
       authenticated={authenticated}
     />
   );
@@ -23,7 +22,7 @@ binder.bind("main.route", ScriptRoute);
 const ScriptNavigation = ({ links, t }) => {
   return (
     <PrimaryNavigationLink
-      to="/scripts"
+      to="/scripts/run"
       match="/(script|scripts)"
       label={t("scm-script-plugin.primary-navigation")}
       key="scripts"

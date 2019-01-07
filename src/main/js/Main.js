@@ -2,7 +2,8 @@
 import React from "react";
 import { Page } from "@scm-manager/ui-components";
 import { translate } from "react-i18next";
-import Editor from "./Editor";
+import MainNavigation from "./MainNavigation";
+import MainRouting from "./MainRouting";
 
 type Props = {
   // context props
@@ -17,7 +18,14 @@ class Overview extends React.Component<Props> {
         title={t("scm-script-plugin.overview.title")}
         subtitle={t("scm-script-plugin.overview.subtitle")}
       >
-        <Editor />
+        <div className="columns">
+          <div className="column is-three-quarters">
+            <MainRouting />
+          </div>
+          <div className="column">
+            <MainNavigation />
+          </div>
+        </div>
       </Page>
     );
   }
