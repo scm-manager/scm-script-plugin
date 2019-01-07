@@ -1,5 +1,5 @@
 //@flow
-import React from 'react';
+import React from "react";
 import injectSheets from "react-jss";
 
 type Props = {
@@ -16,7 +16,6 @@ const styles = {
 };
 
 class Output extends React.Component<Props> {
-
   render() {
     const { output, classes } = this.props;
     return (
@@ -25,7 +24,6 @@ class Output extends React.Component<Props> {
       </pre>
     );
   }
-
 }
 
 export default injectSheets(styles)(Output);

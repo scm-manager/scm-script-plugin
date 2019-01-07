@@ -1,10 +1,10 @@
 //@flow
-import React from 'react';
+import React from "react";
 
-import AceEditor from 'react-ace';
+import AceEditor from "react-ace";
 
-import 'brace/mode/groovy';
-import 'brace/theme/tomorrow';
+import "brace/mode/groovy";
+import "brace/theme/tomorrow";
 
 type Props = {
   value: string,
@@ -12,7 +12,6 @@ type Props = {
 };
 
 class ContentEditor extends React.Component<Props> {
-
   render() {
     const { value, onChange } = this.props;
 
@@ -25,11 +24,10 @@ class ContentEditor extends React.Component<Props> {
         name="contentEditor"
         value={value}
         className="box"
-        style={{width: "100%", height: "250px"}}
+        style={{ width: "100%", height: "250px" }}
       />
     );
   }
-
 }
 
 export default ContentEditor;

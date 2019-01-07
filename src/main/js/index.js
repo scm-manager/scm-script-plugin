@@ -1,11 +1,14 @@
 // @flow
 import { binder } from "@scm-manager/ui-extensions";
-import { ProtectedRoute, PrimaryNavigationLink } from '@scm-manager/ui-components';
+import {
+  ProtectedRoute,
+  PrimaryNavigationLink
+} from "@scm-manager/ui-components";
 import { translate } from "react-i18next";
 
-import Overview from './Overview';
+import Overview from "./Overview";
 
-const ScriptRoute = ({authenticated}) => {
+const ScriptRoute = ({ authenticated }) => {
   return (
     <ProtectedRoute
       path="/scripts"
@@ -17,7 +20,7 @@ const ScriptRoute = ({authenticated}) => {
 
 binder.bind("main.route", ScriptRoute);
 
-const ScriptNavigation = ({links, t}) => {
+const ScriptNavigation = ({ links, t }) => {
   return (
     <PrimaryNavigationLink
       to="/scripts"
