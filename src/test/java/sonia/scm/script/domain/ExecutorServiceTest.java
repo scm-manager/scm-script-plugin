@@ -31,7 +31,7 @@ class ExecutorServiceTest {
   @Test
   void shouldExecuteTheScript() {
     Id id = Id.valueOf("42");
-    Script script = new Script(id, Type.valueOf("groovy"), Description.valueOf("Heart Of Gold"), Content.valueOf(""), new ArrayList<>());
+    Script script = new Script(id, Type.valueOf("groovy"), Title.valueOf("Heart Of Gold"), Description.valueOf("Heart Of Gold"), Content.valueOf(""), new ArrayList<>());
 
     when(repository.findById(id)).thenReturn(Optional.of(script));
 
