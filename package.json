@@ -5,6 +5,7 @@
   "scripts": {
     "build": "ui-bundler plugin",
     "watch": "ui-bundler plugin -w",
+    "test": "ui-bundler test --ci",
     "lint": "ui-bundler lint",
     "flow": "flow check"
   },
@@ -16,6 +17,7 @@
   },
   "devDependencies": {
     "@scm-manager/ui-bundler": "^0.0.21",
+    "jest": "^23.6.0",
     "prettier": "^1.15.3"
   }
 }

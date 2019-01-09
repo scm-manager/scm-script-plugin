@@ -1,11 +1,11 @@
 // @flow
 import { binder } from "@scm-manager/ui-extensions";
 import {
-  ProtectedRoute,
-  PrimaryNavigationLink
+  ProtectedRoute
 } from "@scm-manager/ui-components";
 import { translate } from "react-i18next";
 import Main from "./Main";
+import ScriptNavigation from './ScriptNavigation';
 
 const ScriptRoute = ({ authenticated }) => {
   return (
@@ -19,16 +19,9 @@ const ScriptRoute = ({ authenticated }) => {
 
 binder.bind("main.route", ScriptRoute);
 
-const ScriptNavigation = ({ links, t }) => {
-  return (
-    <PrimaryNavigationLink
-      to="/scripts/run"
-      match="/(script|scripts)"
-      label={t("scm-script-plugin.primary-navigation")}
-      key="scripts"
-    />
-  );
+// @VisibleForTesting
+export const predicate = ({links}) => {
+  return !!(links && links.scripts && links.scripts.length > 0);
 };
 
-const ScriptNavigationWithI18n = translate("plugins")(ScriptNavigation);
-binder.bind("primary-navigation", ScriptNavigationWithI18n);
+binder.bind("primary-navigation", ScriptNavigation, predicate);

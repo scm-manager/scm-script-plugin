@@ -54,6 +54,7 @@ public class ScriptResource {
   }
 
   @GET
+  @Path("")
   @Produces(ScriptMediaType.COLLECTION)
   public Response findAll() {
     List<ScriptDto> dtos = repository.findAll().stream().map(ScriptMapper::map).collect(Collectors.toList());
@@ -67,7 +68,7 @@ public class ScriptResource {
     // TODO should be created with location header
     return Response.ok().build();
   }
-  
+
   @POST
   @Path("run")
   @Produces(MediaType.TEXT_PLAIN)
