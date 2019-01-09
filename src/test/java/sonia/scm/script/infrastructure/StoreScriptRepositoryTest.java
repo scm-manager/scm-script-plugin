@@ -8,6 +8,7 @@ import sonia.scm.store.InMemoryDataStoreFactory;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -69,12 +70,15 @@ class StoreScriptRepositoryTest {
 
   @Test
   void shouldReturnAllStoredScripts() {
-    scriptRepository.store(createSample());
-    scriptRepository.store(createSample());
-    scriptRepository.store(createSample());
+    String one = scriptRepository.store(createSample()).getId().get();
+    String two = scriptRepository.store(createSample()).getId().get();
+    String three = scriptRepository.store(createSample()).getId().get();
 
     List<Script> all = scriptRepository.findAll();
     assertThat(all).hasSize(3);
+
+    List<String> ids = all.stream().map(s -> s.getId().get()).collect(Collectors.toList());
+    assertThat(ids).containsOnly(one, two, three);
   }
 
   @Test

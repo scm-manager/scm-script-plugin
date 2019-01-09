@@ -1,6 +1,5 @@
 package sonia.scm.script.infrastructure;
 
-import com.google.common.collect.ImmutableList;
 import sonia.scm.script.domain.Script;
 import sonia.scm.script.domain.ScriptRepository;
 import sonia.scm.store.DataStore;
@@ -10,6 +9,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Singleton
 public class StoreScriptRepository implements ScriptRepository {
@@ -38,15 +38,8 @@ public class StoreScriptRepository implements ScriptRepository {
 
   private Script create(Script script) {
     String id = store.put(script);
-    Script storedScript = new Script(
-      id,
-      script.getType(),
-      script.getTitle().orElse(null),
-      script.getDescription().orElse(null),
-      script.getContent(),
-      script.getListeners()
-    );
-    return modify(storedScript);
+    script.setId(id);
+    return script;
   }
 
   @Override
@@ -56,11 +49,24 @@ public class StoreScriptRepository implements ScriptRepository {
 
   @Override
   public Optional<Script> findById(String id) {
-    return Optional.ofNullable(store.get(id));
+    Script script = store.get(id);
+    if (script != null) {
+      script.setId(id);
+      return Optional.of(script);
+    }
+    return Optional.empty();
   }
 
   @Override
   public List<Script> findAll() {
-    return ImmutableList.copyOf(store.getAll().values());
+    return store.getAll()
+      .entrySet()
+      .stream()
+      .map(e -> {
+        Script script = e.getValue();
+        script.setId(e.getKey());
+        return script;
+      })
+      .collect(Collectors.toList());
   }
 }
