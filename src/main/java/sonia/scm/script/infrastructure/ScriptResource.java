@@ -11,8 +11,10 @@ import sonia.scm.script.domain.ScriptRepository;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -25,9 +27,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.net.URI;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Path("v2/plugins/scripts")
 public class ScriptResource {
@@ -36,12 +36,28 @@ public class ScriptResource {
   private final ScriptMapper mapper;
   private final Executor executor;
 
-
   @Inject
   public ScriptResource(ScriptRepository repository, ScriptMapper mapper, Executor executor) {
     this.repository = repository;
     this.mapper = mapper;
     this.executor = executor;
+  }
+
+  @POST
+  @Path("")
+  @Consumes(ScriptMediaType.ONE)
+  public Response create(@Context UriInfo info, ScriptDto dto) {
+    Script script = repository.store(mapper.map(dto));
+    URI uri = info.getRequestUriBuilder().path(script.getId().get()).build();
+    return Response.created(uri).build();
+  }
+
+  @GET
+  @Path("")
+  @Produces(ScriptMediaType.COLLECTION)
+  public Response findAll() {
+    HalRepresentation collection = mapper.collection(repository.findAll());
+    return Response.ok(collection).build();
   }
 
   @GET
@@ -55,20 +71,22 @@ public class ScriptResource {
     return Response.status(Response.Status.NOT_FOUND).build();
   }
 
-  @GET
-  @Path("")
-  @Produces(ScriptMediaType.COLLECTION)
-  public Response findAll() {
-    HalRepresentation collection = mapper.collection(repository.findAll());
-    return Response.ok(collection).build();
+  @PUT
+  @Path("{id}")
+  @Consumes(ScriptMediaType.ONE)
+  public Response modify(@PathParam("id") String id, ScriptDto dto) {
+    if (id.equals(dto.getId())) {
+      repository.store(mapper.map(dto));
+      return Response.noContent().build();
+    }
+    return Response.status(Response.Status.BAD_REQUEST).build();
   }
 
-  @POST
-  @Consumes(ScriptMediaType.ONE)
-  public Response store(@Context UriInfo info, ScriptDto dto) {
-    Script script = repository.store(mapper.map(dto));
-    URI uri = info.getRequestUriBuilder().path(script.getId().get()).build();
-    return Response.created(uri).build();
+  @DELETE
+  @Path("{id}")
+  public Response delete(@PathParam("id") String id) {
+    repository.remove(id);
+    return Response.noContent().build();
   }
 
   @POST
