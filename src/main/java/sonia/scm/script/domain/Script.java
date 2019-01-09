@@ -1,26 +1,36 @@
 package sonia.scm.script.domain;
 
 import com.google.common.collect.ImmutableList;
+import lombok.Setter;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Setter
+@XmlRootElement(name = "script")
+@XmlAccessorType(XmlAccessType.FIELD)
 public final class Script {
 
-  private Id id;
-  private Type type;
-  private Title title;
-  private Description description;
-  private Content content;
+  private String id;
+  private String type;
+  private String title;
+  private String description;
+  private String content;
   private List<Listener> listeners = new ArrayList<>();
 
-  public Script(Type type, Content content) {
+  public Script() {
+  }
+
+  public Script(String type, String content) {
     this.type = type;
     this.content = content;
   }
 
-  public Script(Id id, Type type, Title title, Description description, Content content, List<Listener> listeners) {
+  public Script(String id, String type, String title, String description, String content, List<Listener> listeners) {
     this.id = id;
     this.type = type;
     this.title = title;
@@ -29,23 +39,23 @@ public final class Script {
     this.listeners = listeners;
   }
 
-  public Optional<Id> getId() {
+  public Optional<String> getId() {
     return Optional.ofNullable(id);
   }
 
-  public Type getType() {
+  public String getType() {
     return type;
   }
 
-  public Optional<Title> getTitle() {
+  public Optional<String> getTitle() {
     return Optional.ofNullable(title);
   }
 
-  public Optional<Description> getDescription() {
+  public Optional<String> getDescription() {
     return Optional.ofNullable(description);
   }
 
-  public Content getContent() {
+  public String getContent() {
     return content;
   }
 
@@ -78,14 +88,5 @@ public final class Script {
       }
     }
     return null;
-  }
-
-  public void changeMetadata(Title title, Description description) {
-    this.title = title;
-    this.description = description;
-  }
-
-  public void changeDescription(Description description) {
-    this.description = description;
   }
 }

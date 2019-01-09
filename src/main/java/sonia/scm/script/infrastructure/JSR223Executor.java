@@ -1,13 +1,11 @@
 package sonia.scm.script.infrastructure;
 
 import com.google.inject.Injector;
-import sonia.scm.script.domain.Content;
 import sonia.scm.script.domain.ExecutionContext;
 import sonia.scm.script.domain.Executor;
 import sonia.scm.script.domain.Script;
 import sonia.scm.script.domain.ScriptExecutionException;
 import sonia.scm.script.domain.ScriptTypeNotFoundException;
-import sonia.scm.script.domain.Type;
 
 import javax.inject.Inject;
 import javax.script.ScriptContext;
@@ -36,9 +34,9 @@ public class JSR223Executor implements Executor {
     executeScript(engine, scriptContext, script.getContent());
   }
 
-  private void executeScript(ScriptEngine engine, SimpleScriptContext scriptContext, Content content) {
+  private void executeScript(ScriptEngine engine, SimpleScriptContext scriptContext, String content) {
     try {
-      engine.eval(content.getValue(), scriptContext);
+      engine.eval(content, scriptContext);
     } catch (ScriptException e) {
       throw new ScriptExecutionException("failed to execute script", e);
     }
@@ -56,19 +54,19 @@ public class JSR223Executor implements Executor {
     return scriptContext;
   }
 
-  private ScriptEngine findEngine(Type type) {
+  private ScriptEngine findEngine(String type) {
     ScriptEngine engine = findEngineByLanguage(type);
     if (engine == null) {
-      throw new ScriptTypeNotFoundException("could not find engine for " + type.getValue());
+      throw new ScriptTypeNotFoundException("could not find engine for " + type);
     }
     return engine;
   }
 
-  private ScriptEngine findEngineByLanguage(Type type) {
+  private ScriptEngine findEngineByLanguage(String type) {
     ScriptEngineManager engineManager = scriptEngineManagerProvider.get();
     List<ScriptEngineFactory> engineFactories = engineManager.getEngineFactories();
     for (ScriptEngineFactory factory : engineFactories) {
-      if (type.getValue().equals(factory.getLanguageName())) {
+      if (factory.getLanguageName().equals(type)) {
         return factory.getScriptEngine();
       }
     }

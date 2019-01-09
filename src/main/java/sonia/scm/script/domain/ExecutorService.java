@@ -13,7 +13,7 @@ public class ExecutorService {
     this.executor = executor;
   }
 
-  public void execute(Id id, ExecutionContext context) {
+  public void execute(String id, ExecutionContext context) {
     Script script = scriptRepository.findById(id).orElseThrow(() -> new ScriptNotFoundException(id));
     executor.execute(script, context);
   }

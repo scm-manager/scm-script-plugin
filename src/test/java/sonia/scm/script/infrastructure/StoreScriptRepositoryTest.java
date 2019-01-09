@@ -2,12 +2,8 @@ package sonia.scm.script.infrastructure;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import sonia.scm.script.domain.Content;
-import sonia.scm.script.domain.Description;
-import sonia.scm.script.domain.Id;
 import sonia.scm.script.domain.Script;
 import sonia.scm.script.domain.ScriptRepository;
-import sonia.scm.script.domain.Type;
 import sonia.scm.store.InMemoryDataStoreFactory;
 
 import java.util.List;
@@ -25,7 +21,7 @@ class StoreScriptRepositoryTest {
   }
 
   private Script createSample() {
-    return new Script(Type.valueOf("groovy"), Content.valueOf("print 'Hello'"));
+    return new Script("groovy", "print 'Hello'");
   }
 
   @Test
@@ -39,12 +35,12 @@ class StoreScriptRepositoryTest {
   @Test
   void shouldModifyStoredScript() {
     Script script = scriptRepository.store(createSample());
-    script.changeDescription(Description.valueOf("My Sample"));
+    script.changeDescription("My Sample");
     scriptRepository.store(script);
 
     Optional<Script> byId = scriptRepository.findById(script.getId().get());
 
-    assertThat(byId.get().getDescription()).contains(Description.valueOf("My Sample"));
+    assertThat(byId.get().getDescription()).contains("My Sample");
   }
 
   @Test
@@ -56,7 +52,7 @@ class StoreScriptRepositoryTest {
 
   @Test
   void shouldReturnEmptyOptionalForUnknownIds() {
-    Optional<Script> byId = scriptRepository.findById(Id.valueOf("123"));
+    Optional<Script> byId = scriptRepository.findById("123");
     assertThat(byId).isNotPresent();
   }
 
@@ -64,7 +60,7 @@ class StoreScriptRepositoryTest {
   void shouldRemoveScriptFromStore() {
     Script script = scriptRepository.store(createSample());
 
-    Id id = script.getId().get();
+    String id = script.getId().get();
     scriptRepository.remove(id);
 
     Optional<Script> byId = scriptRepository.findById(id);

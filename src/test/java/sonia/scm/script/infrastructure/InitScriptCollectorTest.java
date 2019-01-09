@@ -38,7 +38,6 @@ import org.junitpioneer.jupiter.TempDirectory;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import sonia.scm.script.domain.Script;
-import sonia.scm.script.domain.Type;
 import sonia.scm.script.domain.TypeRepository;
 
 import java.io.IOException;
@@ -68,7 +67,7 @@ class InitScriptCollectorTest {
 
   @Test
   void shouldCollectAndSortTheScripts() throws IOException {
-    when(typeRepository.findByExtension("groovy")).thenReturn(Optional.of(Type.valueOf("Groovy")));
+    when(typeRepository.findByExtension("groovy")).thenReturn(Optional.of("Groovy"));
 
     writeGroovyScript("020");
     writeGroovyScript("040");
@@ -78,15 +77,15 @@ class InitScriptCollectorTest {
     List<Script> scripts = collector.collect();
     assertThat(scripts).hasSize(4);
 
-    assertThat(scripts.get(0).getContent().getValue()).isEqualTo("010");
-    assertThat(scripts.get(1).getContent().getValue()).isEqualTo("020");
-    assertThat(scripts.get(2).getContent().getValue()).isEqualTo("030");
-    assertThat(scripts.get(3).getContent().getValue()).isEqualTo("040");
+    assertThat(scripts.get(0).getContent()).isEqualTo("010");
+    assertThat(scripts.get(1).getContent()  ).isEqualTo("020");
+    assertThat(scripts.get(2).getContent()).isEqualTo("030");
+    assertThat(scripts.get(3).getContent()).isEqualTo("040");
   }
 
   @Test
   void shouldIgnoreUnknownScriptTypes() throws IOException {
-    when(typeRepository.findByExtension("groovy")).thenReturn(Optional.of(Type.valueOf("Groovy")));
+    when(typeRepository.findByExtension("groovy")).thenReturn(Optional.of("Groovy"));
 
     writeGroovyScript("020");
     writeScript("020", "hitchhikerScript");
@@ -94,7 +93,7 @@ class InitScriptCollectorTest {
     List<Script> scripts = collector.collect();
     assertThat(scripts).hasSize(1);
 
-    assertThat(scripts.get(0).getContent().getValue()).isEqualTo("020");
+    assertThat(scripts.get(0).getContent()).isEqualTo("020");
   }
 
   private void writeGroovyScript(String name) throws IOException {

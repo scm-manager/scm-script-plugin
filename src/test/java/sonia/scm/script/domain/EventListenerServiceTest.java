@@ -61,12 +61,12 @@ class EventListenerServiceTest {
 
   private Script script(Class<?> eventType, boolean asynchronous) {
     Script script = script();
-    script.addListener(Listener.valueOf(eventType, asynchronous));;
+    script.addListener(Listener.valueOf(eventType, asynchronous));
     return script;
   }
 
   private Script script() {
-    return new Script(Type.valueOf("groovy"), Content.valueOf("print 'Hello';"));
+    return new Script("groovy", "print 'Hello';");
   }
 
 }

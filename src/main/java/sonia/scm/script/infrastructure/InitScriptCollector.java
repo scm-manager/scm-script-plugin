@@ -9,11 +9,8 @@ import com.google.common.io.MoreFiles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sonia.scm.SCMContext;
-import sonia.scm.script.domain.Content;
-import sonia.scm.script.domain.Description;
 import sonia.scm.script.domain.Script;
 import sonia.scm.script.domain.ScriptExecutionException;
-import sonia.scm.script.domain.Type;
 import sonia.scm.script.domain.TypeRepository;
 
 import javax.inject.Inject;
@@ -81,18 +78,18 @@ public class InitScriptCollector {
 
   private Script from(Path path) {
     String extension = MoreFiles.getFileExtension(path);
-    Optional<Type> byExtension = repository.findByExtension(extension);
+    Optional<String> byExtension = repository.findByExtension(extension);
     if (byExtension.isPresent()) {
       return createScript(byExtension.get(), path);
     }
     return null;
   }
 
-  private Script createScript(Type type, Path path) {
+  private Script createScript(String type, Path path) {
     try {
-      Content content = readContent(path);
+      String content = readContent(path);
       Script script = new Script(type, content);
-      script.changeDescription(createDescription(path));
+      script.setDescription(createDescription(path));
       return script;
     } catch (IOException ex) {
       LOG.error("failed to read init script: ".concat(path.toString()), ex);
@@ -100,13 +97,12 @@ public class InitScriptCollector {
     return null;
   }
 
-  private Description createDescription(Path path) {
-    return Description.valueOf("Init-Script ".concat(path.toString()));
+  private String createDescription(Path path) {
+    return "Init-Script ".concat(path.toString());
   }
 
-  private Content readContent(Path path) throws IOException {
-    String value = new String(Files.readAllBytes(path), Charsets.UTF_8);
-    return Content.valueOf(value);
+  private String readContent(Path path) throws IOException {
+    return new String(Files.readAllBytes(path), Charsets.UTF_8);
   }
 
   private ImmutableList<Path> findFiles(Path directory) {

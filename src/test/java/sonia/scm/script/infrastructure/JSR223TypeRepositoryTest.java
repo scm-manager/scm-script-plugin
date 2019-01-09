@@ -2,7 +2,6 @@ package sonia.scm.script.infrastructure;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import sonia.scm.script.domain.Type;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,14 +19,14 @@ class JSR223TypeRepositoryTest {
 
   @Test
   void shouldReturnAtLeastGroovy() {
-    List<Type> types = repository.findAll();
-    long count = types.stream().filter(t -> "Groovy".equals(t.getValue())).count();
+    List<String> types = repository.findAll();
+    long count = types.stream().filter(t -> "Groovy".equals(t)).count();
     assertThat(count).isOne();
   }
 
   @Test
   void shouldReturnTypeByExtension() {
-    Optional<Type> groovy = repository.findByExtension("groovy");
+    Optional<String> groovy = repository.findByExtension("groovy");
     assertThat(groovy).isPresent();
   }
 }

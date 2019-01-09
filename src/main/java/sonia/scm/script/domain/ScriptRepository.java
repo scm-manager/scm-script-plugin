@@ -7,9 +7,9 @@ public interface ScriptRepository {
 
   Script store(Script script);
 
-  void remove(Id id);
+  void remove(String id);
 
-  Optional<Script> findById(Id id);
+  Optional<Script> findById(String id);
 
   List<Script> findAll();
 

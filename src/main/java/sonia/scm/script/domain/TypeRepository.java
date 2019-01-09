@@ -5,8 +5,8 @@ import java.util.Optional;
 
 public interface TypeRepository {
 
-  Optional<Type> findByExtension(String extension);
+  Optional<String> findByExtension(String extension);
 
-  List<Type> findAll();
+  List<String> findAll();
 
 }

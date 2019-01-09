@@ -6,12 +6,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import sonia.scm.script.domain.Content;
 import sonia.scm.script.domain.ExecutionContext;
 import sonia.scm.script.domain.Script;
 import sonia.scm.script.domain.ScriptExecutionException;
 import sonia.scm.script.domain.ScriptTypeNotFoundException;
-import sonia.scm.script.domain.Type;
 
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -65,18 +63,18 @@ class JSR223ExecutorTest {
 
   @Test
   void shouldThrowScriptTypeNotFoundException() {
-    Script script = new Script(Type.valueOf("hitchhikerScripting"), Content.valueOf(""));
+    Script script = new Script("hitchhikerScripting", "");
     assertThrows(ScriptTypeNotFoundException.class, () -> executor.execute(script, ExecutionContext.builder().build()));
   }
 
   @Test
   void shouldThrowScriptExecutionException() {
-    Script script = new Script(Type.valueOf("Groovy"), Content.valueOf("should fail"));
+    Script script = new Script("Groovy", "should fail");
     assertThrows(ScriptExecutionException.class, () -> executor.execute(script, ExecutionContext.builder().build()));
   }
 
   private Script createScript(String content) {
-    return new Script(Type.valueOf("Groovy"), Content.valueOf(content));
+    return new Script("Groovy", content);
   }
 
   private String execute(Script script) {

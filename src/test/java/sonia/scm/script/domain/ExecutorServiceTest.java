@@ -30,22 +30,19 @@ class ExecutorServiceTest {
 
   @Test
   void shouldExecuteTheScript() {
-    Id id = Id.valueOf("42");
-    Script script = new Script(id, Type.valueOf("groovy"), Title.valueOf("Heart Of Gold"), Description.valueOf("Heart Of Gold"), Content.valueOf(""), new ArrayList<>());
+    Script script = new Script("42", "groovy", "Heart Of Gold", "Heart Of Gold", "", new ArrayList<>());
 
-    when(repository.findById(id)).thenReturn(Optional.of(script));
+    when(repository.findById("42")).thenReturn(Optional.of(script));
 
-    service.execute(id, executionContext);
+    service.execute("42", executionContext);
 
     verify(executor).execute(script, executionContext);
   }
 
   @Test
   void shouldThrowScriptNotFoundException() {
-    Id id = Id.valueOf("42");
+    when(repository.findById("42")).thenReturn(Optional.empty());
 
-    when(repository.findById(id)).thenReturn(Optional.empty());
-
-    assertThrows(ScriptNotFoundException.class, () -> service.execute(id, executionContext));
+    assertThrows(ScriptNotFoundException.class, () -> service.execute("42", executionContext));
   }
 }

@@ -9,11 +9,9 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import sonia.scm.script.domain.Content;
 import sonia.scm.script.domain.ExecutionContext;
 import sonia.scm.script.domain.Executor;
 import sonia.scm.script.domain.Script;
-import sonia.scm.script.domain.Type;
 import sonia.scm.web.security.AdministrationContext;
 import sonia.scm.web.security.PrivilegedAction;
 
@@ -65,7 +63,7 @@ class InitScriptContextListenerTest {
   }
 
   private Script createScript(String one) {
-    return new Script(Type.valueOf("Groovy"), Content.valueOf(one));
+    return new Script("Groovy", one);
   }
 
 }

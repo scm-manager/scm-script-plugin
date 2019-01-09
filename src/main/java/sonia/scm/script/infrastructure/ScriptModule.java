@@ -10,7 +10,7 @@ import sonia.scm.script.domain.TypeRepository;
 public class ScriptModule extends AbstractModule {
   @Override
   protected void configure() {
-
+    bind(ScriptMapper.class).to(ScriptMapperImpl.class);
     bind(Executor.class).to(JSR223Executor.class);
     bind(TypeRepository.class).to(JSR223TypeRepository.class);
     bind(ScriptRepository.class).to(StoreScriptRepository.class);

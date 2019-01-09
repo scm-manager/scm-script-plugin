@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Getter
 @Setter
 @XmlRootElement(name = "script")
-public class ScriptDto {
+class ScriptDto {
 
   private String id;
   private String type;

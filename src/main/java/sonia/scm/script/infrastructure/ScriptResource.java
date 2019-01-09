@@ -1,14 +1,11 @@
 package sonia.scm.script.infrastructure;
 
 import com.google.common.base.Throwables;
-import sonia.scm.script.domain.Content;
 import sonia.scm.script.domain.ExecutionContext;
 import sonia.scm.script.domain.Executor;
-import sonia.scm.script.domain.Id;
 import sonia.scm.script.domain.Script;
 import sonia.scm.script.domain.ScriptExecutionException;
 import sonia.scm.script.domain.ScriptRepository;
-import sonia.scm.script.domain.Type;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -33,22 +30,24 @@ import java.util.stream.Collectors;
 public class ScriptResource {
 
   private final ScriptRepository repository;
+  private final ScriptMapper mapper;
   private final Executor executor;
 
 
   @Inject
-  public ScriptResource(ScriptRepository repository, Executor executor) {
+  public ScriptResource(ScriptRepository repository, ScriptMapper mapper, Executor executor) {
     this.repository = repository;
+    this.mapper = mapper;
     this.executor = executor;
   }
 
   @GET
   @Path("{id}")
   @Produces(ScriptMediaType.ONE)
-  public Response findById(@PathParam("id") Id id) {
+  public Response findById(@PathParam("id") String id) {
     Optional<Script> byId = repository.findById(id);
     if (byId.isPresent()) {
-      return Response.ok(ScriptMapper.map(byId.get())).build();
+      return Response.ok(mapper.map(byId.get())).build();
     }
     return Response.status(Response.Status.NOT_FOUND).build();
   }
@@ -57,14 +56,14 @@ public class ScriptResource {
   @Path("")
   @Produces(ScriptMediaType.COLLECTION)
   public Response findAll() {
-    List<ScriptDto> dtos = repository.findAll().stream().map(ScriptMapper::map).collect(Collectors.toList());
+    List<ScriptDto> dtos = repository.findAll().stream().map(mapper::map).collect(Collectors.toList());
     return Response.ok(dtos).build();
   }
 
   @POST
   @Consumes(ScriptMediaType.ONE)
   public Response store(ScriptDto dto) {
-    Script storedScript = repository.store(ScriptMapper.map(dto));
+    Script storedScript = repository.store(mapper.map(dto));
     // TODO should be created with location header
     return Response.ok().build();
   }
@@ -73,7 +72,7 @@ public class ScriptResource {
   @Path("run")
   @Produces(MediaType.TEXT_PLAIN)
   @Consumes(MediaType.TEXT_PLAIN)
-  public void run(@Context HttpServletResponse response, @QueryParam("lang") Type type, Content content) throws IOException {
+  public void run(@Context HttpServletResponse response, @QueryParam("lang") String type, String content) throws IOException {
     Script script = new Script(type, content);
     try (PrintWriter writer = response.getWriter()) {
       execute(writer, script);

@@ -1,6 +1,6 @@
 package sonia.scm.script.infrastructure;
 
-import sonia.scm.script.domain.Id;
+import com.google.common.collect.ImmutableList;
 import sonia.scm.script.domain.Script;
 import sonia.scm.script.domain.ScriptRepository;
 import sonia.scm.store.DataStore;
@@ -10,18 +10,17 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Singleton
 public class StoreScriptRepository implements ScriptRepository {
 
   private static final String STORE = "scripts";
 
-  private final DataStore<ScriptDto> store;
+  private final DataStore<Script> store;
 
   @Inject
   public StoreScriptRepository(DataStoreFactory dataStoreFactory) {
-    this.store = dataStoreFactory.withType(ScriptDto.class).withName(STORE).build();
+    this.store = dataStoreFactory.withType(Script.class).withName(STORE).build();
   }
 
   @Override
@@ -33,14 +32,14 @@ public class StoreScriptRepository implements ScriptRepository {
   }
 
   private Script modify(Script script) {
-    store.put(script.getId().get().getValue(), ScriptMapper.map(script));
+    store.put(script.getId().get(), script);
     return script;
   }
 
   private Script create(Script script) {
-    String idValue = store.put(ScriptMapper.map(script));
+    String id = store.put(script);
     Script storedScript = new Script(
-      Id.valueOf(idValue),
+      id,
       script.getType(),
       script.getTitle().orElse(null),
       script.getDescription().orElse(null),
@@ -51,25 +50,17 @@ public class StoreScriptRepository implements ScriptRepository {
   }
 
   @Override
-  public void remove(Id id) {
-    store.remove(id.getValue());
+  public void remove(String id) {
+    store.remove(id);
   }
 
   @Override
-  public Optional<Script> findById(Id id) {
-    ScriptDto dto = store.get(id.getValue());
-    if (dto != null) {
-      return Optional.of(ScriptMapper.map(dto));
-    }
-    return Optional.empty();
+  public Optional<Script> findById(String id) {
+    return Optional.ofNullable(store.get(id));
   }
 
   @Override
   public List<Script> findAll() {
-    return store.getAll()
-      .values()
-      .stream()
-      .map(ScriptMapper::map)
-      .collect(Collectors.toList());
+    return ImmutableList.copyOf(store.getAll().values());
   }
 }
