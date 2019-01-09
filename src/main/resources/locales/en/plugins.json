@@ -6,12 +6,24 @@
       "stored": "Stored",
       "samples": "Samples"
     },
-    "overview": {
+    "main": {
       "title": "Scripts",
       "subtitle": "Execute scripts with the scm-manager api"
     },
+    "store-dialog": {
+      "title": "Store script"
+    },
+    "store-form": {
+      "title": "Title",
+      "titleHelp": "Title of script, which is shown in the overview",
+      "description": "Description",
+      "descriptionHelp": "Short description of script",
+      "submit": "Store",
+      "abort": "Abort"
+    },
     "editor": {
-      "submit": "Run"
+      "submit": "Run",
+      "store": "Store"
     }
   }
 }

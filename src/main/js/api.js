@@ -1,5 +1,6 @@
 // @flow
-import { urls } from "@scm-manager/ui-components";
+import { apiClient, urls } from "@scm-manager/ui-components";
+import type { Script } from "./types";
 
 // TODO extend api client
 export function run(language: string, content: string) {
@@ -17,4 +18,20 @@ export function run(language: string, content: string) {
     method: "POST",
     body: content
   }).then(resp => resp.text());
+}
+
+export function store(script: Script) {
+  return apiClient.post(
+    "/plugins/scripts",
+    script,
+    "application/vnd.scmm-script+json;v=2"
+  );
+}
+
+export function findById(id: string) {
+  return apiClient.get("/plugins/scripts/" + id).then(resp => resp.json());
+}
+
+export function findAll() {
+  return apiClient.get("/plugins/scripts").then(resp => resp.json());
 }

@@ -10,6 +10,7 @@ public final class Script {
 
   private Id id;
   private Type type;
+  private Title title;
   private Description description;
   private Content content;
   private List<Listener> listeners = new ArrayList<>();
@@ -19,9 +20,10 @@ public final class Script {
     this.content = content;
   }
 
-  public Script(Id id, Type type, Description description, Content content, List<Listener> listeners) {
+  public Script(Id id, Type type, Title title, Description description, Content content, List<Listener> listeners) {
     this.id = id;
     this.type = type;
+    this.title = title;
     this.description = description;
     this.content = content;
     this.listeners = listeners;
@@ -33,6 +35,10 @@ public final class Script {
 
   public Type getType() {
     return type;
+  }
+
+  public Optional<Title> getTitle() {
+    return Optional.ofNullable(title);
   }
 
   public Optional<Description> getDescription() {
@@ -72,6 +78,11 @@ public final class Script {
       }
     }
     return null;
+  }
+
+  public void changeMetadata(Title title, Description description) {
+    this.title = title;
+    this.description = description;
   }
 
   public void changeDescription(Description description) {

@@ -15,8 +15,8 @@ class Overview extends React.Component<Props> {
     const { t } = this.props;
     return (
       <Page
-        title={t("scm-script-plugin.overview.title")}
-        subtitle={t("scm-script-plugin.overview.subtitle")}
+        title={t("scm-script-plugin.main.title")}
+        subtitle={t("scm-script-plugin.main.subtitle")}
       >
         <div className="columns">
           <div className="column is-three-quarters">

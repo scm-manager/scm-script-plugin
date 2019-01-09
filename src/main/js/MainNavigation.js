@@ -26,6 +26,10 @@ class MainNavigation extends React.Component<Props> {
             to="/scripts/samples"
             label={t("scm-script-plugin.navigation.samples")}
           />
+          <NavLink
+            to="/scripts/help"
+            label={t("scm-script-plugin.navigation.help")}
+          />
         </Section>
       </Navigation>
     );
