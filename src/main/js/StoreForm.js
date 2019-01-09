@@ -1,9 +1,9 @@
 //@flow
 import React from "react";
-import { translate } from "react-i18next";
-import { InputField, SubmitButton, Textarea } from "@scm-manager/ui-components";
+import {translate} from "react-i18next";
+import {InputField, SubmitButton, Textarea} from "@scm-manager/ui-components";
 import Button from "@scm-manager/ui-components/src/buttons/Button";
-import type { Script } from "./types";
+import type {Script} from "./types";
 
 type Props = {
   onSubmit: Script => void,
@@ -12,32 +12,46 @@ type Props = {
   t: string => string
 };
 
-type State = Script;
+type State = {
+  script: Script,
+  loading: boolean
+};
 
 class StoreForm extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      title: "",
-      description: "",
-      type: "Groovy"
+      script: {
+        title: "",
+        description: "",
+        type: "Groovy"
+      },
+      loading: false
     };
   }
 
   onChange = (value, name) => {
-    this.setState({
-      [name]: value
+    this.setState((state) => {
+      return {
+        script: {
+          ...state.script,
+          [name]: value
+        }
+      };
     });
   };
 
   onSubmit = (e: Event) => {
     e.preventDefault();
-    this.props.onSubmit(this.state);
+    this.setState({
+      loading: true
+    });
+    this.props.onSubmit(this.state.script);
   };
 
   render() {
-    const { onAbort, t } = this.props;
-    const { title, description } = this.state;
+    const {onAbort, t} = this.props;
+    const {script, loading} = this.state;
 
     return (
       <form onSubmit={this.onSubmit}>
@@ -46,19 +60,20 @@ class StoreForm extends React.Component<Props, State> {
           label={t("scm-script-plugin.store-form.title")}
           helpText={t("scm-script-plugin.store-form.titleHelp")}
           onChange={this.onChange}
-          value={title}
+          value={script.title}
         />
         <Textarea
           name="description"
           label={t("scm-script-plugin.store-form.description")}
           helpText={t("scm-script-plugin.store-form.descriptionHelp")}
           onChange={this.onChange}
-          value={description}
+          value={script.description}
         />
-        <SubmitButton label={t("scm-script-plugin.store-form.submit")} />
+        <SubmitButton label={t("scm-script-plugin.store-form.submit")} loading={loading}/>
         <Button
           label={t("scm-script-plugin.store-form.abort")}
           action={onAbort}
+          disabled={loading}
         />
       </form>
     );

@@ -1,7 +1,8 @@
 //@flow
 import React from "react";
-import { SubmitButton } from "@scm-manager/ui-components";
+import {apiClient, SubmitButton} from "@scm-manager/ui-components";
 import { translate } from "react-i18next";
+import { withRouter } from "react-router-dom";
 import Output from "./Output";
 import ErrorNotification from "@scm-manager/ui-components/src/ErrorNotification";
 import ContentEditor from "./ContentEditor";
@@ -12,7 +13,8 @@ import type { Script } from "./types";
 
 type Props = {
   // context props
-  t: string => string
+  t: string => string,
+  history: any
 };
 
 type State = {
@@ -74,9 +76,16 @@ class Editor extends React.Component<Props, State> {
   };
 
   store = (script: Script) => {
+    const { history } = this.props;
     script.content = this.state.script;
 
-    store(script).then(this.closeStoreDialog);
+    store(script)
+      .then(resp => resp.headers.get("Location"))
+      .then((location) => apiClient.get(location))
+      .then(resp => resp.json())
+      .then(script => script.id)
+      .then(id => history.push("/scripts/stored/" + id))
+      .catch(error => this.setState({error}));
   };
 
   render() {
@@ -114,4 +123,4 @@ class Editor extends React.Component<Props, State> {
   }
 }
 
-export default translate("plugins")(Editor);
+export default translate("plugins")(withRouter(Editor));
