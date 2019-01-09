@@ -38,7 +38,6 @@ class ScriptTest {
     ByteArrayInputStream input = new ByteArrayInputStream(output.toByteArray());
     script = JAXB.unmarshal(input, Script.class);
 
-    assertThat(script.getId()).contains("42");
     assertThat(script.getType()).isEqualTo("Groovy");
     assertThat(script.getTitle()).contains("Hello World");
     assertThat(script.getDescription()).contains("Awesome Hello World");
