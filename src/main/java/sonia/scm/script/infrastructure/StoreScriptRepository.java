@@ -14,17 +14,19 @@ import java.util.stream.Collectors;
 @Singleton
 public class StoreScriptRepository implements ScriptRepository {
 
-  private static final String STORE = "scripts";
+  private static final String STORE_NAME = "scripts";
 
   private final DataStore<Script> store;
 
   @Inject
   public StoreScriptRepository(DataStoreFactory dataStoreFactory) {
-    this.store = dataStoreFactory.withType(Script.class).withName(STORE).build();
+    this.store = dataStoreFactory.withType(Script.class).withName(STORE_NAME).build();
   }
 
   @Override
   public Script store(Script script) {
+    ScriptPermissions.checkModify();
+
     if (script.getId().isPresent()) {
       return modify(script);
     }
@@ -44,11 +46,13 @@ public class StoreScriptRepository implements ScriptRepository {
 
   @Override
   public void remove(String id) {
+    ScriptPermissions.checkModify();
     store.remove(id);
   }
 
   @Override
   public Optional<Script> findById(String id) {
+    ScriptPermissions.checkRead();
     Script script = store.get(id);
     if (script != null) {
       script.setId(id);
@@ -59,6 +63,7 @@ public class StoreScriptRepository implements ScriptRepository {
 
   @Override
   public List<Script> findAll() {
+    ScriptPermissions.checkRead();
     return store.getAll()
       .entrySet()
       .stream()

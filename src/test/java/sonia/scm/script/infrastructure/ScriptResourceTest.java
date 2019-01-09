@@ -2,7 +2,6 @@ package sonia.scm.script.infrastructure;
 
 import de.otto.edison.hal.HalRepresentation;
 import org.assertj.core.util.Lists;
-import org.junit.internal.runners.MethodRoadie;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;

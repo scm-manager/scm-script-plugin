@@ -3,6 +3,7 @@ package sonia.scm.script.infrastructure;
 import com.google.common.annotations.VisibleForTesting;
 import de.otto.edison.hal.Embedded;
 import de.otto.edison.hal.HalRepresentation;
+import de.otto.edison.hal.Link;
 import de.otto.edison.hal.Links;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
@@ -41,20 +42,31 @@ abstract class ScriptMapper {
   void appendLinks(Script script, @MappingTarget ScriptDto target) {
     Optional<String> id = script.getId();
     if (id.isPresent()) {
-      Links.Builder linksBuilder = linkingTo().self(self(id.get()));
-      target.add(linksBuilder.build());
-    }
-  }
+      LinkBuilder linkBuilder = new LinkBuilder(scmPathInfoStore.get(), ScriptResource.class);
 
-  private String self(String id) {
-    LinkBuilder linkBuilder = new LinkBuilder(scmPathInfoStore.get(), ScriptResource.class);
-    return linkBuilder.method("findById").parameters(id).href();
+      Links.Builder builder = linkingTo();
+      builder.self(linkBuilder.method("findById").parameters(id.get()).href());
+      if (ScriptPermissions.isPermittedToModify()) {
+        builder.single(Link.link("update", linkBuilder.method("modify").parameters(id.get()).href()));
+        builder.single(Link.link("delete", linkBuilder.method("delete").parameters(id.get()).href()));
+      }
+
+      target.add(builder.build());
+    }
   }
 
   HalRepresentation collection(List<Script> scripts) {
     LinkBuilder linkBuilder = new LinkBuilder(scmPathInfoStore.get(), ScriptResource.class);
-    String self = linkBuilder.method("findAll").parameters().href();
+
+    Links.Builder builder = linkingTo();
+
+    builder.self(linkBuilder.method("findAll").parameters().href());
+    if (ScriptPermissions.isPermittedToModify()) {
+      builder.single(Link.link("create", linkBuilder.method("create").parameters().href()));
+    }
+
+
     List<ScriptDto> dtos = scripts.stream().map(this::map).collect(Collectors.toList());
-    return new HalRepresentation(linkingTo().self(self).build(), Embedded.embedded("scripts", dtos));
+    return new HalRepresentation(builder.build(), Embedded.embedded("scripts", dtos));
   }
 }

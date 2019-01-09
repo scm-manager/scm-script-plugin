@@ -29,6 +29,7 @@ public class JSR223Executor implements Executor {
 
   @Override
   public void execute(Script script, ExecutionContext context) {
+    ScriptPermissions.checkExecute();
     ScriptEngine engine = findEngine(script.getType());
     SimpleScriptContext scriptContext = createScriptContext(context);
     executeScript(engine, scriptContext, script.getContent());

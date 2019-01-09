@@ -1,7 +1,14 @@
 package sonia.scm.script.infrastructure;
 
+import org.apache.shiro.authz.AuthorizationException;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import sonia.scm.script.domain.Script;
 import sonia.scm.script.domain.ScriptRepository;
 import sonia.scm.store.InMemoryDataStoreFactory;
@@ -11,14 +18,26 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doThrow;
 
+@ExtendWith(MockitoExtension.class)
 class StoreScriptRepositoryTest {
+
+  @Mock
+  private Subject subject;
 
   private ScriptRepository scriptRepository;
 
   @BeforeEach
   void setUpObjectUnderTest() {
     scriptRepository = new StoreScriptRepository(new InMemoryDataStoreFactory());
+    ThreadContext.bind(subject);
+  }
+
+  @AfterEach
+  void tearDown() {
+    ThreadContext.unbindSubject();
   }
 
   private Script createSample() {
@@ -79,6 +98,23 @@ class StoreScriptRepositoryTest {
 
     List<String> ids = all.stream().map(s -> s.getId().get()).collect(Collectors.toList());
     assertThat(ids).containsOnly(one, two, three);
+  }
+
+  @Test
+  void shouldThrowAuthorizationExceptionsWithoutModifyPermission() {
+    doThrow(AuthorizationException.class).when(subject).checkPermission("script:modify");
+
+    Script sample = createSample();
+    assertThrows(AuthorizationException.class, () -> scriptRepository.store(sample));
+    assertThrows(AuthorizationException.class, () -> scriptRepository.remove("42"));
+  }
+
+  @Test
+  void shouldThrowAuthorizationExceptionsWithoutReadPermission() {
+    doThrow(AuthorizationException.class).when(subject).checkPermission("script:read");
+
+    assertThrows(AuthorizationException.class, () -> scriptRepository.findById("42"));
+    assertThrows(AuthorizationException.class, () -> scriptRepository.findAll());
   }
 
   @Test

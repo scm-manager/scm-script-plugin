@@ -1,6 +1,10 @@
 package sonia.scm.script.infrastructure;
 
 import com.google.inject.Injector;
+import org.apache.shiro.authz.AuthorizationException;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,17 +20,28 @@ import java.io.StringWriter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(MockitoExtension.class)
 class JSR223ExecutorTest {
 
   private JSR223Executor executor;
+
   @Mock
   private Injector injector;
+
+  @Mock
+  private Subject subject;
 
   @BeforeEach
   void beforeEach() {
     executor = new JSR223Executor(ScriptEngineManagerProvider.context(), injector);
+    ThreadContext.bind(subject);
+  }
+
+  @AfterEach
+  void afterEach() {
+    ThreadContext.unbindSubject();
   }
 
   @Test
@@ -71,6 +86,14 @@ class JSR223ExecutorTest {
   void shouldThrowScriptExecutionException() {
     Script script = new Script("Groovy", "should fail");
     assertThrows(ScriptExecutionException.class, () -> executor.execute(script, ExecutionContext.builder().build()));
+  }
+
+  @Test
+  void shouldThrowAuthorizationException() {
+    doThrow(AuthorizationException.class).when(subject).checkPermission("script:execute");
+
+    Script script = createScript("print \"Don't Panic\"");
+    assertThrows(AuthorizationException.class, () -> execute(script));
   }
 
   private Script createScript(String content) {

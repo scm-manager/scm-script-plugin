@@ -29,10 +29,14 @@ public class IndexLinkEnricher implements LinkEnricher {
 
     LinkAppender.LinkArrayBuilder builder = appender.arrayBuilder("scripts");
 
-    // TODO check permissions
+    if (ScriptPermissions.isPermittedToRead()) {
+      builder.append("list", createListLink(linkBuilder));
+    }
 
-    builder.append("list", createListLink(linkBuilder));
-    builder.append("run", createRunLink(linkBuilder));
+    if (ScriptPermissions.isPermittedToExecute()) {
+      builder.append("run", createRunLink(linkBuilder));
+    }
+
     builder.build();
   }
 
