@@ -35,7 +35,7 @@ class StoreScriptRepositoryTest {
   @Test
   void shouldModifyStoredScript() {
     Script script = scriptRepository.store(createSample());
-    script.changeDescription("My Sample");
+    script.setDescription("My Sample");
     scriptRepository.store(script);
 
     Optional<Script> byId = scriptRepository.findById(script.getId().get());

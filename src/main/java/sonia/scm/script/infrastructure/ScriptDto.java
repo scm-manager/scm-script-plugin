@@ -1,14 +1,13 @@
 package sonia.scm.script.infrastructure;
 
+import de.otto.edison.hal.HalRepresentation;
+import de.otto.edison.hal.Links;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
 @Getter
 @Setter
-@XmlRootElement(name = "script")
-class ScriptDto {
+class ScriptDto extends HalRepresentation {
 
   private String id;
   private String type;
@@ -16,4 +15,9 @@ class ScriptDto {
   private String description;
   private String content;
 
+  @Override
+  @SuppressWarnings("squid:S1185") // We want to have this method available in this package
+  protected HalRepresentation add(Links links) {
+    return super.add(links);
+  }
 }

@@ -1,11 +1,11 @@
 package sonia.scm.script.domain;
 
 import org.junit.jupiter.api.Test;
+import sonia.scm.script.ScriptTestData;
 
 import javax.xml.bind.JAXB;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -30,14 +30,7 @@ class ScriptTest {
 
   @Test
   void shouldMarshalAndUnmarshal() {
-    Script script = new Script(
-      "42",
-      "Groovy",
-      "Hello World",
-      "Awesome Hello World",
-      "println 'Hello World'",
-      new ArrayList<>()
-    );
+    Script script = ScriptTestData.createHelloWorld();
 
     ByteArrayOutputStream output = new ByteArrayOutputStream();
     JAXB.marshal(script, output);

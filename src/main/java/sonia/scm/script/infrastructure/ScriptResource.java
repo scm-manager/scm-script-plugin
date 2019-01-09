@@ -1,6 +1,7 @@
 package sonia.scm.script.infrastructure;
 
 import com.google.common.base.Throwables;
+import de.otto.edison.hal.HalRepresentation;
 import sonia.scm.script.domain.ExecutionContext;
 import sonia.scm.script.domain.Executor;
 import sonia.scm.script.domain.Script;
@@ -19,9 +20,11 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -56,16 +59,16 @@ public class ScriptResource {
   @Path("")
   @Produces(ScriptMediaType.COLLECTION)
   public Response findAll() {
-    List<ScriptDto> dtos = repository.findAll().stream().map(mapper::map).collect(Collectors.toList());
-    return Response.ok(dtos).build();
+    HalRepresentation collection = mapper.collection(repository.findAll());
+    return Response.ok(collection).build();
   }
 
   @POST
   @Consumes(ScriptMediaType.ONE)
-  public Response store(ScriptDto dto) {
-    Script storedScript = repository.store(mapper.map(dto));
-    // TODO should be created with location header
-    return Response.ok().build();
+  public Response store(@Context UriInfo info, ScriptDto dto) {
+    Script script = repository.store(mapper.map(dto));
+    URI uri = info.getRequestUriBuilder().path(script.getId().get()).build();
+    return Response.created(uri).build();
   }
 
   @POST

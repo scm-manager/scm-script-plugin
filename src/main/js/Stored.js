@@ -1,6 +1,6 @@
 //@flow
 import React from "react";
-import type { Script } from "./types";
+import type {ScriptCollection} from "./types";
 import { findAll } from "./api";
 import ErrorNotification from "@scm-manager/ui-components/src/ErrorNotification";
 import Loading from "@scm-manager/ui-components/src/Loading";
@@ -12,7 +12,7 @@ type Props = {};
 type State = {
   loading: boolean,
   error?: Error,
-  scripts?: Script[]
+  collection?: ScriptCollection
 };
 
 class Stored extends React.Component<Props, State> {
@@ -25,10 +25,10 @@ class Stored extends React.Component<Props, State> {
 
   componentDidMount(): void {
     findAll()
-      .then(scripts => {
+      .then(collection => {
         this.setState({
           loading: false,
-          scripts
+          collection
         });
       })
       .catch(error => {
@@ -40,15 +40,15 @@ class Stored extends React.Component<Props, State> {
   }
 
   render() {
-    const { loading, error, scripts } = this.state;
+    const { loading, error, collection } = this.state;
     if (error) {
       return <ErrorNotification error={error} />;
     } else if (loading) {
       return <Loading />;
-    } else if (!scripts || scripts.length === 0) {
+    } else if (!collection || collection._embedded.scripts.length === 0) {
       return <Notification type="info">No stored scripts found</Notification>;
     } else {
-      return <ScriptTable scripts={scripts} />;
+      return <ScriptTable scripts={collection._embedded.scripts} />;
     }
   }
 }
