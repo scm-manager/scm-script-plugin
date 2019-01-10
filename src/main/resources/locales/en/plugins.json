@@ -1,12 +1,18 @@
 {
   "scm-script-plugin": {
+    "title": "Title",
+    "titleHelp": "Title of script, which is shown in the overview",
+    "description": "Description",
+    "descriptionHelp": "Short description of script",
+    "content": "Script",
+    "contentHelp": "The script which gets executed against the scm-manager api",
     "primary-navigation": "Scripts",
     "navigation": {
       "run": "Run",
       "stored": "Stored",
       "samples": "Samples"
     },
-    "main": {
+    "root-page": {
       "title": "Scripts",
       "subtitle": "Execute scripts with the scm-manager api"
     },
@@ -14,10 +20,6 @@
       "title": "Store script"
     },
     "store-form": {
-      "title": "Title",
-      "titleHelp": "Title of script, which is shown in the overview",
-      "description": "Description",
-      "descriptionHelp": "Short description of script",
       "submit": "Store",
       "abort": "Abort"
     },

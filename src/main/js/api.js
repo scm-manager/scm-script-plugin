@@ -1,14 +1,11 @@
 // @flow
 import { apiClient, urls } from "@scm-manager/ui-components";
-import type { Script } from "./types";
+import type { Script, ScriptLinks } from "./types";
+import type { Links } from "@scm-manager/ui-types";
 
 // TODO extend api client
-export function run(language: string, content: string) {
-  const url = urls.withContextPath(
-    "/api/v2/plugins/scripts/run?lang=" + language
-  );
-
-  return fetch(url, {
+export function run(link: string, language: string, content: string) {
+  return fetch(link + "?lang=" + language, {
     credentials: "same-origin",
     headers: {
       Cache: "no-cache",
@@ -20,18 +17,34 @@ export function run(language: string, content: string) {
   }).then(resp => resp.text());
 }
 
-export function store(script: Script) {
-  return apiClient.post(
-    "/plugins/scripts",
-    script,
-    "application/vnd.scmm-script+json;v=2"
-  );
+export function store(link: string, script: Script) {
+  return apiClient.post(link, script, "application/vnd.scmm-script+json;v=2");
 }
 
 export function findById(id: string) {
   return apiClient.get("/plugins/scripts/" + id).then(resp => resp.json());
 }
 
-export function findAll() {
-  return apiClient.get("/plugins/scripts").then(resp => resp.json());
+export function findAll(link: string) {
+  return apiClient.get(link).then(resp => resp.json());
+}
+
+export function createScriptLinks(list: string, links: Links): ScriptLinks {
+  const scriptLinks = {
+    list
+  };
+
+  for (let rel in links) {
+    scriptLinks[rel] = links[rel].href;
+  }
+  return scriptLinks;
+}
+
+export function findAllScriptLinks(indexLink: string): Promise<ScriptLinks> {
+  // we need only _links and not the _embedded scripts
+  return apiClient
+    .get(indexLink + "?fields=_links")
+    .then(resp => resp.json())
+    .then(json => json._links)
+    .then(links => createScriptLinks(indexLink, links));
 }

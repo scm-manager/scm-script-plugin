@@ -13,3 +13,9 @@ export type ScriptCollection = Collection & {
     scripts: Script[]
   }
 };
+
+export type ScriptLinks = {
+  list: string,
+  create?: string,
+  execute?: string
+};

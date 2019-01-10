@@ -1,34 +1,29 @@
 //@flow
 import React from "react";
-import { Page } from "@scm-manager/ui-components";
 import { translate } from "react-i18next";
 import MainNavigation from "./MainNavigation";
 import MainRouting from "./MainRouting";
+import type { ScriptLinks } from "./types";
 
 type Props = {
-  // context props
-  t: string => string
+  links: ScriptLinks
 };
 
-class Overview extends React.Component<Props> {
+class Main extends React.Component<Props, State> {
   render() {
-    const { t } = this.props;
+    const { links } = this.props;
+
     return (
-      <Page
-        title={t("scm-script-plugin.main.title")}
-        subtitle={t("scm-script-plugin.main.subtitle")}
-      >
-        <div className="columns">
-          <div className="column is-three-quarters">
-            <MainRouting />
-          </div>
-          <div className="column">
-            <MainNavigation />
-          </div>
+      <div className="columns">
+        <div className="column is-three-quarters">
+          <MainRouting links={links} />
         </div>
-      </Page>
+        <div className="column">
+          <MainNavigation links={links} />
+        </div>
+      </div>
     );
   }
 }
 
-export default translate("plugins")(Overview);
+export default Main;

@@ -57,15 +57,15 @@ class StoreForm extends React.Component<Props, State> {
       <form onSubmit={this.onSubmit}>
         <InputField
           name="title"
-          label={t("scm-script-plugin.store-form.title")}
-          helpText={t("scm-script-plugin.store-form.titleHelp")}
+          label={t("scm-script-plugin.title")}
+          helpText={t("scm-script-plugin.titleHelp")}
           onChange={this.onChange}
           value={script.title}
         />
         <Textarea
           name="description"
-          label={t("scm-script-plugin.store-form.description")}
-          helpText={t("scm-script-plugin.store-form.descriptionHelp")}
+          label={t("scm-script-plugin.description")}
+          helpText={t("scm-script-plugin.descriptionHelp")}
           onChange={this.onChange}
           value={script.description}
         />

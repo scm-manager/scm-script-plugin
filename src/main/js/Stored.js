@@ -1,13 +1,15 @@
 //@flow
 import React from "react";
-import type { ScriptCollection } from "./types";
+import type { ScriptCollection, ScriptLinks } from "./types";
 import { findAll } from "./api";
 import ErrorNotification from "@scm-manager/ui-components/src/ErrorNotification";
 import Loading from "@scm-manager/ui-components/src/Loading";
 import ScriptTable from "./ScriptTable";
 import { Notification } from "@scm-manager/ui-components";
 
-type Props = {};
+type Props = {
+  links: ScriptLinks
+};
 
 type State = {
   loading: boolean,
@@ -24,7 +26,8 @@ class Stored extends React.Component<Props, State> {
   }
 
   componentDidMount(): void {
-    findAll()
+    const { links } = this.props;
+    findAll(links.list)
       .then(collection => {
         this.setState({
           loading: false,

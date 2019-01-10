@@ -9,9 +9,12 @@ import ContentEditor from "./ContentEditor";
 import { run, store } from "./api";
 import Button from "@scm-manager/ui-components/src/buttons/Button";
 import StoreDialog from "./StoreDialog";
-import type { Script } from "./types";
+import type { Script, ScriptLinks } from "./types";
 
 type Props = {
+  links: ScriptLinks,
+  value?: string,
+
   // context props
   t: string => string,
   history: any
@@ -29,7 +32,7 @@ class Editor extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      script: "println 'Hello World'",
+      script: props.value ? props.value : "println 'Hello World'",
       loading: false,
       output: "",
       showStoreDialog: false
@@ -48,7 +51,15 @@ class Editor extends React.Component<Props, State> {
       output: "",
       error: null
     });
-    run("Groovy", this.state.script)
+
+    const { links } = this.props;
+    if (!links.execute) {
+      this.setState({
+        error: new Error("no permissions to execute scripts")
+      });
+    }
+
+    run(links.execute, "Groovy", this.state.script)
       .then(output =>
         this.setState({
           output,
@@ -76,10 +87,16 @@ class Editor extends React.Component<Props, State> {
   };
 
   store = (script: Script) => {
-    const { history } = this.props;
+    const { links, history } = this.props;
+
+    if (!links.create) {
+      this.setState({
+        error: new Error("no permissions to create scripts")
+      });
+    }
     script.content = this.state.script;
 
-    store(script)
+    store(links.create, script)
       .then(resp => resp.headers.get("Location"))
       .then(location => apiClient.get(location))
       .then(resp => resp.json())
@@ -88,9 +105,38 @@ class Editor extends React.Component<Props, State> {
       .catch(error => this.setState({ error }));
   };
 
+  createExecuteButton = () => {
+    const { links, t } = this.props;
+    if (!links.execute) {
+      return;
+    }
+
+    const { loading } = this.state;
+
+    return (
+      <SubmitButton
+        label={t("scm-script-plugin.editor.submit")}
+        action={this.execute}
+        loading={loading}
+      />
+    );
+  };
+
+  createStoreButton = () => {
+    const { links, t } = this.props;
+    if (!links.create) {
+      return;
+    }
+    return (
+      <Button
+        label={t("scm-script-plugin.editor.store")}
+        action={this.showStoreDialog}
+      />
+    );
+  };
+
   render() {
-    const { t } = this.props;
-    const { showStoreDialog, script, output, error, loading } = this.state;
+    const { showStoreDialog, script, output, error } = this.state;
 
     const storeDialog = showStoreDialog ? (
       <StoreDialog onSubmit={this.store} onClose={this.closeStoreDialog} />
@@ -106,15 +152,8 @@ class Editor extends React.Component<Props, State> {
       <div>
         <ContentEditor onChange={this.onScriptChange} value={script} />
         <div>
-          <SubmitButton
-            label={t("scm-script-plugin.editor.submit")}
-            action={this.execute}
-            loading={loading}
-          />
-          <Button
-            label={t("scm-script-plugin.editor.store")}
-            action={this.showStoreDialog}
-          />
+          {this.createExecuteButton()}
+          {this.createStoreButton()}
         </div>
         {body}
         {storeDialog}

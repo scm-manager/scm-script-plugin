@@ -23,14 +23,10 @@ class ScriptTable extends React.Component<Props> {
             return (
               <tr key={script.id}>
                 <td>
-                  <Link to={`/scripts/stored/${script.id}`}>
-                    {script.title}
-                  </Link>
+                  <Link to={`/script/${script.id}`}>{script.title}</Link>
                 </td>
                 <td>
-                  <Link to={`/scripts/stored/${script.id}`}>
-                    {script.description}
-                  </Link>
+                  <Link to={`/script/${script.id}`}>{script.description}</Link>
                 </td>
               </tr>
             );

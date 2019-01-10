@@ -8,20 +8,26 @@ import "brace/theme/tomorrow";
 
 type Props = {
   value: string,
+  name?: string,
   onChange: string => void
 };
 
 class ContentEditor extends React.Component<Props> {
+  onChange = value => {
+    const { name, onChange } = this.props;
+    onChange(value, name);
+  };
+
   render() {
-    const { value, onChange } = this.props;
+    const { name, value } = this.props;
 
     return (
       <AceEditor
         mode="groovy"
         theme="tomorrow"
-        onChange={onChange}
+        onChange={this.onChange}
         showGutter={false}
-        name="contentEditor"
+        name={name ? name : "contentEditor"}
         value={value}
         className="box"
         style={{ width: "100%", height: "250px" }}

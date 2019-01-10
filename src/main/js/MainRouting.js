@@ -1,19 +1,25 @@
 //@flow
 import React from "react";
 import { Route } from "react-router-dom";
-import Run from "./Run";
 import Stored from "./Stored";
-import StoredDetails from "./StoredDetails";
+import type { ScriptLinks } from "./types";
+import Editor from "./Editor";
 
-type Props = {};
+type Props = {
+  links: ScriptLinks
+};
 
 class MainRouting extends React.Component<Props> {
   render() {
+    const { links } = this.props;
     return (
       <>
-        <Route path="/scripts/run" component={Run} />
-        <Route path="/scripts/stored" component={Stored} exact={true} />
-        <Route path="/scripts/stored/:id" component={StoredDetails} />
+        <Route path="/scripts/run" component={() => <Editor links={links} />} />
+        <Route
+          path="/scripts"
+          component={() => <Stored links={links} />}
+          exact={true}
+        />
       </>
     );
   }

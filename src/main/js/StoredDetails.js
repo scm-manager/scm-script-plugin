@@ -1,12 +1,15 @@
 //@flow
 import React from "react";
+import { withRouter } from "react-router-dom";
 import { findById } from "./api";
-import type { Script } from "./types";
-import ErrorNotification from "./Stored";
+import type { Script, ScriptLinks } from "./types";
 import EditForm from "./EditForm";
-import Loading from "@scm-manager/ui-components/src/Loading";
+import { ErrorNotification, Loading } from "@scm-manager/ui-components";
 
 type Props = {
+  links: ScriptLinks,
+
+  // context props
   match: any
 };
 
@@ -53,4 +56,4 @@ class StoredDetails extends React.Component<Props, State> {
   }
 }
 
-export default StoredDetails;
+export default withRouter(StoredDetails);
