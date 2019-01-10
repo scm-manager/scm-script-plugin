@@ -1,12 +1,14 @@
 //@flow
 import React from "react";
-import type { Script } from "./types";
+import type { Script } from "../types";
 import {
   InputField,
   LabelWithHelpIcon,
+  Button,
+  SubmitButton,
   Textarea
 } from "@scm-manager/ui-components";
-import ContentEditor from "./ContentEditor";
+import ContentEditor from "../components/ContentEditor";
 import { translate } from "react-i18next";
 
 type Props = {
@@ -61,6 +63,10 @@ class EditForm extends React.Component<Props, State> {
             value={content}
             onChange={this.onValueChange}
           />
+        </div>
+        <div>
+          <SubmitButton label={"scm-script-plugin.edit-form.run"} />
+          <Button label={"scm-script-plugin.edit-form.save"} />
         </div>
       </form>
     );

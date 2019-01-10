@@ -3,7 +3,7 @@ import React from "react";
 import { translate } from "react-i18next";
 import { InputField, SubmitButton, Textarea } from "@scm-manager/ui-components";
 import Button from "@scm-manager/ui-components/src/buttons/Button";
-import type { Script } from "./types";
+import type { Script } from "../../types";
 
 type Props = {
   onSubmit: Script => void,

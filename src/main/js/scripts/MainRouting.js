@@ -1,9 +1,9 @@
 //@flow
 import React from "react";
 import { Route } from "react-router-dom";
-import Stored from "./Stored";
-import type { ScriptLinks } from "./types";
-import Editor from "./Editor";
+import Stored from "./list/Stored";
+import type { ScriptLinks } from "../types";
+import Editor from "./run/Editor";
 
 type Props = {
   links: ScriptLinks

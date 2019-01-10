@@ -3,13 +3,13 @@ import React from "react";
 import { apiClient, SubmitButton } from "@scm-manager/ui-components";
 import { translate } from "react-i18next";
 import { withRouter } from "react-router-dom";
-import Output from "./Output";
+import Output from "../../components/Output";
 import ErrorNotification from "@scm-manager/ui-components/src/ErrorNotification";
-import ContentEditor from "./ContentEditor";
-import { run, store } from "./api";
+import ContentEditor from "../../components/ContentEditor";
+import { run, store } from "../../api";
 import Button from "@scm-manager/ui-components/src/buttons/Button";
 import StoreDialog from "./StoreDialog";
-import type { Script, ScriptLinks } from "./types";
+import type { Script, ScriptLinks } from "../../types";
 
 type Props = {
   links: ScriptLinks,

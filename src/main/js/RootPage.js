@@ -1,12 +1,12 @@
 //@flow
 import React from "react";
-import { Switch, Route } from "react-router-dom";
+import { Route } from "react-router-dom";
 import { translate } from "react-i18next";
 import { Page, Loading, ErrorNotification } from "@scm-manager/ui-components";
 import { findAllScriptLinks } from "./api";
 import type { ScriptLinks } from "./types";
-import Main from "./Main";
-import StoredDetails from "./StoredDetails";
+import Main from "./scripts/Main";
+import ScriptRoot from "./script/ScriptRoot";
 
 type Props = {
   link: string,
@@ -53,13 +53,13 @@ class RootPage extends React.Component<Props, State> {
       return <Loading />;
     } else {
       return (
-        <Switch>
+        <>
           <Route path="/scripts" component={() => <Main links={links} />} />
           <Route
             path="/script/:id"
-            component={() => <StoredDetails links={links} />}
+            component={() => <ScriptRoot links={links} />}
           />
-        </Switch>
+        </>
       );
     }
   };

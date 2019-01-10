@@ -18,6 +18,9 @@ const styles = {
 class Output extends React.Component<Props> {
   render() {
     const { output, classes } = this.props;
+    if (!output) {
+      return null;
+    }
     return (
       <pre className={classes.spacing}>
         <code>{output}</code>

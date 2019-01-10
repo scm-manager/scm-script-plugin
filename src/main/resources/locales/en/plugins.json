@@ -7,6 +7,15 @@
     "content": "Script",
     "contentHelp": "The script which gets executed against the scm-manager api",
     "primary-navigation": "Scripts",
+    "script-navigation": {
+      "edit": "Edit",
+      "delete": "Delete",
+      "back": "Back"
+    },
+    "edit-form": {
+      "run": "Run",
+      "save": "Save"
+    },
     "navigation": {
       "run": "Run",
       "stored": "Stored",

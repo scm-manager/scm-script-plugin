@@ -1,10 +1,10 @@
 //@flow
 import React from "react";
 import { withRouter } from "react-router-dom";
-import { findById } from "./api";
-import type { Script, ScriptLinks } from "./types";
-import EditForm from "./EditForm";
+import { findById } from "../api";
+import type { Script, ScriptLinks } from "../types";
 import { ErrorNotification, Loading } from "@scm-manager/ui-components";
+import ScriptMain from "./ScriptMain";
 
 type Props = {
   links: ScriptLinks,
@@ -19,7 +19,7 @@ type State = {
   script?: Script
 };
 
-class StoredDetails extends React.Component<Props, State> {
+class ScriptRoot extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -45,15 +45,16 @@ class StoredDetails extends React.Component<Props, State> {
   }
 
   render() {
+    const { links } = this.props;
     const { error, loading, script } = this.state;
     if (error) {
       return <ErrorNotification error={error} />;
     } else if (loading) {
       return <Loading />;
     } else {
-      return <EditForm script={script} />;
+      return <ScriptMain links={links} script={script} />;
     }
   }
 }
 
-export default withRouter(StoredDetails);
+export default withRouter(ScriptRoot);

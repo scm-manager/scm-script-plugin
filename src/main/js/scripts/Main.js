@@ -3,7 +3,7 @@ import React from "react";
 import { translate } from "react-i18next";
 import MainNavigation from "./MainNavigation";
 import MainRouting from "./MainRouting";
-import type { ScriptLinks } from "./types";
+import type { ScriptLinks } from "../types";
 
 type Props = {
   links: ScriptLinks

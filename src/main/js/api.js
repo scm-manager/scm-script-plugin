@@ -1,5 +1,5 @@
 // @flow
-import { apiClient, urls } from "@scm-manager/ui-components";
+import { apiClient } from "@scm-manager/ui-components";
 import type { Script, ScriptLinks } from "./types";
 import type { Links } from "@scm-manager/ui-types";
 

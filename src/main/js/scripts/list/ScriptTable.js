@@ -1,7 +1,7 @@
 //@flow
 import React from "react";
 import { Link } from "react-router-dom";
-import type { Script } from "./types";
+import type { Script } from "../../types";
 
 type Props = {
   scripts: Script[]
