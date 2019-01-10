@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 import static de.otto.edison.hal.Links.linkingTo;
 
 @Mapper
-abstract class ScriptMapper {
+public abstract class ScriptMapper {
 
   @Inject
   private ScmPathInfoStore scmPathInfoStore;

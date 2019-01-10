@@ -8,6 +8,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import sonia.scm.api.v2.resources.ScmPathInfoStore;
@@ -30,7 +31,7 @@ class StorableScriptMapperTest {
 
   @BeforeEach
   void setUpObjectUnderTest() {
-    mapper = new ScriptMapperImpl();
+    mapper = Mappers.getMapper(ScriptMapper.class);
     ScmPathInfoStore pathInfoStore = new ScmPathInfoStore();
     pathInfoStore.set(() -> URI.create("/"));
     mapper.setScmPathInfoStore(pathInfoStore);
