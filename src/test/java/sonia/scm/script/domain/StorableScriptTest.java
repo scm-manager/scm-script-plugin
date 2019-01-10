@@ -9,11 +9,11 @@ import java.io.ByteArrayOutputStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class ScriptTest {
+class StorableScriptTest {
 
   @Test
   void shouldHandleListeners() {
-    Script script = new Script("groovy", null);
+    StorableScript script = new StorableScript("groovy", null);
 
     Listener listener = Listener.valueOf(Number.class, false);
     script.addListener(listener);
@@ -30,13 +30,13 @@ class ScriptTest {
 
   @Test
   void shouldMarshalAndUnmarshal() {
-    Script script = ScriptTestData.createHelloWorld();
+    StorableScript script = ScriptTestData.createHelloWorld();
 
     ByteArrayOutputStream output = new ByteArrayOutputStream();
     JAXB.marshal(script, output);
 
     ByteArrayInputStream input = new ByteArrayInputStream(output.toByteArray());
-    script = JAXB.unmarshal(input, Script.class);
+    script = JAXB.unmarshal(input, StorableScript.class);
 
     assertThat(script.getType()).isEqualTo("Groovy");
     assertThat(script.getTitle()).contains("Hello World");

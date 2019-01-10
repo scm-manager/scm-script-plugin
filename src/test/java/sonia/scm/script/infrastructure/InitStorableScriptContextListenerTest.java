@@ -11,10 +11,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import sonia.scm.script.domain.ExecutionContext;
 import sonia.scm.script.domain.Executor;
-import sonia.scm.script.domain.Script;
+import sonia.scm.script.domain.InitScript;
 import sonia.scm.web.security.AdministrationContext;
 import sonia.scm.web.security.PrivilegedAction;
 
+import java.nio.file.Paths;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,7 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class InitScriptContextListenerTest {
+class InitStorableScriptContextListenerTest {
 
   @Mock
   private AdministrationContext administrationContext;
@@ -37,7 +38,7 @@ class InitScriptContextListenerTest {
   private InitScriptContextListener listener;
 
   @Captor
-  private ArgumentCaptor<Script> scriptCaptor;
+  private ArgumentCaptor<InitScript> scriptCaptor;
 
   @BeforeEach
   void prepareMocks() {
@@ -50,9 +51,9 @@ class InitScriptContextListenerTest {
 
   @Test
   void shouldExecuteTheScripts() {
-    Script one = createScript("one");
-    Script two = createScript("two");
-    List<Script> scripts = Lists.newArrayList(one, two);
+    InitScript one = createScript("one");
+    InitScript two = createScript("two");
+    List<InitScript> scripts = Lists.newArrayList(one, two);
 
     when(collector.collect()).thenReturn(scripts);
 
@@ -62,8 +63,8 @@ class InitScriptContextListenerTest {
     assertThat(scriptCaptor.getAllValues()).containsOnly(one, two);
   }
 
-  private Script createScript(String one) {
-    return new Script("Groovy", one);
+  private InitScript createScript(String one) {
+    return new InitScript(Paths.get(one), "Groovy", one);
   }
 
 }

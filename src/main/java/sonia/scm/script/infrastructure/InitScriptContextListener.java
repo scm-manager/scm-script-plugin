@@ -5,7 +5,8 @@ import org.slf4j.LoggerFactory;
 import sonia.scm.plugin.Extension;
 import sonia.scm.script.domain.ExecutionContext;
 import sonia.scm.script.domain.Executor;
-import sonia.scm.script.domain.Script;
+import sonia.scm.script.domain.InitScript;
+import sonia.scm.script.domain.StorableScript;
 import sonia.scm.script.domain.ScriptExecutionException;
 import sonia.scm.web.security.AdministrationContext;
 import sonia.scm.web.security.PrivilegedAction;
@@ -42,15 +43,15 @@ public class InitScriptContextListener implements ServletContextListener {
 
   @Override
   public void contextInitialized(ServletContextEvent sce) {
-    List<Script> scripts = collector.collect();
+    List<InitScript> scripts = collector.collect();
     administrationContext.runAsAdmin(executeScripts(scripts));
   }
 
-  private PrivilegedAction executeScripts(List<Script> scripts) {
+  private PrivilegedAction executeScripts(List<InitScript> scripts) {
     return () -> scripts.forEach(this::executeScript);
   }
 
-  private void executeScript(Script script) {
+  private void executeScript(InitScript script) {
     StringWriter writer = new StringWriter();
 
     ExecutionContext context = ExecutionContext.builder()
@@ -59,7 +60,7 @@ public class InitScriptContextListener implements ServletContextListener {
 
     try {
       executor.execute(script, context);
-      LOG.debug("{}: {}", script.getDescription(), writer.toString());
+      LOG.debug("{}: {}", script, writer.toString());
     } catch (ScriptExecutionException ex) {
       LOG.error("failed to execute script", ex);
     }

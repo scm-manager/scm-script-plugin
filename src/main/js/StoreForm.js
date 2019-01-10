@@ -1,9 +1,9 @@
 //@flow
 import React from "react";
-import {translate} from "react-i18next";
-import {InputField, SubmitButton, Textarea} from "@scm-manager/ui-components";
+import { translate } from "react-i18next";
+import { InputField, SubmitButton, Textarea } from "@scm-manager/ui-components";
 import Button from "@scm-manager/ui-components/src/buttons/Button";
-import type {Script} from "./types";
+import type { Script } from "./types";
 
 type Props = {
   onSubmit: Script => void,
@@ -31,7 +31,7 @@ class StoreForm extends React.Component<Props, State> {
   }
 
   onChange = (value, name) => {
-    this.setState((state) => {
+    this.setState(state => {
       return {
         script: {
           ...state.script,
@@ -50,8 +50,8 @@ class StoreForm extends React.Component<Props, State> {
   };
 
   render() {
-    const {onAbort, t} = this.props;
-    const {script, loading} = this.state;
+    const { onAbort, t } = this.props;
+    const { script, loading } = this.state;
 
     return (
       <form onSubmit={this.onSubmit}>
@@ -69,7 +69,10 @@ class StoreForm extends React.Component<Props, State> {
           onChange={this.onChange}
           value={script.description}
         />
-        <SubmitButton label={t("scm-script-plugin.store-form.submit")} loading={loading}/>
+        <SubmitButton
+          label={t("scm-script-plugin.store-form.submit")}
+          loading={loading}
+        />
         <Button
           label={t("scm-script-plugin.store-form.abort")}
           action={onAbort}

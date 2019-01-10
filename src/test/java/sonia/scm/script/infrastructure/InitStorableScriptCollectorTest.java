@@ -37,7 +37,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junitpioneer.jupiter.TempDirectory;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import sonia.scm.script.domain.Script;
+import sonia.scm.script.domain.InitScript;
+import sonia.scm.script.domain.StorableScript;
 import sonia.scm.script.domain.TypeRepository;
 
 import java.io.IOException;
@@ -50,7 +51,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith({MockitoExtension.class, TempDirectory.class})
-class InitScriptCollectorTest {
+class InitStorableScriptCollectorTest {
 
   @Mock
   private TypeRepository typeRepository;
@@ -74,7 +75,7 @@ class InitScriptCollectorTest {
     writeGroovyScript("010");
     writeGroovyScript("030");
 
-    List<Script> scripts = collector.collect();
+    List<InitScript> scripts = collector.collect();
     assertThat(scripts).hasSize(4);
 
     assertThat(scripts.get(0).getContent()).isEqualTo("010");
@@ -90,7 +91,7 @@ class InitScriptCollectorTest {
     writeGroovyScript("020");
     writeScript("020", "hitchhikerScript");
 
-    List<Script> scripts = collector.collect();
+    List<InitScript> scripts = collector.collect();
     assertThat(scripts).hasSize(1);
 
     assertThat(scripts.get(0).getContent()).isEqualTo("020");

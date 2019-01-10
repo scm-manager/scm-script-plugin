@@ -1,6 +1,6 @@
 //@flow
 import React from "react";
-import type {ScriptCollection} from "./types";
+import type { ScriptCollection } from "./types";
 import { findAll } from "./api";
 import ErrorNotification from "@scm-manager/ui-components/src/ErrorNotification";
 import Loading from "@scm-manager/ui-components/src/Loading";

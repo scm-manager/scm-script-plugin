@@ -1,7 +1,7 @@
 package sonia.scm.script.infrastructure;
 
-import sonia.scm.script.domain.Script;
-import sonia.scm.script.domain.ScriptRepository;
+import sonia.scm.script.domain.StorableScript;
+import sonia.scm.script.domain.StorableScriptRepository;
 import sonia.scm.store.DataStore;
 import sonia.scm.store.DataStoreFactory;
 
@@ -12,19 +12,19 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Singleton
-public class StoreScriptRepository implements ScriptRepository {
+public class StoreStorableScriptRepository implements StorableScriptRepository {
 
   private static final String STORE_NAME = "scripts";
 
-  private final DataStore<Script> store;
+  private final DataStore<StorableScript> store;
 
   @Inject
-  public StoreScriptRepository(DataStoreFactory dataStoreFactory) {
-    this.store = dataStoreFactory.withType(Script.class).withName(STORE_NAME).build();
+  public StoreStorableScriptRepository(DataStoreFactory dataStoreFactory) {
+    this.store = dataStoreFactory.withType(StorableScript.class).withName(STORE_NAME).build();
   }
 
   @Override
-  public Script store(Script script) {
+  public StorableScript store(StorableScript script) {
     ScriptPermissions.checkModify();
 
     if (script.getId().isPresent()) {
@@ -33,12 +33,12 @@ public class StoreScriptRepository implements ScriptRepository {
     return create(script);
   }
 
-  private Script modify(Script script) {
+  private StorableScript modify(StorableScript script) {
     store.put(script.getId().get(), script);
     return script;
   }
 
-  private Script create(Script script) {
+  private StorableScript create(StorableScript script) {
     String id = store.put(script);
     script.setId(id);
     return script;
@@ -51,9 +51,9 @@ public class StoreScriptRepository implements ScriptRepository {
   }
 
   @Override
-  public Optional<Script> findById(String id) {
+  public Optional<StorableScript> findById(String id) {
     ScriptPermissions.checkRead();
-    Script script = store.get(id);
+    StorableScript script = store.get(id);
     if (script != null) {
       script.setId(id);
       return Optional.of(script);
@@ -62,13 +62,13 @@ public class StoreScriptRepository implements ScriptRepository {
   }
 
   @Override
-  public List<Script> findAll() {
+  public List<StorableScript> findAll() {
     ScriptPermissions.checkRead();
     return store.getAll()
       .entrySet()
       .stream()
       .map(e -> {
-        Script script = e.getValue();
+        StorableScript script = e.getValue();
         script.setId(e.getKey());
         return script;
       })

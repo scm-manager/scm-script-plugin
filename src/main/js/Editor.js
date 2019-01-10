@@ -1,6 +1,6 @@
 //@flow
 import React from "react";
-import {apiClient, SubmitButton} from "@scm-manager/ui-components";
+import { apiClient, SubmitButton } from "@scm-manager/ui-components";
 import { translate } from "react-i18next";
 import { withRouter } from "react-router-dom";
 import Output from "./Output";
@@ -81,11 +81,11 @@ class Editor extends React.Component<Props, State> {
 
     store(script)
       .then(resp => resp.headers.get("Location"))
-      .then((location) => apiClient.get(location))
+      .then(location => apiClient.get(location))
       .then(resp => resp.json())
       .then(script => script.id)
       .then(id => history.push("/scripts/stored/" + id))
-      .catch(error => this.setState({error}));
+      .catch(error => this.setState({ error }));
   };
 
   render() {

@@ -10,7 +10,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import sonia.scm.api.v2.resources.LinkBuilder;
 import sonia.scm.api.v2.resources.ScmPathInfoStore;
-import sonia.scm.script.domain.Script;
+import sonia.scm.script.domain.StorableScript;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -25,9 +25,9 @@ abstract class ScriptMapper {
   @Inject
   private ScmPathInfoStore scmPathInfoStore;
 
-  abstract ScriptDto map(Script script);
+  abstract ScriptDto map(StorableScript script);
 
-  abstract Script map(ScriptDto dto);
+  abstract StorableScript map(ScriptDto dto);
 
   String field(Optional<String> optional) {
     return optional.orElse(null);
@@ -39,7 +39,7 @@ abstract class ScriptMapper {
   }
 
   @AfterMapping
-  void appendLinks(Script script, @MappingTarget ScriptDto target) {
+  void appendLinks(StorableScript script, @MappingTarget ScriptDto target) {
     Optional<String> id = script.getId();
     if (id.isPresent()) {
       LinkBuilder linkBuilder = new LinkBuilder(scmPathInfoStore.get(), ScriptResource.class);
@@ -55,7 +55,7 @@ abstract class ScriptMapper {
     }
   }
 
-  HalRepresentation collection(List<Script> scripts) {
+  HalRepresentation collection(List<StorableScript> scripts) {
     LinkBuilder linkBuilder = new LinkBuilder(scmPathInfoStore.get(), ScriptResource.class);
 
     Links.Builder builder = linkingTo();

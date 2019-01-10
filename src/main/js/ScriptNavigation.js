@@ -1,8 +1,8 @@
 // @flow
 
-import {PrimaryNavigationLink} from '@scm-manager/ui-components';
-import {translate} from "react-i18next";
-import type {Link} from '@scm-manager/ui-types';
+import { PrimaryNavigationLink } from "@scm-manager/ui-components";
+import { translate } from "react-i18next";
+import type { Link } from "@scm-manager/ui-types";
 
 // @VisibleForTesting
 export const hasLinkItem = (links: Link[], name: string) => {

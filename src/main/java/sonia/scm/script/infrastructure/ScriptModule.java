@@ -3,7 +3,7 @@ package sonia.scm.script.infrastructure;
 import com.google.inject.AbstractModule;
 import sonia.scm.plugin.Extension;
 import sonia.scm.script.domain.Executor;
-import sonia.scm.script.domain.ScriptRepository;
+import sonia.scm.script.domain.StorableScriptRepository;
 import sonia.scm.script.domain.TypeRepository;
 
 @Extension
@@ -13,6 +13,6 @@ public class ScriptModule extends AbstractModule {
     bind(ScriptMapper.class).to(ScriptMapperImpl.class);
     bind(Executor.class).to(JSR223Executor.class);
     bind(TypeRepository.class).to(JSR223TypeRepository.class);
-    bind(ScriptRepository.class).to(StoreScriptRepository.class);
+    bind(StorableScriptRepository.class).to(StoreStorableScriptRepository.class);
   }
 }

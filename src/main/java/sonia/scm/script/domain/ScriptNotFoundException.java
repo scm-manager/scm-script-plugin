@@ -4,6 +4,6 @@ import sonia.scm.NotFoundException;
 
 public class ScriptNotFoundException extends NotFoundException {
   public ScriptNotFoundException(String id) {
-    super(Script.class, id);
+    super(StorableScript.class, id);
   }
 }

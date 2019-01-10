@@ -1,5 +1,5 @@
 // @flow
-import type {Collection} from '@scm-manager/ui-types';
+import type { Collection } from "@scm-manager/ui-types";
 
 export type Script = {
   title?: string,

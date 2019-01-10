@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import sonia.scm.script.domain.Script;
-import sonia.scm.script.domain.ScriptRepository;
+import sonia.scm.script.domain.StorableScript;
+import sonia.scm.script.domain.StorableScriptRepository;
 import sonia.scm.store.InMemoryDataStoreFactory;
 
 import java.util.List;
@@ -22,16 +22,16 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(MockitoExtension.class)
-class StoreScriptRepositoryTest {
+class StoreStorableStorableScriptRepositoryTest {
 
   @Mock
   private Subject subject;
 
-  private ScriptRepository scriptRepository;
+  private StorableScriptRepository scriptRepository;
 
   @BeforeEach
   void setUpObjectUnderTest() {
-    scriptRepository = new StoreScriptRepository(new InMemoryDataStoreFactory());
+    scriptRepository = new StoreStorableScriptRepository(new InMemoryDataStoreFactory());
     ThreadContext.bind(subject);
   }
 
@@ -40,50 +40,50 @@ class StoreScriptRepositoryTest {
     ThreadContext.unbindSubject();
   }
 
-  private Script createSample() {
-    return new Script("groovy", "print 'Hello'");
+  private StorableScript createSample() {
+    return new StorableScript("groovy", "print 'Hello'");
   }
 
   @Test
   void shouldCreateAnIdForTheScript() {
-    Script script = createSample();
+    StorableScript script = createSample();
 
-    Script storedScript = scriptRepository.store(script);
+    StorableScript storedScript = scriptRepository.store(script);
     assertThat(storedScript.getId()).isPresent();
   }
 
   @Test
   void shouldModifyStoredScript() {
-    Script script = scriptRepository.store(createSample());
+    StorableScript script = scriptRepository.store(createSample());
     script.setDescription("My Sample");
     scriptRepository.store(script);
 
-    Optional<Script> byId = scriptRepository.findById(script.getId().get());
+    Optional<StorableScript> byId = scriptRepository.findById(script.getId().get());
 
     assertThat(byId.get().getDescription()).contains("My Sample");
   }
 
   @Test
   void shouldReturnScriptFromStore() {
-    Script script = scriptRepository.store(createSample());
-    Optional<Script> byId = scriptRepository.findById(script.getId().get());
+    StorableScript script = scriptRepository.store(createSample());
+    Optional<StorableScript> byId = scriptRepository.findById(script.getId().get());
     assertThat(byId).isPresent();
   }
 
   @Test
   void shouldReturnEmptyOptionalForUnknownIds() {
-    Optional<Script> byId = scriptRepository.findById("123");
+    Optional<StorableScript> byId = scriptRepository.findById("123");
     assertThat(byId).isNotPresent();
   }
 
   @Test
   void shouldRemoveScriptFromStore() {
-    Script script = scriptRepository.store(createSample());
+    StorableScript script = scriptRepository.store(createSample());
 
     String id = script.getId().get();
     scriptRepository.remove(id);
 
-    Optional<Script> byId = scriptRepository.findById(id);
+    Optional<StorableScript> byId = scriptRepository.findById(id);
     assertThat(byId).isNotPresent();
   }
 
@@ -93,7 +93,7 @@ class StoreScriptRepositoryTest {
     String two = scriptRepository.store(createSample()).getId().get();
     String three = scriptRepository.store(createSample()).getId().get();
 
-    List<Script> all = scriptRepository.findAll();
+    List<StorableScript> all = scriptRepository.findAll();
     assertThat(all).hasSize(3);
 
     List<String> ids = all.stream().map(s -> s.getId().get()).collect(Collectors.toList());
@@ -104,7 +104,7 @@ class StoreScriptRepositoryTest {
   void shouldThrowAuthorizationExceptionsWithoutModifyPermission() {
     doThrow(AuthorizationException.class).when(subject).checkPermission("script:modify");
 
-    Script sample = createSample();
+    StorableScript sample = createSample();
     assertThrows(AuthorizationException.class, () -> scriptRepository.store(sample));
     assertThrows(AuthorizationException.class, () -> scriptRepository.remove("42"));
   }
@@ -119,7 +119,7 @@ class StoreScriptRepositoryTest {
 
   @Test
   void shouldReturnEmptyListIfNoScriptWasStored() {
-    List<Script> all = scriptRepository.findAll();
+    List<StorableScript> all = scriptRepository.findAll();
     assertThat(all).isEmpty();
   }
 

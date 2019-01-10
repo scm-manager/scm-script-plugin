@@ -1,11 +1,9 @@
 // @flow
 import { binder } from "@scm-manager/ui-extensions";
-import {
-  ProtectedRoute
-} from "@scm-manager/ui-components";
+import { ProtectedRoute } from "@scm-manager/ui-components";
 import { translate } from "react-i18next";
 import Main from "./Main";
-import ScriptNavigation from './ScriptNavigation';
+import ScriptNavigation from "./ScriptNavigation";
 
 const ScriptRoute = ({ authenticated }) => {
   return (
@@ -20,7 +18,7 @@ const ScriptRoute = ({ authenticated }) => {
 binder.bind("main.route", ScriptRoute);
 
 // @VisibleForTesting
-export const predicate = ({links}) => {
+export const predicate = ({ links }) => {
   return !!(links && links.scripts && links.scripts.length > 0);
 };
 

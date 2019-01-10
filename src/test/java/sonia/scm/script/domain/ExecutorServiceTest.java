@@ -20,7 +20,7 @@ class ExecutorServiceTest {
   private Executor executor;
 
   @Mock
-  private ScriptRepository repository;
+  private StorableScriptRepository repository;
 
   @Mock
   private ExecutionContext executionContext;
@@ -30,7 +30,7 @@ class ExecutorServiceTest {
 
   @Test
   void shouldExecuteTheScript() {
-    Script script = new Script("42", "groovy", "Heart Of Gold", "Heart Of Gold", "", new ArrayList<>());
+    StorableScript script = new StorableScript("42", "groovy", "Heart Of Gold", "Heart Of Gold", "", new ArrayList<>());
 
     when(repository.findById("42")).thenReturn(Optional.of(script));
 

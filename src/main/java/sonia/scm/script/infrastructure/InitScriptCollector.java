@@ -9,7 +9,7 @@ import com.google.common.io.MoreFiles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sonia.scm.SCMContext;
-import sonia.scm.script.domain.Script;
+import sonia.scm.script.domain.InitScript;
 import sonia.scm.script.domain.ScriptExecutionException;
 import sonia.scm.script.domain.TypeRepository;
 
@@ -59,7 +59,7 @@ public class InitScriptCollector {
    *
    * @return a list of collected scripts
    */
-  public List<Script> collect() {
+  public List<InitScript> collect() {
     if (Files.isDirectory(directory)) {
       return collectFromDirectory(directory);
     }
@@ -68,7 +68,7 @@ public class InitScriptCollector {
     return Collections.emptyList();
   }
 
-  private List<Script> collectFromDirectory(Path directory) {
+  private List<InitScript> collectFromDirectory(Path directory) {
     List<Path> paths = Ordering.natural().sortedCopy(findFiles(directory));
     return paths.stream()
       .map(this::from)
@@ -76,7 +76,7 @@ public class InitScriptCollector {
       .collect(Collectors.toList());
   }
 
-  private Script from(Path path) {
+  private InitScript from(Path path) {
     String extension = MoreFiles.getFileExtension(path);
     Optional<String> byExtension = repository.findByExtension(extension);
     if (byExtension.isPresent()) {
@@ -85,20 +85,14 @@ public class InitScriptCollector {
     return null;
   }
 
-  private Script createScript(String type, Path path) {
+  private InitScript createScript(String type, Path path) {
     try {
       String content = readContent(path);
-      Script script = new Script(type, content);
-      script.setDescription(createDescription(path));
-      return script;
+      return new InitScript(path, type, content);
     } catch (IOException ex) {
       LOG.error("failed to read init script: ".concat(path.toString()), ex);
     }
     return null;
-  }
-
-  private String createDescription(Path path) {
-    return "Init-Script ".concat(path.toString());
   }
 
   private String readContent(Path path) throws IOException {

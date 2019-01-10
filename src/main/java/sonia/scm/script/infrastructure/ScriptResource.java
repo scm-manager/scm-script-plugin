@@ -4,9 +4,9 @@ import com.google.common.base.Throwables;
 import de.otto.edison.hal.HalRepresentation;
 import sonia.scm.script.domain.ExecutionContext;
 import sonia.scm.script.domain.Executor;
-import sonia.scm.script.domain.Script;
+import sonia.scm.script.domain.StorableScript;
 import sonia.scm.script.domain.ScriptExecutionException;
-import sonia.scm.script.domain.ScriptRepository;
+import sonia.scm.script.domain.StorableScriptRepository;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -32,12 +32,12 @@ import java.util.Optional;
 @Path("v2/plugins/scripts")
 public class ScriptResource {
 
-  private final ScriptRepository repository;
+  private final StorableScriptRepository repository;
   private final ScriptMapper mapper;
   private final Executor executor;
 
   @Inject
-  public ScriptResource(ScriptRepository repository, ScriptMapper mapper, Executor executor) {
+  public ScriptResource(StorableScriptRepository repository, ScriptMapper mapper, Executor executor) {
     this.repository = repository;
     this.mapper = mapper;
     this.executor = executor;
@@ -47,7 +47,7 @@ public class ScriptResource {
   @Path("")
   @Consumes(ScriptMediaType.ONE)
   public Response create(@Context UriInfo info, ScriptDto dto) {
-    Script script = repository.store(mapper.map(dto));
+    StorableScript script = repository.store(mapper.map(dto));
     URI uri = info.getRequestUriBuilder().path(script.getId().get()).build();
     return Response.created(uri).build();
   }
@@ -64,7 +64,7 @@ public class ScriptResource {
   @Path("{id}")
   @Produces(ScriptMediaType.ONE)
   public Response findById(@PathParam("id") String id) {
-    Optional<Script> byId = repository.findById(id);
+    Optional<StorableScript> byId = repository.findById(id);
     if (byId.isPresent()) {
       return Response.ok(mapper.map(byId.get())).build();
     }
@@ -94,13 +94,13 @@ public class ScriptResource {
   @Produces(MediaType.TEXT_PLAIN)
   @Consumes(MediaType.TEXT_PLAIN)
   public void run(@Context HttpServletResponse response, @QueryParam("lang") String type, String content) throws IOException {
-    Script script = new Script(type, content);
+    StorableScript script = new StorableScript(type, content);
     try (PrintWriter writer = response.getWriter()) {
       execute(writer, script);
     }
   }
 
-  private void execute(Writer writer, Script script) throws IOException {
+  private void execute(Writer writer, StorableScript script) throws IOException {
     try {
       executor.execute(
         script,

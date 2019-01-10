@@ -12,7 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import sonia.scm.api.v2.resources.ScmPathInfoStore;
 import sonia.scm.script.ScriptTestData;
-import sonia.scm.script.domain.Script;
+import sonia.scm.script.domain.StorableScript;
 
 import java.net.URI;
 import java.util.List;
@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ScriptMapperTest {
+class StorableScriptMapperTest {
 
   @Mock
   private Subject subject;
@@ -77,7 +77,7 @@ class ScriptMapperTest {
 
   @Test
   void shouldNotAppendSelfLinkWithoutId() {
-    Script script = ScriptTestData.createHelloWorld();
+    StorableScript script = ScriptTestData.createHelloWorld();
     script.setId(null);
     ScriptDto dto = mapper.map(script);
     assertThat(dto.getLinks().getLinkBy("self")).isEmpty();
@@ -85,7 +85,7 @@ class ScriptMapperTest {
 
   @Test
   void shouldCreateEmbedded() {
-    List<Script> scripts = Lists.newArrayList(script("42"), script("21"));
+    List<StorableScript> scripts = Lists.newArrayList(script("42"), script("21"));
     HalRepresentation collection = mapper.collection(scripts);
     List<HalRepresentation> embedded = collection.getEmbedded().getItemsBy("scripts");
     assertThat(embedded).hasSize(2);
@@ -113,8 +113,8 @@ class ScriptMapperTest {
     assertThat(collection.getLinks().getLinkBy("create")).isEmpty();
   }
 
-  private Script script(String id) {
-    Script script = ScriptTestData.createHelloWorld();
+  private StorableScript script(String id) {
+    StorableScript script = ScriptTestData.createHelloWorld();
     script.setId(id);
     return script;
   }

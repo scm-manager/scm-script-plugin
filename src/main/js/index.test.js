@@ -1,19 +1,20 @@
 // @flow
 
-import {predicate} from './index';
+import { predicate } from "./index";
 
 describe("test predicate", () => {
-
-  const exec = (links) => {
-    return predicate({links});
+  const exec = links => {
+    return predicate({ links });
   };
 
   it("should return true", () => {
     const result = exec({
-      scripts: [{
-        name: "run",
-        href: "http://..."
-      }]
+      scripts: [
+        {
+          name: "run",
+          href: "http://..."
+        }
+      ]
     });
     expect(result).toBe(true);
   });
@@ -36,5 +37,4 @@ describe("test predicate", () => {
     });
     expect(result).toBe(false);
   });
-
 });

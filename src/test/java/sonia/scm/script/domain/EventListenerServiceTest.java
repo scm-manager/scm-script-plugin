@@ -18,7 +18,7 @@ import static org.mockito.Mockito.when;
 class EventListenerServiceTest {
 
   @Mock
-  private ScriptRepository scriptRepository;
+  private StorableScriptRepository scriptRepository;
 
   @Mock
   private Executor executor;
@@ -31,11 +31,11 @@ class EventListenerServiceTest {
 
   @Test
   void shouldReturnExecutableTrigger() {
-    List<Script> scripts = new ArrayList<>();
+    List<StorableScript> scripts = new ArrayList<>();
 
     scripts.add(script());
 
-    Script script = script(Integer.class, true);
+    StorableScript script = script(Integer.class, true);
     scripts.add(script);
     scripts.add(script(Integer.class, false));
     scripts.add(script(String.class, true));
@@ -50,7 +50,7 @@ class EventListenerServiceTest {
 
   @Test
   void shouldReturnEmptyIfNoListenerIsRegistered() {
-    List<Script> scripts = new ArrayList<>();
+    List<StorableScript> scripts = new ArrayList<>();
 
     when(scriptRepository.findAll()).thenReturn(scripts);
 
@@ -59,14 +59,14 @@ class EventListenerServiceTest {
     assertThat(trigger).isNotPresent();
   }
 
-  private Script script(Class<?> eventType, boolean asynchronous) {
-    Script script = script();
+  private StorableScript script(Class<?> eventType, boolean asynchronous) {
+    StorableScript script = script();
     script.addListener(Listener.valueOf(eventType, asynchronous));
     return script;
   }
 
-  private Script script() {
-    return new Script("groovy", "print 'Hello';");
+  private StorableScript script() {
+    return new StorableScript("groovy", "print 'Hello';");
   }
 
 }

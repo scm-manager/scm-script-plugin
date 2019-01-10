@@ -11,9 +11,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import sonia.scm.script.ScriptTestData;
 import sonia.scm.script.domain.ExecutionContext;
 import sonia.scm.script.domain.Executor;
-import sonia.scm.script.domain.Script;
+import sonia.scm.script.domain.StorableScript;
 import sonia.scm.script.domain.ScriptExecutionException;
-import sonia.scm.script.domain.ScriptRepository;
+import sonia.scm.script.domain.StorableScriptRepository;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Response;
@@ -30,10 +30,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class ScriptResourceTest {
+class StorableScriptResourceTest {
 
   @Mock
-  private ScriptRepository repository;
+  private StorableScriptRepository repository;
 
   @Mock
   private ScriptMapper mapper;
@@ -47,7 +47,7 @@ class ScriptResourceTest {
   @Test
   void shouldReturnLocationLinkAfterCreation() {
     ScriptDto dto = new ScriptDto();
-    Script script = ScriptTestData.createHelloWorld();
+    StorableScript script = ScriptTestData.createHelloWorld();
 
     when(mapper.map(dto)).thenReturn(script);
     when(repository.store(script)).thenReturn(script);
@@ -67,7 +67,7 @@ class ScriptResourceTest {
 
   @Test
   void shouldReturnCollection() {
-    List<Script> scripts = Lists.newArrayList(ScriptTestData.createHelloWorld());
+    List<StorableScript> scripts = Lists.newArrayList(ScriptTestData.createHelloWorld());
     when(repository.findAll()).thenReturn(scripts);
 
     HalRepresentation collection = new HalRepresentation();
@@ -81,7 +81,7 @@ class ScriptResourceTest {
   @Test
   void shouldFindById() {
     ScriptDto dto = new ScriptDto();
-    Script script = ScriptTestData.createHelloWorld();
+    StorableScript script = ScriptTestData.createHelloWorld();
 
     when(repository.findById("42")).thenReturn(Optional.of(script));
     when(mapper.map(script)).thenReturn(dto);
@@ -103,7 +103,7 @@ class ScriptResourceTest {
   void shouldModify() {
     ScriptDto dto = new ScriptDto();
     dto.setId("42");
-    Script script = ScriptTestData.createHelloWorld();
+    StorableScript script = ScriptTestData.createHelloWorld();
 
     when(mapper.map(dto)).thenReturn(script);
 
@@ -138,12 +138,12 @@ class ScriptResourceTest {
 
     resource.run(response, "Groovy", "println 'Hello World';");
 
-    ArgumentCaptor<Script> scriptCaptor = ArgumentCaptor.forClass(Script.class);
+    ArgumentCaptor<StorableScript> scriptCaptor = ArgumentCaptor.forClass(StorableScript.class);
     ArgumentCaptor<ExecutionContext> contextCaptor = ArgumentCaptor.forClass(ExecutionContext.class);
 
     verify(executor).execute(scriptCaptor.capture(), contextCaptor.capture());
 
-    Script script = scriptCaptor.getValue();
+    StorableScript script = scriptCaptor.getValue();
     assertThat(script.getType()).isEqualTo("Groovy");
     assertThat(script.getContent()).isEqualTo("println 'Hello World';");
 
@@ -155,7 +155,7 @@ class ScriptResourceTest {
   void shouldCatchAndUnwrapScriptException() throws IOException {
     ScriptExecutionException ex = new ScriptExecutionException("wrapped", new IOException("damn"));
 
-    doThrow(ex).when(executor).execute(any(Script.class), any(ExecutionContext.class));
+    doThrow(ex).when(executor).execute(any(StorableScript.class), any(ExecutionContext.class));
 
     String resource = execute();
     assertThat(resource).startsWith(IOException.class.getName());
@@ -165,7 +165,7 @@ class ScriptResourceTest {
   void shouldCatchScriptException() throws IOException {
     ScriptExecutionException ex = new ScriptExecutionException("wrapped");
 
-    doThrow(ex).when(executor).execute(any(Script.class), any(ExecutionContext.class));
+    doThrow(ex).when(executor).execute(any(StorableScript.class), any(ExecutionContext.class));
 
     String resource = execute();
     assertThat(resource).startsWith(ScriptExecutionException.class.getName());
@@ -175,7 +175,7 @@ class ScriptResourceTest {
   void shouldCatch() throws IOException {
     RuntimeException ex = new RuntimeException("uncatchable");
 
-    doThrow(ex).when(executor).execute(any(Script.class), any(ExecutionContext.class));
+    doThrow(ex).when(executor).execute(any(StorableScript.class), any(ExecutionContext.class));
 
     String resource = execute();
     assertThat(resource).startsWith(RuntimeException.class.getName());

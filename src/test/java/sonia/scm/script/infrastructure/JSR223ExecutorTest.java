@@ -11,7 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import sonia.scm.script.domain.ExecutionContext;
-import sonia.scm.script.domain.Script;
+import sonia.scm.script.domain.StorableScript;
 import sonia.scm.script.domain.ScriptExecutionException;
 import sonia.scm.script.domain.ScriptTypeNotFoundException;
 
@@ -46,19 +46,19 @@ class JSR223ExecutorTest {
 
   @Test
   void shouldExecuteGroovyScript() {
-    Script script = createScript("print \"Don't Panic\"");
+    StorableScript script = createScript("print \"Don't Panic\"");
     assertThat(execute(script)).isEqualTo("Don't Panic");
   }
 
   @Test
   void shouldPassInput() {
-    Script script = createScript("print context.reader.readLine()");
+    StorableScript script = createScript("print context.reader.readLine()");
     assertThat(execute(script, "Don't Panic").trim()).isEqualTo("Don't Panic");
   }
 
   @Test
   void shouldPassInjector() {
-    Script script = createScript("print injector != null");
+    StorableScript script = createScript("print injector != null");
     assertThat(execute(script)).isEqualTo("true");
   }
 
@@ -70,7 +70,7 @@ class JSR223ExecutorTest {
       .withAttribute("message", "Don't Panic")
       .build();
 
-    Script script = createScript("print message");
+    StorableScript script = createScript("print message");
     executor.execute(script, context);
 
     assertThat(writer.toString()).isEqualTo("Don't Panic");
@@ -78,13 +78,13 @@ class JSR223ExecutorTest {
 
   @Test
   void shouldThrowScriptTypeNotFoundException() {
-    Script script = new Script("hitchhikerScripting", "");
+    StorableScript script = new StorableScript("hitchhikerScripting", "");
     assertThrows(ScriptTypeNotFoundException.class, () -> executor.execute(script, ExecutionContext.builder().build()));
   }
 
   @Test
   void shouldThrowScriptExecutionException() {
-    Script script = new Script("Groovy", "should fail");
+    StorableScript script = new StorableScript("Groovy", "should fail");
     assertThrows(ScriptExecutionException.class, () -> executor.execute(script, ExecutionContext.builder().build()));
   }
 
@@ -92,19 +92,19 @@ class JSR223ExecutorTest {
   void shouldThrowAuthorizationException() {
     doThrow(AuthorizationException.class).when(subject).checkPermission("script:execute");
 
-    Script script = createScript("print \"Don't Panic\"");
+    StorableScript script = createScript("print \"Don't Panic\"");
     assertThrows(AuthorizationException.class, () -> execute(script));
   }
 
-  private Script createScript(String content) {
-    return new Script("Groovy", content);
+  private StorableScript createScript(String content) {
+    return new StorableScript("Groovy", content);
   }
 
-  private String execute(Script script) {
+  private String execute(StorableScript script) {
     return execute(script, "");
   }
 
-  private String execute(Script script, String input) {
+  private String execute(StorableScript script, String input) {
     StringWriter writer = new StringWriter();
     ExecutionContext context = ExecutionContext.builder()
       .withOutput(writer)
