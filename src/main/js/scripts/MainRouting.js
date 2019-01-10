@@ -4,6 +4,7 @@ import { Route } from "react-router-dom";
 import Stored from "./list/Stored";
 import type { ScriptLinks } from "../types";
 import Editor from "./run/Editor";
+import SampleRoot from "./samples/SampleRoot";
 
 type Props = {
   links: ScriptLinks
@@ -20,6 +21,7 @@ class MainRouting extends React.Component<Props> {
           component={() => <Stored links={links} />}
           exact={true}
         />
+        <Route path="/scripts/samples" component={SampleRoot} />
       </>
     );
   }

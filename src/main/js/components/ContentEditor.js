@@ -9,6 +9,7 @@ import "brace/theme/tomorrow";
 type Props = {
   value: string,
   name?: string,
+  readOnly?: boolean,
   onChange: string => void
 };
 
@@ -19,7 +20,7 @@ class ContentEditor extends React.Component<Props> {
   };
 
   render() {
-    const { name, value } = this.props;
+    const { name, readOnly, value } = this.props;
 
     return (
       <AceEditor
@@ -27,6 +28,7 @@ class ContentEditor extends React.Component<Props> {
         theme="tomorrow"
         onChange={this.onChange}
         showGutter={false}
+        readOnly={readOnly}
         name={name ? name : "contentEditor"}
         value={value}
         className="box"
