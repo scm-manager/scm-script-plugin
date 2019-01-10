@@ -20,6 +20,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -59,6 +60,7 @@ public class InitScriptCollector {
    *
    * @return a list of collected scripts
    */
+  @SuppressWarnings("squid:S3725") // the performance impact is minimal
   public List<InitScript> collect() {
     if (Files.isDirectory(directory)) {
       return collectFromDirectory(directory);
@@ -72,17 +74,14 @@ public class InitScriptCollector {
     List<Path> paths = Ordering.natural().sortedCopy(findFiles(directory));
     return paths.stream()
       .map(this::from)
-      .filter(p -> p != null)
+      .filter(Objects::nonNull)
       .collect(Collectors.toList());
   }
 
   private InitScript from(Path path) {
     String extension = MoreFiles.getFileExtension(path);
     Optional<String> byExtension = repository.findByExtension(extension);
-    if (byExtension.isPresent()) {
-      return createScript(byExtension.get(), path);
-    }
-    return null;
+    return byExtension.map(s -> createScript(s, path)).orElse(null);
   }
 
   private InitScript createScript(String type, Path path) {
@@ -99,9 +98,10 @@ public class InitScriptCollector {
     return new String(Files.readAllBytes(path), Charsets.UTF_8);
   }
 
+  @SuppressWarnings("squid:S3725") // the performance impact is minimal
   private ImmutableList<Path> findFiles(Path directory) {
     try {
-      return ImmutableList.copyOf(Files.newDirectoryStream(directory, entry -> Files.isRegularFile(entry)));
+      return ImmutableList.copyOf(Files.newDirectoryStream(directory, Files::isRegularFile));
     } catch (IOException e) {
       throw new ScriptExecutionException("failed to read init script directory", e);
     }

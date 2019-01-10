@@ -46,6 +46,7 @@ public class ScriptResource {
   @POST
   @Path("")
   @Consumes(ScriptMediaType.ONE)
+  @SuppressWarnings("squid:S3655") // id is never empty after store
   public Response create(@Context UriInfo info, ScriptDto dto) {
     StorableScript script = repository.store(mapper.map(dto));
     URI uri = info.getRequestUriBuilder().path(script.getId().get()).build();
@@ -100,6 +101,7 @@ public class ScriptResource {
     }
   }
 
+  @SuppressWarnings("squid:S1181") // we have to catch RuntimeException in order to report it back
   private void execute(Writer writer, StorableScript script) throws IOException {
     try {
       executor.execute(

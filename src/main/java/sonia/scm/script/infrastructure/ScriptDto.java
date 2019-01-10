@@ -2,11 +2,13 @@ package sonia.scm.script.infrastructure;
 
 import de.otto.edison.hal.HalRepresentation;
 import de.otto.edison.hal.Links;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@EqualsAndHashCode
 class ScriptDto extends HalRepresentation {
 
   private String id;

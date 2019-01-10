@@ -21,16 +21,16 @@ public class JSR223TypeRepository implements TypeRepository {
   }
 
   private Map<String, String> collectTypes(ScriptEngineManagerProvider scriptEngineManagerProvider) {
-    Map<String, String> byExtension = Maps.newLinkedHashMap();
+    Map<String, String> types = Maps.newLinkedHashMap();
     ScriptEngineManager engineManager = scriptEngineManagerProvider.get();
     for (ScriptEngineFactory factory : engineManager.getEngineFactories()) {
       String type = factory.getLanguageName();
 
       for (String extension : factory.getExtensions()) {
-        byExtension.put(extension, type);
+        types.put(extension, type);
       }
     }
-    return byExtension;
+    return types;
   }
 
   @Override

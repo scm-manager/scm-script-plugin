@@ -6,7 +6,6 @@ import sonia.scm.plugin.Extension;
 import sonia.scm.script.domain.ExecutionContext;
 import sonia.scm.script.domain.Executor;
 import sonia.scm.script.domain.InitScript;
-import sonia.scm.script.domain.StorableScript;
 import sonia.scm.script.domain.ScriptExecutionException;
 import sonia.scm.web.security.AdministrationContext;
 import sonia.scm.web.security.PrivilegedAction;
@@ -60,7 +59,7 @@ public class InitScriptContextListener implements ServletContextListener {
 
     try {
       executor.execute(script, context);
-      LOG.debug("{}: {}", script, writer.toString());
+      LOG.debug("{}: {}", script, writer);
     } catch (ScriptExecutionException ex) {
       LOG.error("failed to execute script", ex);
     }
