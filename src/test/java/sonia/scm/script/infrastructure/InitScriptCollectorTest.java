@@ -38,8 +38,6 @@ import org.junitpioneer.jupiter.TempDirectory;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import sonia.scm.script.domain.InitScript;
-import sonia.scm.script.domain.StorableScript;
-import sonia.scm.script.domain.TypeRepository;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -48,13 +46,14 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith({MockitoExtension.class, TempDirectory.class})
-class InitStorableScriptCollectorTest {
+class InitScriptCollectorTest {
 
   @Mock
-  private TypeRepository typeRepository;
+  private InitScriptFactory factory;
 
   private InitScriptCollector collector;
 
@@ -63,12 +62,12 @@ class InitStorableScriptCollectorTest {
   @BeforeEach
   void prepare(@TempDirectory.TempDir Path directory) {
     this.directory = directory;
-    collector = new InitScriptCollector(typeRepository, directory);
+    collector = new InitScriptCollector(factory, directory);
   }
 
   @Test
   void shouldCollectAndSortTheScripts() throws IOException {
-    when(typeRepository.findByExtension("groovy")).thenReturn(Optional.of("Groovy"));
+    when(factory.create(any(Path.class))).thenAnswer(ic -> Optional.of(readGroovyScript(ic.getArgument(0))));
 
     writeGroovyScript("020");
     writeGroovyScript("040");
@@ -79,22 +78,44 @@ class InitStorableScriptCollectorTest {
     assertThat(scripts).hasSize(4);
 
     assertThat(scripts.get(0).getContent()).isEqualTo("010");
-    assertThat(scripts.get(1).getContent()  ).isEqualTo("020");
+    assertThat(scripts.get(1).getContent()).isEqualTo("020");
     assertThat(scripts.get(2).getContent()).isEqualTo("030");
     assertThat(scripts.get(3).getContent()).isEqualTo("040");
   }
 
   @Test
-  void shouldIgnoreUnknownScriptTypes() throws IOException {
-    when(typeRepository.findByExtension("groovy")).thenReturn(Optional.of("Groovy"));
+  void shouldIgnoreUnknownTests() throws IOException {
+    when(factory.create(any(Path.class))).thenAnswer(ic -> {
+      Path path = ic.getArgument(0);
+      if (path.toString().contains("020")) {
+        return Optional.empty();
+      }
+      return Optional.of(readGroovyScript(path));
+    });
 
+    writeGroovyScript("040");
     writeGroovyScript("020");
-    writeScript("020", "hitchhikerScript");
+    writeGroovyScript("010");
 
     List<InitScript> scripts = collector.collect();
-    assertThat(scripts).hasSize(1);
+    assertThat(scripts).hasSize(2);
 
-    assertThat(scripts.get(0).getContent()).isEqualTo("020");
+    assertThat(scripts.get(0).getContent()).isEqualTo("010");
+    assertThat(scripts.get(1).getContent()).isEqualTo("040");
+  }
+
+  @Test
+  void shouldReturnEmptyListIfDirectoryIsAFile() throws IOException {
+    Files.deleteIfExists(directory);
+    Files.createFile(directory);
+
+    List<InitScript> scripts = collector.collect();
+    assertThat(scripts).isEmpty();
+  }
+
+
+  private InitScript readGroovyScript(Path path) throws IOException {
+    return new InitScript(path, "Groovy", new String(Files.readAllBytes(path), Charsets.UTF_8));
   }
 
   private void writeGroovyScript(String name) throws IOException {
