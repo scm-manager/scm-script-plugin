@@ -1,5 +1,6 @@
 package sonia.scm.script.infrastructure;
 
+import com.google.common.collect.Sets;
 import de.otto.edison.hal.HalRepresentation;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
@@ -17,8 +18,10 @@ import sonia.scm.script.domain.StorableScript;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -52,14 +55,14 @@ class StorableScriptMapperTest {
 
   @Test
   void shouldAppendUpdateLink() {
-    when(subject.isPermitted("script:modify")).thenReturn(true);
+    assignPermissions("script:modify");
     ScriptDto dto = mapper.map(ScriptTestData.createHelloWorld());
     assertThat(dto.getLinks().getLinkBy("update").get().getHref()).isEqualTo("/v2/plugins/scripts/42");
   }
 
   @Test
   void shouldAppendDeleteLink() {
-    when(subject.isPermitted("script:modify")).thenReturn(true);
+    assignPermissions("script:modify");
     ScriptDto dto = mapper.map(ScriptTestData.createHelloWorld());
     assertThat(dto.getLinks().getLinkBy("delete").get().getHref()).isEqualTo("/v2/plugins/scripts/42");
   }
@@ -101,11 +104,20 @@ class StorableScriptMapperTest {
 
   @Test
   void shouldAppendCreateLinkToCollection() {
-    when(subject.isPermitted("script:modify")).thenReturn(true);
+    assignPermissions("script:modify");
 
     HalRepresentation collection = mapper.collection(Lists.newArrayList(script("42"), script("21")));
     String self = collection.getLinks().getLinkBy("create").get().getHref();
     assertThat(self).isEqualTo("/v2/plugins/scripts");
+  }
+
+  @Test
+  void shouldAppendExecuteLinkToCollection() {
+    assignPermissions("script:execute");
+
+    HalRepresentation collection = mapper.collection(Lists.newArrayList());
+    String self = collection.getLinks().getLinkBy("execute").get().getHref();
+    assertThat(self).isEqualTo("/v2/plugins/scripts/run");
   }
 
   @Test
@@ -118,6 +130,11 @@ class StorableScriptMapperTest {
     StorableScript script = ScriptTestData.createHelloWorld();
     script.setId(id);
     return script;
+  }
+
+  private void assignPermissions(String... permissions) {
+    Set<String> assigned = Sets.newHashSet(permissions);
+    when(subject.isPermitted(anyString())).then(ic -> assigned.contains(ic.getArgument(0)));
   }
 
 }

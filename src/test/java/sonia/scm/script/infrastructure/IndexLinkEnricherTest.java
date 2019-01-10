@@ -1,6 +1,5 @@
 package sonia.scm.script.infrastructure;
 
-import com.google.common.collect.Sets;
 import com.google.inject.util.Providers;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
@@ -14,20 +13,14 @@ import sonia.scm.api.v2.resources.LinkAppender;
 import sonia.scm.api.v2.resources.ScmPathInfoStore;
 
 import java.net.URI;
-import java.util.Set;
 
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class IndexLinkEnricherTest {
 
   @Mock
   private LinkAppender appender;
-
-  @Mock
-  private LinkAppender.LinkArrayBuilder arrayBuilder;
 
   @Mock
   private Subject subject;
@@ -50,49 +43,18 @@ class IndexLinkEnricherTest {
 
   @Test
   void shouldAppendLink() {
-    assignPermissions("script:read", "script:execute");
+    when(subject.isPermitted("script:read")).thenReturn(true);
 
-    when(appender.arrayBuilder("scripts")).thenReturn(arrayBuilder);
     enricher.enrich(null, appender);
 
-    verify(arrayBuilder).append("list", "/v2/plugins/scripts");
-    verify(arrayBuilder).append("run", "/v2/plugins/scripts/run");
-
-    verify(arrayBuilder).build();
-  }
-
-  @Test
-  void shouldNotAppendListLink() {
-    assignPermissions("script:execute");
-
-    when(appender.arrayBuilder("scripts")).thenReturn(arrayBuilder);
-    enricher.enrich(null, appender);
-
-    verify(arrayBuilder).append("run", "/v2/plugins/scripts/run");
-    verify(arrayBuilder).build();
-  }
-
-  @Test
-  void shouldNotAppendRunLink() {
-    assignPermissions("script:read");
-
-    when(appender.arrayBuilder("scripts")).thenReturn(arrayBuilder);
-    enricher.enrich(null, appender);
-
-    verify(arrayBuilder).append("list", "/v2/plugins/scripts");
-    verify(arrayBuilder).build();
+    verify(appender).appendOne("scripts", "/v2/plugins/scripts");
   }
 
   @Test
   void shouldNotAppendAnyLink() {
-    when(appender.arrayBuilder("scripts")).thenReturn(arrayBuilder);
     enricher.enrich(null, appender);
-    verify(arrayBuilder).build();
-  }
 
-  private void assignPermissions(String ...permissions) {
-    Set<String> assigned = Sets.newHashSet(permissions);
-    when(subject.isPermitted(anyString())).thenAnswer(ic -> assigned.contains(ic.getArgument(0)));
+    verify(appender, never()).appendOne("scripts", "/v2/plugins/scripts");
   }
 
 }

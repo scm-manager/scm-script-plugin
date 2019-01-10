@@ -25,26 +25,13 @@ public class IndexLinkEnricher implements LinkEnricher {
 
   @Override
   public void enrich(LinkEnricherContext context, LinkAppender appender) {
-    LinkBuilder linkBuilder = new LinkBuilder(scmPathInfoStore.get().get(), ScriptResource.class);
-
-    LinkAppender.LinkArrayBuilder builder = appender.arrayBuilder("scripts");
-
     if (ScriptPermissions.isPermittedToRead()) {
-      builder.append("list", createListLink(linkBuilder));
+      appender.appendOne("scripts", createListLink());
     }
-
-    if (ScriptPermissions.isPermittedToExecute()) {
-      builder.append("run", createRunLink(linkBuilder));
-    }
-
-    builder.build();
   }
 
-  private String createListLink(LinkBuilder builder) {
-    return builder.method("findAll").parameters().href();
-  }
-
-  private String createRunLink(LinkBuilder builder) {
-    return builder.method("run").parameters().href();
+  private String createListLink() {
+    LinkBuilder linkBuilder = new LinkBuilder(scmPathInfoStore.get().get(), ScriptResource.class);
+    return linkBuilder.method("findAll").parameters().href();
   }
 }

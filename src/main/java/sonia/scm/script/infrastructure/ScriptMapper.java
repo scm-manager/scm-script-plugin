@@ -65,6 +65,9 @@ public abstract class ScriptMapper {
       builder.single(Link.link("create", linkBuilder.method("create").parameters().href()));
     }
 
+    if (ScriptPermissions.isPermittedToExecute()) {
+      builder.single(Link.link("execute", linkBuilder.method("run").parameters().href()));
+    }
 
     List<ScriptDto> dtos = scripts.stream().map(this::map).collect(Collectors.toList());
     return new HalRepresentation(builder.build(), Embedded.embedded("scripts", dtos));
