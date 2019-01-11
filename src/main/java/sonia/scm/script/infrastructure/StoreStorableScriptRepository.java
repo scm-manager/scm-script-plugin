@@ -27,14 +27,12 @@ public class StoreStorableScriptRepository implements StorableScriptRepository {
   public StorableScript store(StorableScript script) {
     ScriptPermissions.checkModify();
 
-    if (script.getId().isPresent()) {
-      return modify(script);
-    }
-    return create(script);
+    Optional<String> id = script.getId();
+    return id.map(s -> modify(s, script)).orElseGet(() -> create(script));
   }
 
-  private StorableScript modify(StorableScript script) {
-    store.put(script.getId().get(), script);
+  private StorableScript modify(String id, StorableScript script) {
+    store.put(id, script);
     return script;
   }
 
