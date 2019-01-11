@@ -25,7 +25,7 @@ RepositoryManager repositoryManager = injector.getInstance(RepositoryManager.cla
 Repository repository = new Repository();
 repository.setType("git");
 repository.setName("created-from-script");
-repository.setDescription("This repository was created via a grooovy script");
+repository.setDescription("This repository was created via a groovy script");
 
 Repository created = repositoryManager.create(repository);
 
