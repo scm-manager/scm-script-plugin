@@ -21,6 +21,10 @@ export function store(link: string, script: Script) {
   return apiClient.post(link, script, "application/vnd.scmm-script+json;v=2");
 }
 
+export function modify(link: string, script: Script) {
+  return apiClient.put(link, script, "application/vnd.scmm-script+json;v=2");
+}
+
 export function findById(id: string) {
   return apiClient.get("/plugins/scripts/" + id).then(resp => resp.json());
 }

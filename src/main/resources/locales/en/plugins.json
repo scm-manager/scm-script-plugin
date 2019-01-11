@@ -14,7 +14,8 @@
     },
     "edit-form": {
       "run": "Run",
-      "save": "Save"
+      "save": "Save",
+      "save-success": "Successful stored script"
     },
     "navigation": {
       "run": "Run",
