@@ -16,7 +16,7 @@
     "react-ace": "^6.3.2"
   },
   "devDependencies": {
-    "@scm-manager/ui-bundler": "^0.0.21",
+    "@scm-manager/ui-bundler": "^0.0.24",
     "jest": "^23.6.0",
     "prettier": "^1.15.3"
   }
