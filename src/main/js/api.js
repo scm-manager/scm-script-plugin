@@ -3,7 +3,7 @@ import { apiClient } from "@scm-manager/ui-components";
 import type { Script, ScriptLinks } from "./types";
 import type { Links } from "@scm-manager/ui-types";
 
-// TODO extend api client
+// modifying headers is not supported in the apiclient
 export function run(link: string, language: string, content: string) {
   return fetch(link + "?lang=" + language, {
     credentials: "same-origin",
@@ -23,6 +23,10 @@ export function store(link: string, script: Script) {
 
 export function modify(link: string, script: Script) {
   return apiClient.put(link, script, "application/vnd.scmm-script+json;v=2");
+}
+
+export function remove(link: string) {
+  return apiClient.delete(link);
 }
 
 export function findById(id: string) {

@@ -3,15 +3,22 @@ import React from "react";
 import { withRouter } from "react-router-dom";
 import { translate } from "react-i18next";
 import { Navigation, NavLink, Section } from "@scm-manager/ui-components";
+import type { Script } from "../types";
+import DeleteNavAction from "./DeleteNavAction";
 
 type Props = {
+  script: Script,
+  onDelete: () => void,
+
+  // context props
   match: any,
   t: string => string
 };
 
 class ScriptNavigation extends React.Component<Props> {
   render() {
-    const { match, t } = this.props;
+    const { script, onDelete, match, t } = this.props;
+
     return (
       <Navigation>
         <Section label="Navigation">
@@ -21,10 +28,7 @@ class ScriptNavigation extends React.Component<Props> {
           />
         </Section>
         <Section label="Actions">
-          <NavLink
-            to="/scripts/samples"
-            label={t("scm-script-plugin.script-navigation.delete")}
-          />
+          <DeleteNavAction script={script} onDelete={onDelete} />
           <NavLink
             to="/scripts"
             label={t("scm-script-plugin.script-navigation.back")}

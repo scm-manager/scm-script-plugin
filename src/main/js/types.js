@@ -1,11 +1,12 @@
 // @flow
-import type { Collection } from "@scm-manager/ui-types";
+import type { Collection, Links } from "@scm-manager/ui-types";
 
 export type Script = {
   title?: string,
   description?: string,
   type: string,
-  content?: string
+  content?: string,
+  _links: Links
 };
 
 export type ScriptCollection = Collection & {

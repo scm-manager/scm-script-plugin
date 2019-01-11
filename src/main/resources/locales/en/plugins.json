@@ -9,8 +9,16 @@
     "primary-navigation": "Scripts",
     "script-navigation": {
       "edit": "Edit",
-      "delete": "Delete",
       "back": "Back"
+    },
+    "delete-nav-action": {
+      "confirm-alert": {
+        "title": "Delete script",
+        "message": "Do you really want to delete the script?",
+        "submit": "Yes",
+        "cancel": "No"
+      },
+      "delete": "Delete"
     },
     "edit-form": {
       "run": "Run",

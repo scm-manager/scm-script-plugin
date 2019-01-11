@@ -51,7 +51,7 @@ class ScriptRoot extends React.Component<Props, State> {
       return <ErrorNotification error={error} />;
     } else if (loading) {
       return <Loading />;
-    } else {
+    } else if (script) {
       return <ScriptMain links={links} script={script} />;
     }
   }
