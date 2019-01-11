@@ -10,6 +10,7 @@ import sonia.scm.script.domain.StorableScriptRepository;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -47,7 +48,7 @@ public class ScriptResource {
   @Path("")
   @Consumes(ScriptMediaType.ONE)
   @SuppressWarnings("squid:S3655") // id is never empty after store
-  public Response create(@Context UriInfo info, ScriptDto dto) {
+  public Response create(@Context UriInfo info, @Valid ScriptDto dto) {
     StorableScript script = repository.store(mapper.map(dto));
     URI uri = info.getRequestUriBuilder().path(script.getId().get()).build();
     return Response.created(uri).build();
@@ -75,7 +76,7 @@ public class ScriptResource {
   @PUT
   @Path("{id}")
   @Consumes(ScriptMediaType.ONE)
-  public Response modify(@PathParam("id") String id, ScriptDto dto) {
+  public Response modify(@PathParam("id") String id, @Valid ScriptDto dto) {
     if (id.equals(dto.getId())) {
       repository.store(mapper.map(dto));
       return Response.noContent().build();

@@ -6,14 +6,24 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 @Getter
 @Setter
 @EqualsAndHashCode
 class ScriptDto extends HalRepresentation {
 
   private String id;
+
+  @NotNull
+  @Size(min = 1)
   private String type;
+
+  @NotNull
+  @Size(min = 1)
   private String title;
+
   private String description;
   private String content;
 

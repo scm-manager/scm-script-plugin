@@ -123,6 +123,14 @@ class EditForm extends React.Component<Props, State> {
     );
   };
 
+  isTitleValid = () => {
+    return !!this.state.title;
+  };
+
+  isScriptValid = () => {
+    return this.isTitleValid();
+  };
+
   renderControlButtons = () => {
     const { loading } = this.state;
     const { script, links, t } = this.props;
@@ -147,6 +155,7 @@ class EditForm extends React.Component<Props, State> {
           color={btnColor}
           action={this.onSave}
           loading={loading}
+          disabled={!this.isScriptValid()}
         />
       );
     }
@@ -172,6 +181,8 @@ class EditForm extends React.Component<Props, State> {
             label={t("scm-script-plugin.title")}
             helpText={t("scm-script-plugin.titleHelp")}
             value={title}
+            validationError={!this.isTitleValid()}
+            errorMessage={t("scm-script-plugin.titleValidationError")}
             onChange={this.onValueChange}
           />
           <Textarea

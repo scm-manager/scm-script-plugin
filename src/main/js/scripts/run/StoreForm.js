@@ -26,7 +26,8 @@ class StoreForm extends React.Component<Props, State> {
         description: "",
         type: "Groovy"
       },
-      loading: false
+      loading: false,
+      titleValid: false
     };
   }
 
@@ -49,6 +50,14 @@ class StoreForm extends React.Component<Props, State> {
     this.props.onSubmit(this.state.script);
   };
 
+  isTitleValid = () => {
+    return !!this.state.script.title;
+  };
+
+  isScriptValid = () => {
+    return this.isTitleValid();
+  };
+
   render() {
     const { onAbort, t } = this.props;
     const { script, loading } = this.state;
@@ -61,6 +70,8 @@ class StoreForm extends React.Component<Props, State> {
           helpText={t("scm-script-plugin.titleHelp")}
           onChange={this.onChange}
           value={script.title}
+          validationError={!this.isTitleValid()}
+          errorMessage={t("scm-script-plugin.titleValidationError")}
         />
         <Textarea
           name="description"
@@ -72,6 +83,7 @@ class StoreForm extends React.Component<Props, State> {
         <SubmitButton
           label={t("scm-script-plugin.store-form.submit")}
           loading={loading}
+          disabled={!this.isScriptValid()}
         />
         <Button
           label={t("scm-script-plugin.store-form.abort")}

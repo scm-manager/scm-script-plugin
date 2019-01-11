@@ -1,6 +1,7 @@
 {
   "scm-script-plugin": {
     "title": "Title",
+    "titleValidationError": "Title must not be empty",
     "titleHelp": "Title of script, which is shown in the overview",
     "description": "Description",
     "descriptionHelp": "Short description of script",
