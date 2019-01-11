@@ -11,7 +11,7 @@
 
   <groupId>sonia.scm.plugins</groupId>
   <artifactId>scm-script-plugin</artifactId>
-  <packaging>jar</packaging>
+  <packaging>smp</packaging>
   <version>2.0.0-SNAPSHOT</version>
   <name>${project.artifactId}</name>
   <description>Script support for scm-manager.</description>
