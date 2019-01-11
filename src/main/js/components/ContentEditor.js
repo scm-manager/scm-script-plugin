@@ -27,7 +27,7 @@ class ContentEditor extends React.Component<Props> {
         mode="groovy"
         theme="tomorrow"
         onChange={this.onChange}
-        showGutter={false}
+        showGutter={true}
         readOnly={readOnly}
         name={name ? name : "contentEditor"}
         value={value}
