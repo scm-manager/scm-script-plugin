@@ -9,7 +9,7 @@ type Props = {
 class ContentViewer extends React.Component<Props> {
   render() {
     const { value } = this.props;
-    return <ContentEditor value={value} readOnly={true} />;
+    return <ContentEditor value={value} readOnly={true} onChange={() => {}} />;
   }
 }
 

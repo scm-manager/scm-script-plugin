@@ -1,13 +1,13 @@
 //@flow
 import React from "react";
-import type { Script } from "../../types";
+import type { Sample } from "../../types";
 import ContentViewer from "../../components/ContentViewer";
 
 type Props = {
-  sample: Script
+  sample: Sample
 };
 
-class Sample extends React.Component<Props> {
+class SamplePanel extends React.Component<Props> {
   render() {
     const { sample } = this.props;
     return (
@@ -20,4 +20,4 @@ class Sample extends React.Component<Props> {
   }
 }
 
-export default Sample;
+export default SamplePanel;

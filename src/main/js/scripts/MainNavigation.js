@@ -2,10 +2,8 @@
 import React from "react";
 import { translate } from "react-i18next";
 import { Navigation, NavLink, Section } from "@scm-manager/ui-components";
-import type { ScriptCollection } from "../types";
 
 type Props = {
-  collection: ScriptCollection,
   // context props
   t: string => string
 };

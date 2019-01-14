@@ -7,20 +7,25 @@ import "brace/mode/groovy";
 import "brace/theme/tomorrow";
 
 type Props = {
-  value: string,
+  value?: string,
   name?: string,
   readOnly?: boolean,
-  onChange: string => void
+  onChange: (value: string, name: string) => void
 };
 
 class ContentEditor extends React.Component<Props> {
-  onChange = value => {
-    const { name, onChange } = this.props;
-    onChange(value, name);
+  name = () => {
+    const { name } = this.props;
+    return name ? name : "contentEditor";
+  };
+
+  onChange = (value: string) => {
+    const { onChange } = this.props;
+    onChange(value, this.name());
   };
 
   render() {
-    const { name, readOnly, value } = this.props;
+    const { readOnly, value } = this.props;
 
     return (
       <AceEditor
@@ -29,8 +34,8 @@ class ContentEditor extends React.Component<Props> {
         onChange={this.onChange}
         showGutter={true}
         readOnly={readOnly}
-        name={name ? name : "contentEditor"}
-        value={value}
+        name={this.name()}
+        value={value ? value : ""}
         className="box"
         style={{ width: "100%", height: "250px" }}
       />

@@ -20,6 +20,9 @@ class ScriptTable extends React.Component<Props> {
         </thead>
         <tbody>
           {scripts.map(script => {
+            if (!script.id) {
+              return null;
+            }
             return (
               <tr key={script.id}>
                 <td>

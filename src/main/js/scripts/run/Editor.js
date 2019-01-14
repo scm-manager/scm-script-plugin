@@ -49,7 +49,7 @@ class Editor extends React.Component<Props, State> {
     this.setState({
       loading: true,
       output: "",
-      error: null
+      error: undefined
     });
 
     const { links } = this.props;
@@ -57,6 +57,7 @@ class Editor extends React.Component<Props, State> {
       this.setState({
         error: new Error("no permissions to execute scripts")
       });
+      return;
     }
 
     run(links.execute, "Groovy", this.state.script)
@@ -93,6 +94,7 @@ class Editor extends React.Component<Props, State> {
       this.setState({
         error: new Error("no permissions to create scripts")
       });
+      return;
     }
     script.content = this.state.script;
 

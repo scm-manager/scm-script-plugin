@@ -24,7 +24,8 @@ class StoreForm extends React.Component<Props, State> {
       script: {
         title: "",
         description: "",
-        type: "Groovy"
+        type: "Groovy",
+        _links: {}
       },
       loading: false,
       titleValid: false

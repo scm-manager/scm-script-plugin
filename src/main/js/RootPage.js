@@ -51,7 +51,7 @@ class RootPage extends React.Component<Props, State> {
       return <ErrorNotification error={error} />;
     } else if (loading) {
       return <Loading />;
-    } else {
+    } else if (links) {
       return (
         <>
           <Route path="/scripts" component={() => <Main links={links} />} />
@@ -61,6 +61,8 @@ class RootPage extends React.Component<Props, State> {
           />
         </>
       );
+    } else {
+      return null;
     }
   };
 

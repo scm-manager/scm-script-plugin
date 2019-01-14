@@ -1,7 +1,7 @@
 // @flow
-import type { Script } from "../../types";
+import type { Sample } from "../../types";
 
-const samples: Script[] = [
+const samples: Sample[] = [
   {
     title: "List installed plugins",
     description:

@@ -5,8 +5,14 @@ import { ProtectedRoute } from "@scm-manager/ui-components";
 import { translate } from "react-i18next";
 import ScriptNavigation from "./ScriptNavigation";
 import RootPage from "./RootPage";
+import type { Links } from "@scm-manager/ui-types";
 
-const ScriptRoute = ({ authenticated, links }) => {
+type RouteProps = {
+  authenticated: boolean,
+  links: Links
+};
+
+const ScriptRoute = ({ authenticated, links }: RouteProps) => {
   return (
     <>
       <ProtectedRoute
@@ -26,8 +32,12 @@ const ScriptRoute = ({ authenticated, links }) => {
 
 binder.bind("main.route", ScriptRoute);
 
+type PredicateProps = {
+  links: Links
+};
+
 // @VisibleForTesting
-export const predicate = ({ links }) => {
+export const predicate = ({ links }: PredicateProps) => {
   return !!(links && links.scripts);
 };
 

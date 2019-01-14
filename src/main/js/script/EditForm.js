@@ -45,11 +45,16 @@ class EditForm extends React.Component<Props, State> {
 
     const { script, links } = this.props;
     const { content } = this.state;
-    run(links.execute, script.type, content)
+
+    if (!links.execute) {
+      return;
+    }
+
+    run(links.execute, script.type, content ? content : "")
       .then(output =>
         this.setState({
           loading: false,
-          error: null,
+          error: undefined,
           output
         })
       )
@@ -57,7 +62,7 @@ class EditForm extends React.Component<Props, State> {
         this.setState({
           loading: false,
           error,
-          output: null
+          output: undefined
         })
       );
   };
@@ -76,7 +81,7 @@ class EditForm extends React.Component<Props, State> {
       .then(() =>
         this.setState({
           loading: false,
-          error: null,
+          error: undefined,
           saveSuccess: true
         })
       )
@@ -92,12 +97,12 @@ class EditForm extends React.Component<Props, State> {
     event.preventDefault();
     this.setState({
       loading: true,
-      error: null,
+      error: undefined,
       saveSuccess: false
     });
   };
 
-  onValueChange = (value, name) => {
+  onValueChange = (value: string, name: string) => {
     this.setState({
       [name]: value
     });

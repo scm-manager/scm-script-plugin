@@ -9,7 +9,7 @@ type Props = {
   links: ScriptLinks
 };
 
-class Main extends React.Component<Props, State> {
+class Main extends React.Component<Props> {
   render() {
     const { links } = this.props;
 
@@ -19,7 +19,7 @@ class Main extends React.Component<Props, State> {
           <MainRouting links={links} />
         </div>
         <div className="column">
-          <MainNavigation links={links} />
+          <MainNavigation />
         </div>
       </div>
     );

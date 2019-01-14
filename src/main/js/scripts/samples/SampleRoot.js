@@ -1,7 +1,7 @@
 //@flow
 import React from "react";
 import samples from "./samples";
-import Sample from "./Sample";
+import SamplePanel from "./SamplePanel";
 
 type Props = {};
 
@@ -10,7 +10,7 @@ class SampleRoot extends React.Component<Props> {
     return (
       <div>
         {samples.map(sample => (
-          <Sample sample={sample} />
+          <SamplePanel sample={sample} />
         ))}
       </div>
     );
