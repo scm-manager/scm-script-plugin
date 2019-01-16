@@ -1,6 +1,7 @@
 package sonia.scm.script.infrastructure;
 
 import com.google.inject.Injector;
+import sonia.scm.plugin.PluginLoader;
 import sonia.scm.script.domain.ExecutionContext;
 import sonia.scm.script.domain.Executor;
 import sonia.scm.script.domain.Script;
@@ -19,11 +20,13 @@ import java.util.List;
 public class JSR223Executor implements Executor {
 
   private final ScriptEngineManagerProvider scriptEngineManagerProvider;
+  private final PluginLoader pluginLoader;
   private final Injector injector;
 
   @Inject
-  public JSR223Executor(ScriptEngineManagerProvider scriptEngineManagerProvider, Injector injector) {
+  public JSR223Executor(ScriptEngineManagerProvider scriptEngineManagerProvider, PluginLoader pluginLoader, Injector injector) {
     this.scriptEngineManagerProvider = scriptEngineManagerProvider;
+    this.pluginLoader = pluginLoader;
     this.injector = injector;
   }
 
@@ -36,10 +39,14 @@ public class JSR223Executor implements Executor {
   }
 
   private void executeScript(ScriptEngine engine, SimpleScriptContext scriptContext, String content) {
+    ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
     try {
+      Thread.currentThread().setContextClassLoader(pluginLoader.getUberClassLoader());
       engine.eval(content, scriptContext);
     } catch (ScriptException e) {
       throw new ScriptExecutionException("failed to execute script", e);
+    } finally {
+      Thread.currentThread().setContextClassLoader(contextClassLoader);
     }
   }
 

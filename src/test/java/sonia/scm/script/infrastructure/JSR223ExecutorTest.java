@@ -6,10 +6,12 @@ import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import sonia.scm.plugin.PluginLoader;
 import sonia.scm.script.domain.ExecutionContext;
 import sonia.scm.script.domain.StorableScript;
 import sonia.scm.script.domain.ScriptExecutionException;
@@ -21,6 +23,7 @@ import java.io.StringWriter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class JSR223ExecutorTest {
@@ -33,9 +36,12 @@ class JSR223ExecutorTest {
   @Mock
   private Subject subject;
 
+  @Mock
+  private PluginLoader pluginLoader;
+
   @BeforeEach
   void beforeEach() {
-    executor = new JSR223Executor(ScriptEngineManagerProvider.context(), injector);
+    executor = new JSR223Executor(ScriptEngineManagerProvider.context(), pluginLoader, injector);
     ThreadContext.bind(subject);
   }
 
@@ -44,36 +50,49 @@ class JSR223ExecutorTest {
     ThreadContext.unbindSubject();
   }
 
-  @Test
-  void shouldExecuteGroovyScript() {
-    StorableScript script = createScript("print \"Don't Panic\"");
-    assertThat(execute(script)).isEqualTo("Don't Panic");
-  }
+  @Nested
+  class ExecutionTests {
 
-  @Test
-  void shouldPassInput() {
-    StorableScript script = createScript("print context.reader.readLine()");
-    assertThat(execute(script, "Don't Panic").trim()).isEqualTo("Don't Panic");
-  }
+    private ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
-  @Test
-  void shouldPassInjector() {
-    StorableScript script = createScript("print injector != null");
-    assertThat(execute(script)).isEqualTo("true");
-  }
+    @BeforeEach
+    void beforeEach() {
+      when(pluginLoader.getUberClassLoader()).thenReturn(classLoader);
+    }
 
-  @Test
-  void shouldPassAttribute() {
-    StringWriter writer = new StringWriter();
-    ExecutionContext context = ExecutionContext.builder()
-      .withOutput(writer)
-      .withAttribute("message", "Don't Panic")
-      .build();
 
-    StorableScript script = createScript("print message");
-    executor.execute(script, context);
+    @Test
+    void shouldExecuteGroovyScript() {
+      StorableScript script = createScript("print \"Don't Panic\"");
+      assertThat(execute(script)).isEqualTo("Don't Panic");
+    }
 
-    assertThat(writer.toString()).isEqualTo("Don't Panic");
+    @Test
+    void shouldPassInput() {
+      StorableScript script = createScript("print context.reader.readLine()");
+      assertThat(execute(script, "Don't Panic").trim()).isEqualTo("Don't Panic");
+    }
+
+    @Test
+    void shouldPassInjector() {
+      StorableScript script = createScript("print injector != null");
+      assertThat(execute(script)).isEqualTo("true");
+    }
+
+    @Test
+    void shouldPassAttribute() {
+      StringWriter writer = new StringWriter();
+      ExecutionContext context = ExecutionContext.builder()
+        .withOutput(writer)
+        .withAttribute("message", "Don't Panic")
+        .build();
+
+      StorableScript script = createScript("print message");
+      executor.execute(script, context);
+
+      assertThat(writer.toString()).isEqualTo("Don't Panic");
+    }
+
   }
 
   @Test
