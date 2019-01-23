@@ -1,20 +1,24 @@
 // @flow
 import { apiClient } from "@scm-manager/ui-components";
-import type { Script, ScriptLinks } from "./types";
+import type { Script, ScriptExecutionResult, ScriptLinks } from "./types";
 import type { Links } from "@scm-manager/ui-types";
 
 // modifying headers is not supported in the apiclient
-export function run(link: string, language: string, content: string) {
+export function run(
+  link: string,
+  language: string,
+  content: string
+): Promise<ScriptExecutionResult> {
   return fetch(link + "?lang=" + language, {
     credentials: "same-origin",
     headers: {
       Cache: "no-cache",
-      Accept: "text/plain",
+      Accept: "application/vnd.scmm-script-execution-result+json;v=2",
       "Content-Type": "text/plain"
     },
     method: "POST",
     body: content
-  }).then(resp => resp.text());
+  }).then(resp => resp.json());
 }
 
 export function store(link: string, script: Script) {

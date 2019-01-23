@@ -10,19 +10,17 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import sonia.scm.script.ScriptTestData;
 import sonia.scm.script.domain.ExecutionContext;
+import sonia.scm.script.domain.ExecutionResult;
 import sonia.scm.script.domain.Executor;
+import sonia.scm.script.domain.Script;
 import sonia.scm.script.domain.StorableScript;
-import sonia.scm.script.domain.ScriptExecutionException;
 import sonia.scm.script.domain.StorableScriptRepository;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.net.URI;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -131,12 +129,11 @@ class StorableScriptResourceTest {
   }
 
   @Test
-  void shouldExecuteTheScript() throws IOException {
-    HttpServletResponse response = mock(HttpServletResponse.class);
-    PrintWriter writer = new PrintWriter(new StringWriter());
-    when(response.getWriter()).thenReturn(writer);
+  void shouldExecuteTheScript() {
+    ExecutionResult executionResult = new ExecutionResult(true, "Hello World", Instant.now(), Instant.now());
+    when(executor.execute(any(Script.class), any(ExecutionContext.class))).thenReturn(executionResult);
 
-    resource.run(response, "Groovy", "println 'Hello World';");
+    ExecutionResult result = resource.run("Groovy", "println 'Hello World';");
 
     ArgumentCaptor<StorableScript> scriptCaptor = ArgumentCaptor.forClass(StorableScript.class);
     ArgumentCaptor<ExecutionContext> contextCaptor = ArgumentCaptor.forClass(ExecutionContext.class);
@@ -147,49 +144,6 @@ class StorableScriptResourceTest {
     assertThat(script.getType()).isEqualTo("Groovy");
     assertThat(script.getContent()).isEqualTo("println 'Hello World';");
 
-    ExecutionContext context = contextCaptor.getValue();
-    assertThat(context.getOutput()).isSameAs(writer);
-  }
-
-  @Test
-  void shouldCatchAndUnwrapScriptException() throws IOException {
-    ScriptExecutionException ex = new ScriptExecutionException("wrapped", new IOException("damn"));
-
-    doThrow(ex).when(executor).execute(any(StorableScript.class), any(ExecutionContext.class));
-
-    String resource = execute();
-    assertThat(resource).startsWith(IOException.class.getName());
-  }
-
-  @Test
-  void shouldCatchScriptException() throws IOException {
-    ScriptExecutionException ex = new ScriptExecutionException("wrapped");
-
-    doThrow(ex).when(executor).execute(any(StorableScript.class), any(ExecutionContext.class));
-
-    String resource = execute();
-    assertThat(resource).startsWith(ScriptExecutionException.class.getName());
-  }
-
-  @Test
-  void shouldCatch() throws IOException {
-    RuntimeException ex = new RuntimeException("uncatchable");
-
-    doThrow(ex).when(executor).execute(any(StorableScript.class), any(ExecutionContext.class));
-
-    String resource = execute();
-    assertThat(resource).startsWith(RuntimeException.class.getName());
-  }
-
-  private String execute() throws IOException {
-    HttpServletResponse response = mock(HttpServletResponse.class);
-    StringWriter stringWriter = new StringWriter();
-    PrintWriter printWriter = new PrintWriter(stringWriter);
-    when(response.getWriter()).thenReturn(printWriter);
-
-    resource.run(response, "Groovy", "println 'Hello World';");
-
-    printWriter.flush();
-    return stringWriter.toString();
+    assertThat(result).isSameAs(executionResult);
   }
 }

@@ -2,6 +2,6 @@ package sonia.scm.script.domain;
 
 public interface Executor {
 
-  void execute(Script script, ExecutionContext context);
+  ExecutionResult execute(Script script, ExecutionContext context);
 
 }

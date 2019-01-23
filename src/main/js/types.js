@@ -28,3 +28,10 @@ export type ScriptLinks = {
   create?: string,
   execute?: string
 };
+
+export type ScriptExecutionResult = {
+  success: boolean,
+  output: string,
+  started: string,
+  ended: string
+};

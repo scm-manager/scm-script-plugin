@@ -6,6 +6,7 @@ final class ScriptMediaType {
 
   static final String ONE = VndMediaType.PREFIX + "script" + VndMediaType.SUFFIX;
   static final String COLLECTION = VndMediaType.PREFIX + "script-collection" + VndMediaType.SUFFIX;
+  static final String EXECUTION_RESULT = VndMediaType.PREFIX + "script-execution-result" + VndMediaType.SUFFIX;
 
   private ScriptMediaType() {}
 

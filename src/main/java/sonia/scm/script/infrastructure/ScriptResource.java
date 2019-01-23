@@ -1,15 +1,13 @@
 package sonia.scm.script.infrastructure;
 
-import com.google.common.base.Throwables;
 import de.otto.edison.hal.HalRepresentation;
 import sonia.scm.script.domain.ExecutionContext;
+import sonia.scm.script.domain.ExecutionResult;
 import sonia.scm.script.domain.Executor;
 import sonia.scm.script.domain.StorableScript;
-import sonia.scm.script.domain.ScriptExecutionException;
 import sonia.scm.script.domain.StorableScriptRepository;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -24,9 +22,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Writer;
 import java.net.URI;
 import java.util.Optional;
 
@@ -93,35 +88,10 @@ public class ScriptResource {
 
   @POST
   @Path("run")
-  @Produces(MediaType.TEXT_PLAIN)
   @Consumes(MediaType.TEXT_PLAIN)
-  public void run(@Context HttpServletResponse response, @QueryParam("lang") String type, String content) throws IOException {
-    StorableScript script = new StorableScript(type, content);
-    try (PrintWriter writer = response.getWriter()) {
-      execute(writer, script);
-    }
+  @Produces(ScriptMediaType.EXECUTION_RESULT)
+  public ExecutionResult run(@QueryParam("lang") String type, String content) {
+    return executor.execute(new StorableScript(type, content), ExecutionContext.empty());
   }
-
-  @SuppressWarnings("squid:S1181") // we have to catch RuntimeException in order to report it back
-  private void execute(Writer writer, StorableScript script) throws IOException {
-    try {
-      executor.execute(
-        script,
-        ExecutionContext.builder()
-          .withOutput(writer)
-          .build()
-      );
-    } catch (ScriptExecutionException ex) {
-      Throwable cause = ex.getCause();
-      if (cause == null) {
-        cause = ex;
-      }
-      writer.append(Throwables.getStackTraceAsString(cause));
-    }
-    catch (Throwable ex) {
-      writer.append(Throwables.getStackTraceAsString(ex));
-    }
-  }
-
 
 }

@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sonia.scm.plugin.Extension;
 import sonia.scm.script.domain.ExecutionContext;
+import sonia.scm.script.domain.ExecutionResult;
 import sonia.scm.script.domain.Executor;
 import sonia.scm.script.domain.InitScript;
 import sonia.scm.script.domain.ScriptExecutionException;
@@ -51,15 +52,9 @@ public class InitScriptContextListener implements ServletContextListener {
   }
 
   private void executeScript(InitScript script) {
-    StringWriter writer = new StringWriter();
-
-    ExecutionContext context = ExecutionContext.builder()
-      .withOutput(writer)
-      .build();
-
     try {
-      executor.execute(script, context);
-      LOG.debug("{}: {}", script, writer);
+      ExecutionResult result = executor.execute(script, ExecutionContext.empty());
+      LOG.debug("{}: {}", script, result);
     } catch (ScriptExecutionException ex) {
       LOG.error("failed to execute script", ex);
     }

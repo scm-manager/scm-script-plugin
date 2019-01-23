@@ -9,7 +9,7 @@ import ContentEditor from "../../components/ContentEditor";
 import { run, store } from "../../api";
 import Button from "@scm-manager/ui-components/src/buttons/Button";
 import StoreDialog from "./StoreDialog";
-import type { Script, ScriptLinks } from "../../types";
+import type { Script, ScriptExecutionResult, ScriptLinks } from "../../types";
 
 type Props = {
   links: ScriptLinks,
@@ -23,7 +23,7 @@ type Props = {
 type State = {
   script: string,
   loading: boolean,
-  output: string,
+  result?: ScriptExecutionResult,
   error?: Error,
   showStoreDialog: boolean
 };
@@ -34,7 +34,6 @@ class Editor extends React.Component<Props, State> {
     this.state = {
       script: props.value ? props.value : "println 'Hello World'",
       loading: false,
-      output: "",
       showStoreDialog: false
     };
   }
@@ -48,7 +47,7 @@ class Editor extends React.Component<Props, State> {
   execute = () => {
     this.setState({
       loading: true,
-      output: "",
+      result: undefined,
       error: undefined
     });
 
@@ -61,9 +60,9 @@ class Editor extends React.Component<Props, State> {
     }
 
     run(links.execute, "Groovy", this.state.script)
-      .then(output =>
+      .then(result =>
         this.setState({
-          output,
+          result,
           loading: false
         })
       )
@@ -138,7 +137,7 @@ class Editor extends React.Component<Props, State> {
   };
 
   render() {
-    const { showStoreDialog, script, output, error } = this.state;
+    const { showStoreDialog, script, result, error } = this.state;
 
     const storeDialog = showStoreDialog ? (
       <StoreDialog onSubmit={this.store} onClose={this.closeStoreDialog} />
@@ -147,7 +146,7 @@ class Editor extends React.Component<Props, State> {
     const body = error ? (
       <ErrorNotification error={error} />
     ) : (
-      <Output output={output} />
+      <Output result={result} />
     );
 
     return (

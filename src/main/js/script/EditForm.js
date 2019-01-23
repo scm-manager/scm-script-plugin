@@ -1,6 +1,6 @@
 //@flow
 import React from "react";
-import type { Script, ScriptLinks } from "../types";
+import type { Script, ScriptExecutionResult, ScriptLinks } from "../types";
 import {
   InputField,
   LabelWithHelpIcon,
@@ -26,7 +26,7 @@ type Props = {
 type State = Script & {
   loading: boolean,
   error?: Error,
-  output?: string,
+  result?: ScriptExecutionResult,
   saveSuccess: boolean
 };
 
@@ -51,18 +51,18 @@ class EditForm extends React.Component<Props, State> {
     }
 
     run(links.execute, script.type, content ? content : "")
-      .then(output =>
+      .then(result =>
         this.setState({
           loading: false,
           error: undefined,
-          output
+          result
         })
       )
       .catch(error =>
         this.setState({
           loading: false,
           error,
-          output: undefined
+          result: undefined
         })
       );
   };
@@ -175,7 +175,7 @@ class EditForm extends React.Component<Props, State> {
 
   render() {
     const { t } = this.props;
-    const { title, description, content, output } = this.state;
+    const { title, description, content, result } = this.state;
 
     return (
       <>
@@ -210,7 +210,7 @@ class EditForm extends React.Component<Props, State> {
           </div>
           {this.renderControlButtons()}
         </form>
-        <Output output={output} />
+        <Output result={result} />
       </>
     );
   }

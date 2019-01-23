@@ -4,6 +4,7 @@ import com.google.inject.Injector;
 import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -13,17 +14,19 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import sonia.scm.plugin.PluginLoader;
 import sonia.scm.script.domain.ExecutionContext;
-import sonia.scm.script.domain.StorableScript;
-import sonia.scm.script.domain.ScriptExecutionException;
+import sonia.scm.script.domain.ExecutionResult;
 import sonia.scm.script.domain.ScriptTypeNotFoundException;
+import sonia.scm.script.domain.StorableScript;
 
-import java.io.StringReader;
-import java.io.StringWriter;
+import java.time.Clock;
+import java.time.Instant;
+import java.util.Collections;
+import java.util.List;
+import java.util.Stack;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class JSR223ExecutorTest {
@@ -60,39 +63,79 @@ class JSR223ExecutorTest {
       when(pluginLoader.getUberClassLoader()).thenReturn(classLoader);
     }
 
-
     @Test
     void shouldExecuteGroovyScript() {
       StorableScript script = createScript("print \"Don't Panic\"");
-      assertThat(execute(script)).isEqualTo("Don't Panic");
+      ExecutionResult result = executor.execute(script, ExecutionContext.empty());
+      assertSuccess(result, "Don't Panic");
     }
 
-    @Test
-    void shouldPassInput() {
-      StorableScript script = createScript("print context.reader.readLine()");
-      assertThat(execute(script, "Don't Panic").trim()).isEqualTo("Don't Panic");
+    private void assertSuccess(ExecutionResult result, String expectedOutput) {
+      assertThat(result.isSuccess()).isTrue();
+      assertThat(result.getOutput()).isEqualTo(expectedOutput);
     }
 
     @Test
     void shouldPassInjector() {
       StorableScript script = createScript("print injector != null");
-      assertThat(execute(script)).isEqualTo("true");
+      ExecutionResult result = executor.execute(script, ExecutionContext.empty());
+      assertSuccess(result, "true");
     }
 
     @Test
     void shouldPassAttribute() {
-      StringWriter writer = new StringWriter();
       ExecutionContext context = ExecutionContext.builder()
-        .withOutput(writer)
         .withAttribute("message", "Don't Panic")
         .build();
 
       StorableScript script = createScript("print message");
-      executor.execute(script, context);
-
-      assertThat(writer.toString()).isEqualTo("Don't Panic");
+      ExecutionResult result = executor.execute(script, context);
+      assertSuccess(result, "Don't Panic");
     }
 
+    @Test
+    void shouldCollectStartAndEndDate() {
+      StorableScript script = createScript("print \"Don't Panic\"");
+      assertStartedAndEnded(script);
+    }
+
+    @Test
+    void shouldCollectionStartAndEndDateEvenOnAFailedScript() {
+      StorableScript script = createScript("invalid");
+      assertStartedAndEnded(script);
+    }
+
+    private void assertStartedAndEnded(StorableScript script) {
+      Instant one = Instant.ofEpochMilli(42L);
+      Instant two = Instant.ofEpochMilli(422L);
+
+      mockClock(one, two);
+
+      ExecutionResult result = executor.execute(script, ExecutionContext.empty());
+      assertThat(result.getStarted()).isEqualTo(one);
+      assertThat(result.getEnded()).isEqualTo(two);
+    }
+
+    private void mockClock(Instant... instants) {
+      List<Instant> list = Lists.newArrayList(instants);
+      Collections.reverse(list);
+
+      Stack<Instant> stack = new Stack<>();
+      stack.addAll(list);
+
+      Clock clock = mock(Clock.class);
+      when(clock.instant()).then(ic -> stack.pop());
+
+      executor.setClock(clock);
+    }
+
+    @Test
+    void shouldReturnFailedResultWithStackTrace() {
+      StorableScript script = new StorableScript("Groovy", "should fail");
+      ExecutionResult result = executor.execute(script, ExecutionContext.empty());
+      assertThat(result.isSuccess()).isFalse();
+      assertThat(result.getOutput()).contains("No such property");
+    }
   }
 
   @Test
@@ -102,38 +145,15 @@ class JSR223ExecutorTest {
   }
 
   @Test
-  void shouldThrowScriptExecutionException() {
-    StorableScript script = new StorableScript("Groovy", "should fail");
-    assertThrows(ScriptExecutionException.class, () -> executor.execute(script, ExecutionContext.builder().build()));
-  }
-
-  @Test
   void shouldThrowAuthorizationException() {
     doThrow(AuthorizationException.class).when(subject).checkPermission("script:execute");
 
     StorableScript script = createScript("print \"Don't Panic\"");
-    assertThrows(AuthorizationException.class, () -> execute(script));
+    assertThrows(AuthorizationException.class, () -> executor.execute(script, ExecutionContext.empty()));
   }
 
   private StorableScript createScript(String content) {
     return new StorableScript("Groovy", content);
   }
-
-  private String execute(StorableScript script) {
-    return execute(script, "");
-  }
-
-  private String execute(StorableScript script, String input) {
-    StringWriter writer = new StringWriter();
-    ExecutionContext context = ExecutionContext.builder()
-      .withOutput(writer)
-      .withInput(new StringReader(input))
-      .build();
-
-    executor.execute(script, context);
-
-    return writer.toString();
-  }
-
 
 }
