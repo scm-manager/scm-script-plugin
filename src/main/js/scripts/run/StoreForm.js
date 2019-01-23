@@ -66,6 +66,7 @@ class StoreForm extends React.Component<Props, State> {
     return (
       <form onSubmit={this.onSubmit}>
         <InputField
+          autofocus={true}
           name="title"
           label={t("scm-script-plugin.title")}
           helpText={t("scm-script-plugin.titleHelp")}
