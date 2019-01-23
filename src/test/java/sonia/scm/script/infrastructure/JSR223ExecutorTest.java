@@ -94,6 +94,13 @@ class JSR223ExecutorTest {
     }
 
     @Test
+    void shouldTrimOutput() {
+      StorableScript script = createScript("println ' Panic now  '");
+      ExecutionResult result = executor.execute(script, ExecutionContext.empty());
+      assertSuccess(result, "Panic now");
+    }
+
+    @Test
     void shouldCollectStartAndEndDate() {
       StorableScript script = createScript("print \"Don't Panic\"");
       assertStartedAndEnded(script);

@@ -82,7 +82,11 @@ public class JSR223Executor implements Executor {
   }
 
   private ExecutionResult createResult(boolean success, Instant started, StringWriter writer) {
-    return new ExecutionResult(success, writer.toString(), started, now());
+    return new ExecutionResult(success, createOutput(writer), started, now());
+  }
+
+  private String createOutput(StringWriter writer) {
+    return writer.toString().trim();
   }
 
   private void appendException(StringWriter writer, ScriptException e) {
