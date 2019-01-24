@@ -8,6 +8,7 @@ import sonia.scm.script.domain.EventTypeRepository;
 import sonia.scm.script.domain.ExecutionContext;
 import sonia.scm.script.domain.ExecutionResult;
 import sonia.scm.script.domain.Executor;
+import sonia.scm.script.domain.ScriptNotFoundException;
 import sonia.scm.script.domain.StorableScript;
 import sonia.scm.script.domain.StorableScriptRepository;
 
@@ -96,7 +97,7 @@ public class ScriptResource {
   private StorableScript findScriptById(String id) {
     Optional<StorableScript> byId = repository.findById(id);
     if (!byId.isPresent()) {
-      throw NotFoundException.notFound(ContextEntry.ContextBuilder.entity(StorableScript.class, id));
+      throw new ScriptNotFoundException(id);
     }
     return byId.get();
   }
