@@ -39,6 +39,7 @@ export type ScriptExecutionResult = {
 
 export type Listeners = {
   listeners: Listener[],
+  storeListenerExecutionResults: boolean,
   _links: Links
 };
 

@@ -16,6 +16,7 @@ import java.util.List;
 public class ListenersDto extends HalRepresentation {
 
   private List<ListenerDto> listeners;
+  private boolean storeListenerExecutionResults;
 
   @Override
   @SuppressWarnings("squid:S1185") // We want to have this method available in this package

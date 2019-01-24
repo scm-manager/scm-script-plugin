@@ -83,7 +83,9 @@ public class ScriptResource {
   @Produces(ScriptMediaType.LISTENER_COLLECTION)
   public Response getListeners(@PathParam("id") String id) {
     StorableScript script = findScriptById(id);
-    ListenersDto collectionDto = listenerMapper.toCollection(script.getId().get(), script.getListeners());
+    ListenersDto collectionDto = listenerMapper.toCollection(
+      script.getId().get(), script.getListeners(), script.isStoreListenerExecutionResults()
+    );
     return Response.ok(collectionDto).build();
   }
 
@@ -109,6 +111,7 @@ public class ScriptResource {
     StorableScript script = findScriptById(id);
 
     script.setListeners(listenerMapper.fromCollection(collectionDto));
+    script.setStoreListenerExecutionResults(collectionDto.isStoreListenerExecutionResults());
     repository.store(script);
 
     return Response.status(Response.Status.NO_CONTENT).build();

@@ -51,7 +51,8 @@
       "eventType": "Type",
       "asynchronous": "Asynchronous",
       "remove": "Remove",
-      "submit": "Add Listener"
+      "submit": "Add Listener",
+      "storeListenerExecutionResults": "Capture listener execution results"
     }
   }
 }

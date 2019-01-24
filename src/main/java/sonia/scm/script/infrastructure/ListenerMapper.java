@@ -35,7 +35,7 @@ public abstract class ListenerMapper {
     return collectionDto.getListeners().stream().map(this::map).collect(Collectors.toList());
   }
 
-  ListenersDto toCollection(String scriptId, List<Listener> listeners) {
+  ListenersDto toCollection(String scriptId, List<Listener> listeners, boolean storeListenerExecutionResults) {
     LinkBuilder linkBuilder = new LinkBuilder(scmPathInfoStore.get(), ScriptResource.class);
 
     Links.Builder builder = linkingTo();
@@ -46,7 +46,7 @@ public abstract class ListenerMapper {
     }
 
     List<ListenerDto> dtos = listeners.stream().map(this::map).collect(Collectors.toList());
-    ListenersDto collectionDto = new ListenersDto(dtos);
+    ListenersDto collectionDto = new ListenersDto(dtos, storeListenerExecutionResults);
     collectionDto.add(builder.build());
     return collectionDto;
   }

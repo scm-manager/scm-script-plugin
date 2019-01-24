@@ -44,14 +44,14 @@ class ListenerMapperTest {
 
   @Test
   void shouldAppendSelfLink() {
-    ListenersDto dto = mapper.toCollection("42", ImmutableList.of());
+    ListenersDto dto = mapper.toCollection("42", ImmutableList.of(), false);
 
     assertThat(dto.getLinks().getLinkBy("self").get().getHref()).isEqualTo("/v2/plugins/scripts/42/listeners");
   }
 
   @Test
   void shouldNotAppendUpdateLink() {
-    ListenersDto dto = mapper.toCollection("42", ImmutableList.of());
+    ListenersDto dto = mapper.toCollection("42", ImmutableList.of(), false);
 
     assertThat(dto.getLinks().getLinkBy("update")).isNotPresent();
   }
@@ -60,7 +60,7 @@ class ListenerMapperTest {
   void shouldAppendUpdateLink() {
     when(subject.isPermitted("script:modify")).thenReturn(true);
 
-    ListenersDto dto = mapper.toCollection("42", ImmutableList.of());
+    ListenersDto dto = mapper.toCollection("42", ImmutableList.of(), false);
     assertThat(dto.getLinks().getLinkBy("update").get().getHref()).isEqualTo("/v2/plugins/scripts/42/listeners");
   }
 
@@ -70,9 +70,10 @@ class ListenerMapperTest {
     Listener two = new Listener(Integer.class, false);
     ImmutableList<Listener> listeners = ImmutableList.of(one, two);
 
-    ListenersDto dto = mapper.toCollection("42", listeners);
+    ListenersDto dto = mapper.toCollection("42", listeners, true);
 
     List<ListenerDto> dtos = dto.getListeners();
+    assertThat(dto.isStoreListenerExecutionResults()).isTrue();
     assertThat(dtos).hasSize(2);
 
     ListenerDto dtoOne = dtos.get(0);
@@ -94,7 +95,7 @@ class ListenerMapperTest {
     dtoTwo.setEventType(Integer.class);
     dtoTwo.setAsynchronous(false);
 
-    ListenersDto listenersDto = new ListenersDto(ImmutableList.of(dtoOne, dtoTwo));
+    ListenersDto listenersDto = new ListenersDto(ImmutableList.of(dtoOne, dtoTwo), true);
 
     List<Listener> listeners = mapper.fromCollection(listenersDto);
     assertThat(listeners).hasSize(2);

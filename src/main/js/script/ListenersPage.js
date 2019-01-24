@@ -31,6 +31,7 @@ class ListenersPage extends React.Component<Props, State> {
       eventTypes: [],
       listeners: {
         listeners: [],
+        storeListenerExecutionResults: false,
         _links: {}
       },
       asynchronous: true
@@ -90,19 +91,37 @@ class ListenersPage extends React.Component<Props, State> {
     const index = listeners.listeners.indexOf(listener);
     if (index >= 0) {
       listeners.listeners.splice(index, 1);
-
-      storeListeners(listeners._links.update.href, listeners)
-        .then(() =>
-          this.setState({
-            listeners
-          })
-        )
-        .catch(error =>
-          this.setState({
-            error
-          })
-        );
+      this.updateListeners();
     }
+  };
+
+  onToggleStoreListenerExecutionResultsChange = (
+    storeListenerExecutionResults: boolean
+  ) => {
+    this.setState(state => {
+      return {
+        listeners: {
+          ...state.listeners,
+          storeListenerExecutionResults
+        }
+      };
+    }, this.updateListeners);
+  };
+
+  updateListeners = () => {
+    const { listeners } = this.state;
+
+    storeListeners(listeners._links.update.href, listeners)
+      .then(() =>
+        this.setState({
+          listeners
+        })
+      )
+      .catch(error =>
+        this.setState({
+          error
+        })
+      );
   };
 
   onSubmit = (e: Event) => {
@@ -156,6 +175,14 @@ class ListenersPage extends React.Component<Props, State> {
           </thead>
           <tbody>{listeners.listeners.map(this.renderListenerRow)}</tbody>
         </table>
+        <hr />
+        <Checkbox
+          name={"storeListenerExecutionResults"}
+          label={t("scm-script-plugin.listeners.storeListenerExecutionResults")}
+          checked={listeners.storeListenerExecutionResults}
+          onChange={this.onToggleStoreListenerExecutionResultsChange}
+        />
+        <hr />
         <form onSubmit={this.onSubmit}>
           <Select
             name={"eventType"}

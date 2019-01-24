@@ -179,7 +179,7 @@ class ScriptResourceTest {
     when(repository.findById("42")).thenReturn(Optional.of(script));
 
     ListenersDto listenersDto = new ListenersDto();
-    when(listenerMapper.toCollection(anyString(), any(List.class))).thenReturn(listenersDto);
+    when(listenerMapper.toCollection(anyString(), any(List.class), anyBoolean())).thenReturn(listenersDto);
 
     Response response = resource.getListeners("42");
     assertThat(response.getStatus()).isEqualTo(200);
@@ -199,6 +199,7 @@ class ScriptResourceTest {
     when(repository.findById("42")).thenReturn(Optional.of(script));
 
     ListenersDto dto = new ListenersDto();
+    dto.setStoreListenerExecutionResults(true);
     when(listenerMapper.fromCollection(dto)).thenReturn(ImmutableList.of(new Listener(String.class, false)));
 
 
@@ -206,6 +207,7 @@ class ScriptResourceTest {
     assertThat(response.getStatus()).isEqualTo(204);
 
     assertThat(script.getListeners().get(0).getEventType()).isEqualTo(String.class);
+    assertThat(script.isStoreListenerExecutionResults()).isTrue();
     verify(repository).store(script);
   }
 
