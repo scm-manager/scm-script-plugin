@@ -2,6 +2,7 @@ package sonia.scm.script.domain;
 
 import com.google.common.collect.EvictingQueue;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import lombok.Setter;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -64,7 +65,7 @@ public final class StorableScript extends Script {
   }
 
   public List<ExecutionHistoryEntry> getExecutionHistory() {
-    return ImmutableList.copyOf(executionHistory);
+    return Lists.reverse(ImmutableList.copyOf(executionHistory));
   }
 
   public void addListener(Listener listener) {

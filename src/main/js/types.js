@@ -47,3 +47,8 @@ export type Listener = {
   eventType: string,
   asynchronous: boolean
 };
+
+export type ExecutionHistoryEntry = {
+  listener: Listener,
+  result: ScriptExecutionResult
+};

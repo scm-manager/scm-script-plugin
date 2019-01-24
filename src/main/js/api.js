@@ -1,6 +1,7 @@
 // @flow
 import { apiClient } from "@scm-manager/ui-components";
 import type {
+  ExecutionHistoryEntry,
   Listeners,
   Script,
   ScriptExecutionResult,
@@ -86,4 +87,13 @@ export function findAllScriptLinks(indexLink: string): Promise<ScriptLinks> {
     .then(resp => resp.json())
     .then(json => json._links)
     .then(links => createScriptLinks(indexLink, links));
+}
+
+export function findHistory(link: string): Promise<ExecutionHistoryEntry[]> {
+  return apiClient
+    .get(link)
+    .then(resp => resp.json())
+    .then(history => {
+      return history.entries || [];
+    });
 }

@@ -63,10 +63,7 @@ public abstract class ScriptMapper {
       Links.Builder builder = linkingTo();
       builder.self(linkBuilder.method("findById").parameters(id.get()).href());
       builder.single(Link.link("listeners", linkBuilder.method("getListeners").parameters(id.get()).href()));
-
-      if (script.isStoreListenerExecutionResults()) {
-        builder.single(Link.link("history", linkBuilder.method("getHistory").parameters(id.get()).href()));
-      }
+      builder.single(Link.link("history", linkBuilder.method("getHistory").parameters(id.get()).href()));
 
       if (ScriptPermissions.isPermittedToModify()) {
         builder.single(Link.link("update", linkBuilder.method("modify").parameters(id.get()).href()));

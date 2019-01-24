@@ -6,6 +6,7 @@ import EditForm from "./EditForm";
 import ScriptNavigation from "./ScriptNavigation";
 import { remove } from "../api";
 import ListenersPage from "./ListenersPage";
+import HistoryPage from "./HistoryPage";
 
 type Props = {
   script: Script,
@@ -62,6 +63,11 @@ class ScriptMain extends React.Component<Props, State> {
             path={match.url + "/listeners"}
             exact={true}
             render={() => <ListenersPage script={script} links={links} />}
+          />
+          <Route
+            path={match.url + "/history"}
+            exact={true}
+            render={() => <HistoryPage script={script} />}
           />
         </div>
         <div className="column">

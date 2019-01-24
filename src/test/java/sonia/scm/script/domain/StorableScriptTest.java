@@ -95,8 +95,8 @@ class StorableScriptTest {
     List<ExecutionHistoryEntry> history = script.getExecutionHistory();
     assertThat(history).hasSize(StorableScript.CAPTURE_LIMIT);
 
-    ExecutionHistoryEntry last = Iterables.getLast(history);
-    assertThat(last.getResult().getOutput()).isEqualTo(String.valueOf( StorableScript.CAPTURE_LIMIT + 10 ));
+    ExecutionHistoryEntry first = history.get(0);
+    assertThat(first.getResult().getOutput()).isEqualTo(String.valueOf( StorableScript.CAPTURE_LIMIT + 10 ));
   }
 
 }

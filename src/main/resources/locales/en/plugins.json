@@ -11,6 +11,7 @@
     "script-navigation": {
       "edit": "Edit",
       "listeners": "Listeners",
+      "history": "Listener Execution History",
       "back": "Back"
     },
     "delete-nav-action": {

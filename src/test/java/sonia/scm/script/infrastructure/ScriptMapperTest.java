@@ -69,12 +69,12 @@ class ScriptMapperTest {
   }
 
   @Test
-  void shouldNotAppendHistoryLink() {
+  void shouldAppendHistoryLinkEventWithDisabledCapturing() {
     StorableScript helloWorld = ScriptTestData.createHelloWorld();
     helloWorld.setStoreListenerExecutionResults(false);
 
     ScriptDto dto = mapper.map(helloWorld);
-    assertThat(dto.getLinks().getLinkBy("history")).isNotPresent();
+    assertThat(dto.getLinks().getLinkBy("history").get().getHref()).isEqualTo("/v2/plugins/scripts/42/history");
   }
 
   @Test
