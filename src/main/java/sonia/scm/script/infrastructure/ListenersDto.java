@@ -2,33 +2,25 @@ package sonia.scm.script.infrastructure;
 
 import de.otto.edison.hal.HalRepresentation;
 import de.otto.edison.hal.Links;
-import lombok.EqualsAndHashCode;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import java.util.List;
 
 @Getter
 @Setter
-class ScriptDto extends HalRepresentation {
+@NoArgsConstructor
+@AllArgsConstructor
+public class ListenersDto extends HalRepresentation {
 
-  private String id;
-
-  @NotNull
-  @Size(min = 1)
-  private String type;
-
-  @NotNull
-  @Size(min = 1)
-  private String title;
-
-  private String description;
-  private String content;
+  private List<ListenerDto> listeners;
 
   @Override
   @SuppressWarnings("squid:S1185") // We want to have this method available in this package
   protected HalRepresentation add(Links links) {
     return super.add(links);
   }
+
 }

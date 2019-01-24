@@ -1,5 +1,6 @@
 package sonia.scm.script.domain;
 
+import com.google.common.collect.EvictingQueue;
 import com.google.common.collect.ImmutableList;
 import lombok.Setter;
 
@@ -10,31 +11,28 @@ import javax.xml.bind.annotation.XmlTransient;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Queue;
 
 @Setter
 @XmlRootElement(name = "script")
 @XmlAccessorType(XmlAccessType.FIELD)
 public final class StorableScript extends Script {
 
+  static final int CAPTURE_LIMIT = 25;
+
   @XmlTransient
   private String id;
   private String title;
   private String description;
   private List<Listener> listeners = new ArrayList<>();
+  private boolean storeListenerExecutionResults = false;
+  private Queue<ExecutionHistoryEntry> executionHistory = EvictingQueue.create(CAPTURE_LIMIT);
 
   public StorableScript() {
   }
 
   public StorableScript(String type, String content) {
     super(type, content);
-  }
-
-  public StorableScript(String id, String type, String title, String description, String content, List<Listener> listeners) {
-    super(type, content);
-    this.id = id;
-    this.title = title;
-    this.description = description;
-    this.listeners = listeners;
   }
 
   public Optional<String> getId() {
@@ -51,6 +49,22 @@ public final class StorableScript extends Script {
 
   public List<Listener> getListeners() {
     return ImmutableList.copyOf(listeners);
+  }
+
+  public boolean isStoreListenerExecutionResults() {
+    return storeListenerExecutionResults;
+  }
+
+  public boolean captureListenerExecution(Listener listener, ExecutionResult executionResult) {
+    if (storeListenerExecutionResults) {
+      this.executionHistory.add(new ExecutionHistoryEntry(listener, executionResult));
+      return true;
+    }
+    return false;
+  }
+
+  public List<ExecutionHistoryEntry> getExecutionHistory() {
+    return ImmutableList.copyOf(executionHistory);
   }
 
   public void addListener(Listener listener) {

@@ -1,6 +1,10 @@
 package sonia.scm.script.infrastructure;
 
 import de.otto.edison.hal.HalRepresentation;
+import de.otto.edison.hal.Links;
+import sonia.scm.ContextEntry;
+import sonia.scm.NotFoundException;
+import sonia.scm.script.domain.EventTypeRepository;
 import sonia.scm.script.domain.ExecutionContext;
 import sonia.scm.script.domain.ExecutionResult;
 import sonia.scm.script.domain.Executor;
@@ -29,13 +33,17 @@ import java.util.Optional;
 public class ScriptResource {
 
   private final StorableScriptRepository repository;
+  private final EventTypeRepository eventTypeRepository;
   private final ScriptMapper mapper;
+  private final ListenerMapper listenerMapper;
   private final Executor executor;
 
   @Inject
-  public ScriptResource(StorableScriptRepository repository, ScriptMapper mapper, Executor executor) {
+  public ScriptResource(StorableScriptRepository repository, EventTypeRepository eventTypeRepository, ScriptMapper mapper, ListenerMapper listenerMapper, Executor executor) {
     this.repository = repository;
+    this.eventTypeRepository = eventTypeRepository;
     this.mapper = mapper;
+    this.listenerMapper = listenerMapper;
     this.executor = executor;
   }
 
@@ -68,11 +76,49 @@ public class ScriptResource {
     return Response.status(Response.Status.NOT_FOUND).build();
   }
 
+
+  @GET
+  @Path("{id}/listeners")
+  @Produces(ScriptMediaType.LISTENER_COLLECTION)
+  public Response getListeners(@PathParam("id") String id) {
+    StorableScript script = findScriptById(id);
+    ListenersDto collectionDto = listenerMapper.toCollection(script.getId().get(), script.getListeners());
+    return Response.ok(collectionDto).build();
+  }
+
+  @GET
+  @Path("{id}/history")
+  @Produces(ScriptMediaType.LISTENER_COLLECTION)
+  public ExecutionHistoryDto getHistory(@PathParam("id") String id, @Context UriInfo uriInfo) {
+    return new ExecutionHistoryDto(createSelfLink(uriInfo), findScriptById(id).getExecutionHistory());
+  }
+
+  private StorableScript findScriptById(String id) {
+    Optional<StorableScript> byId = repository.findById(id);
+    if (!byId.isPresent()) {
+      throw NotFoundException.notFound(ContextEntry.ContextBuilder.entity(StorableScript.class, id));
+    }
+    return byId.get();
+  }
+
+  @PUT
+  @Path("{id}/listeners")
+  @Consumes(ScriptMediaType.LISTENER_COLLECTION)
+  public Response setListeners(@PathParam("id") String id, @Valid ListenersDto collectionDto) {
+    StorableScript script = findScriptById(id);
+
+    script.setListeners(listenerMapper.fromCollection(collectionDto));
+    repository.store(script);
+
+    return Response.status(Response.Status.NO_CONTENT).build();
+  }
+
   @PUT
   @Path("{id}")
   @Consumes(ScriptMediaType.ONE)
   public Response modify(@PathParam("id") String id, @Valid ScriptDto dto) {
     if (id.equals(dto.getId())) {
+      // TODO keep listeners
       repository.store(mapper.map(dto));
       return Response.noContent().build();
     }
@@ -92,6 +138,17 @@ public class ScriptResource {
   @Produces(ScriptMediaType.EXECUTION_RESULT)
   public ExecutionResult run(@QueryParam("lang") String type, String content) {
     return executor.execute(new StorableScript(type, content), ExecutionContext.empty());
+  }
+
+  @GET
+  @Path("eventTypes")
+  @Produces(ScriptMediaType.EVENT_TYPE_COLLECTION)
+  public EventTypesDto findAllEventTypes(@Context UriInfo uriInfo) {
+    return new EventTypesDto(createSelfLink(uriInfo), eventTypeRepository.findAll());
+  }
+
+  private Links createSelfLink(@Context UriInfo uriInfo) {
+    return Links.linkingTo().self(uriInfo.getAbsolutePath().toASCIIString()).build();
   }
 
 }

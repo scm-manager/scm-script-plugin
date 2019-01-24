@@ -7,7 +7,9 @@ import de.otto.edison.hal.Link;
 import de.otto.edison.hal.Links;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Mappings;
 import sonia.scm.api.v2.resources.LinkBuilder;
 import sonia.scm.api.v2.resources.ScmPathInfoStore;
 import sonia.scm.script.domain.StorableScript;
@@ -25,8 +27,16 @@ public abstract class ScriptMapper {
   @Inject
   private ScmPathInfoStore scmPathInfoStore;
 
+  @Mappings(
+    @Mapping(target = "attributes", ignore = true)
+  )
   abstract ScriptDto map(StorableScript script);
 
+  @Mappings({
+    @Mapping(target = "listeners", ignore = true),
+    @Mapping(target = "executionHistory", ignore = true),
+    @Mapping(target = "storeListenerExecutionResults", ignore = true)
+  })
   abstract StorableScript map(ScriptDto dto);
 
   String field(Optional<String> optional) {
@@ -46,6 +56,12 @@ public abstract class ScriptMapper {
 
       Links.Builder builder = linkingTo();
       builder.self(linkBuilder.method("findById").parameters(id.get()).href());
+      builder.single(Link.link("listeners", linkBuilder.method("getListeners").parameters(id.get()).href()));
+
+      if (script.isStoreListenerExecutionResults()) {
+        builder.single(Link.link("history", linkBuilder.method("getHistory").parameters(id.get()).href()));
+      }
+
       if (ScriptPermissions.isPermittedToModify()) {
         builder.single(Link.link("update", linkBuilder.method("modify").parameters(id.get()).href()));
         builder.single(Link.link("delete", linkBuilder.method("delete").parameters(id.get()).href()));
@@ -61,6 +77,8 @@ public abstract class ScriptMapper {
     Links.Builder builder = linkingTo();
 
     builder.self(linkBuilder.method("findAll").parameters().href());
+    builder.single(Link.link("eventTypes", linkBuilder.method("findAllEventTypes").parameters().href()));
+
     if (ScriptPermissions.isPermittedToModify()) {
       builder.single(Link.link("create", linkBuilder.method("create").parameters().href()));
     }

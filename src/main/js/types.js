@@ -25,6 +25,7 @@ export type ScriptCollection = Collection & {
 
 export type ScriptLinks = {
   list: string,
+  eventTypes: string,
   create?: string,
   execute?: string
 };
@@ -34,4 +35,14 @@ export type ScriptExecutionResult = {
   output: string,
   started: string,
   ended: string
+};
+
+export type Listeners = {
+  listeners: Listener[],
+  _links: Links
+};
+
+export type Listener = {
+  eventType: string,
+  asynchronous: boolean
 };

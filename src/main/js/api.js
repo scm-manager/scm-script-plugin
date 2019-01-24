@@ -1,6 +1,11 @@
 // @flow
 import { apiClient } from "@scm-manager/ui-components";
-import type { Script, ScriptExecutionResult, ScriptLinks } from "./types";
+import type {
+  Listeners,
+  Script,
+  ScriptExecutionResult,
+  ScriptLinks
+} from "./types";
 import type { Links } from "@scm-manager/ui-types";
 
 // modifying headers is not supported in the apiclient
@@ -39,6 +44,28 @@ export function findById(id: string) {
 
 export function findAll(link: string) {
   return apiClient.get(link).then(resp => resp.json());
+}
+
+export function findAllListeners(link: string): Promise<Listeners> {
+  return apiClient.get(link).then(resp => resp.json());
+}
+
+export function storeListeners(
+  link: string,
+  listeners: Listeners
+): Promise<void> {
+  return apiClient.put(
+    link,
+    listeners,
+    "application/vnd.scmm-script-listener-collection+json;v=2"
+  );
+}
+
+export function findAllEventTypes(link: string): Promise<string[]> {
+  return apiClient
+    .get(link)
+    .then(resp => resp.json())
+    .then(collection => collection.eventTypes);
 }
 
 export function createScriptLinks(list: string, links: Links): ScriptLinks {

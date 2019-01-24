@@ -1,21 +1,33 @@
 package sonia.scm.script.domain;
 
-import com.google.common.base.Preconditions;
-import lombok.Value;
+import lombok.Setter;
 
-@Value
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@Setter
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Listener {
 
-  private final Class<?> eventType;
-  private final boolean asynchronous;
+  private Class<?> eventType;
+  private boolean asynchronous;
 
-  private Listener(Class<?> eventType, boolean asynchronous) {
+  public Listener() {
+  }
+
+  public Listener(Class<?> eventType, boolean asynchronous) {
     this.eventType = eventType;
     this.asynchronous = asynchronous;
   }
 
-  public static Listener valueOf(Class<?> eventType, boolean asynchronous) {
-    Preconditions.checkArgument(eventType != null, "event type is required");
-    return new Listener(eventType, asynchronous);
+  public Class<?> getEventType() {
+    return eventType;
   }
+
+  public boolean isAsynchronous() {
+    return asynchronous;
+  }
+
 }

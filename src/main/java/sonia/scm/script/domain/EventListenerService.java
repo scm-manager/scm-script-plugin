@@ -1,11 +1,16 @@
 package sonia.scm.script.domain;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.inject.Inject;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class EventListenerService {
+
+  private static final Logger LOG = LoggerFactory.getLogger(EventListenerService.class);
 
   private final StorableScriptRepository scriptRepository;
   private final Executor executor;
@@ -28,20 +33,25 @@ public class EventListenerService {
       return Optional.empty();
     }
 
-    return Optional.of(new Trigger(scripts));
+    return Optional.of(new Trigger(new Listener(eventType, asynchronous), scripts));
   }
 
   public class Trigger {
 
+    private final Listener listener;
     private final List<StorableScript> scripts;
 
-    private Trigger(List<StorableScript> scripts) {
+    private Trigger(Listener listener, List<StorableScript> scripts) {
+      this.listener = listener;
       this.scripts = scripts;
     }
 
-    void execute(ExecutionContext context) {
+    public void execute(ExecutionContext context) {
       for (StorableScript script : scripts) {
-        executor.execute(script, context);
+        ExecutionResult result = executor.execute(script, context);
+        LOG.debug("script {} triggered by {} event {}: {}", script, listener.isAsynchronous() ? "asynchronous" : "synchronous", listener.getEventType(), result);
+        script.captureListenerExecution(listener, result);
+        scriptRepository.store(script);
       }
     }
 

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import sonia.scm.script.ScriptTestData;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -30,7 +31,7 @@ class ExecutorServiceTest {
 
   @Test
   void shouldExecuteTheScript() {
-    StorableScript script = new StorableScript("42", "groovy", "Heart Of Gold", "Heart Of Gold", "", new ArrayList<>());
+    StorableScript script = ScriptTestData.createHelloWorld();
 
     when(repository.findById("42")).thenReturn(Optional.of(script));
 

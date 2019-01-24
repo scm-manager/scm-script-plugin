@@ -1,16 +1,18 @@
 //@flow
 import React from "react";
-import { withRouter } from "react-router-dom";
+import { Route, withRouter } from "react-router-dom";
 import type { Script, ScriptLinks } from "../types";
 import EditForm from "./EditForm";
 import ScriptNavigation from "./ScriptNavigation";
 import { remove } from "../api";
+import ListenersPage from "./ListenersPage";
 
 type Props = {
   script: Script,
   links: ScriptLinks,
 
   // context props
+  match: any,
   history: any
 };
 
@@ -46,12 +48,21 @@ class ScriptMain extends React.Component<Props, State> {
   };
 
   render() {
-    const { script, links } = this.props;
+    const { script, links, match } = this.props;
 
     return (
       <div className="columns">
         <div className="column is-three-quarters">
-          <EditForm script={script} links={links} />
+          <Route
+            path={match.url}
+            exact={true}
+            render={() => <EditForm script={script} links={links} />}
+          />
+          <Route
+            path={match.url + "/listeners"}
+            exact={true}
+            render={() => <ListenersPage script={script} links={links} />}
+          />
         </div>
         <div className="column">
           <ScriptNavigation script={script} onDelete={this.onDelete} />

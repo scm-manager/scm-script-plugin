@@ -11,13 +11,13 @@ public final class ScriptTestData {
   }
 
   public static StorableScript createHelloWorld() {
-    return new StorableScript(
-      "42",
+    StorableScript script = new StorableScript(
       "Groovy",
-      "Hello World",
-      "Awesome Hello World",
-      "println 'Hello World'",
-      new ArrayList<>()
+      "println 'Hello World'"
     );
+    script.setId("42");
+    script.setTitle("Hello World");
+    script.setDescription("Awesome Hello World");
+    return script;
   }
 }

@@ -1,8 +1,11 @@
 package sonia.scm.script.domain;
 
+import sonia.scm.xml.XmlInstantAdapter;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.Duration;
 import java.time.Instant;
 
@@ -12,7 +15,10 @@ public class ExecutionResult {
 
   private boolean success;
   private String output;
+
+  @XmlJavaTypeAdapter(XmlInstantAdapter.class)
   private Instant started;
+  @XmlJavaTypeAdapter(XmlInstantAdapter.class)
   private Instant ended;
 
   ExecutionResult() {

@@ -10,6 +10,7 @@
     "primary-navigation": "Scripts",
     "script-navigation": {
       "edit": "Edit",
+      "listeners": "Listeners",
       "back": "Back"
     },
     "delete-nav-action": {
@@ -45,6 +46,12 @@
     "editor": {
       "submit": "Run",
       "store": "Store"
+    },
+    "listeners": {
+      "eventType": "Type",
+      "asynchronous": "Asynchronous",
+      "remove": "Remove",
+      "submit": "Add Listener"
     }
   }
 }

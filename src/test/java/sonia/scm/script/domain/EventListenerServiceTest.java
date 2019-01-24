@@ -1,11 +1,13 @@
 package sonia.scm.script.domain;
 
+import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -59,9 +61,29 @@ class EventListenerServiceTest {
     assertThat(trigger).isNotPresent();
   }
 
+  @Test
+  void shouldCaptureExecution() {
+    StorableScript script = script(Integer.class, false);
+    script.setStoreListenerExecutionResults(true);
+
+    ExecutionResult result = new ExecutionResult(true, "Hello World", Instant.now(), Instant.now());
+
+    when(scriptRepository.findAll()).thenReturn(ImmutableList.of(script));
+    when(executor.execute(script, executionContext)).thenReturn(result);
+
+    EventListenerService.Trigger trigger = listenerService.createTrigger(Integer.class, false).get();
+    trigger.execute(executionContext);
+
+    verify(executor).execute(script, executionContext);
+    verify(scriptRepository).store(script);
+
+    ExecutionHistoryEntry historyEntry = script.getExecutionHistory().get(0);
+    assertThat(historyEntry.getResult().getOutput()).isEqualTo("Hello World");
+  }
+
   private StorableScript script(Class<?> eventType, boolean asynchronous) {
     StorableScript script = script();
-    script.addListener(Listener.valueOf(eventType, asynchronous));
+    script.addListener(new Listener(eventType, asynchronous));
     return script;
   }
 

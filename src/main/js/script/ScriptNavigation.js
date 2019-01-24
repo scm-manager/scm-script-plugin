@@ -26,6 +26,10 @@ class ScriptNavigation extends React.Component<Props> {
             to={match.url}
             label={t("scm-script-plugin.script-navigation.edit")}
           />
+          <NavLink
+            to={match.url + "/listeners"}
+            label={t("scm-script-plugin.script-navigation.listeners")}
+          />
         </Section>
         <Section label="Actions">
           <DeleteNavAction script={script} onDelete={onDelete} />

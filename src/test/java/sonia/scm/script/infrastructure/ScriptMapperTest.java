@@ -25,7 +25,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class StorableScriptMapperTest {
+class ScriptMapperTest {
 
   @Mock
   private Subject subject;
@@ -51,6 +51,30 @@ class StorableScriptMapperTest {
   void shouldAppendSelfLink() {
     ScriptDto dto = mapper.map(ScriptTestData.createHelloWorld());
     assertThat(dto.getLinks().getLinkBy("self").get().getHref()).isEqualTo("/v2/plugins/scripts/42");
+  }
+
+  @Test
+  void shouldAppendListenersLink() {
+    ScriptDto dto = mapper.map(ScriptTestData.createHelloWorld());
+    assertThat(dto.getLinks().getLinkBy("listeners").get().getHref()).isEqualTo("/v2/plugins/scripts/42/listeners");
+  }
+
+  @Test
+  void shouldAppendHistoryLink() {
+    StorableScript helloWorld = ScriptTestData.createHelloWorld();
+    helloWorld.setStoreListenerExecutionResults(true);
+
+    ScriptDto dto = mapper.map(helloWorld);
+    assertThat(dto.getLinks().getLinkBy("history").get().getHref()).isEqualTo("/v2/plugins/scripts/42/history");
+  }
+
+  @Test
+  void shouldNotAppendHistoryLink() {
+    StorableScript helloWorld = ScriptTestData.createHelloWorld();
+    helloWorld.setStoreListenerExecutionResults(false);
+
+    ScriptDto dto = mapper.map(helloWorld);
+    assertThat(dto.getLinks().getLinkBy("history")).isNotPresent();
   }
 
   @Test
@@ -100,6 +124,13 @@ class StorableScriptMapperTest {
     HalRepresentation collection = mapper.collection(Lists.newArrayList(script("42"), script("21")));
     String self = collection.getLinks().getLinkBy("self").get().getHref();
     assertThat(self).isEqualTo("/v2/plugins/scripts");
+  }
+
+  @Test
+  void shouldAppendEventTypeLinkToCollection() {
+    HalRepresentation collection = mapper.collection(Lists.newArrayList(script("42"), script("21")));
+    String eventTypes = collection.getLinks().getLinkBy("eventTypes").get().getHref();
+    assertThat(eventTypes).isEqualTo("/v2/plugins/scripts/eventTypes");
   }
 
   @Test

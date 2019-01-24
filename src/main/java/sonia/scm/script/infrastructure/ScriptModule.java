@@ -13,6 +13,8 @@ public class ScriptModule extends AbstractModule {
   @Override
   protected void configure() {
     bind(ScriptMapper.class).to(Mappers.getMapper(ScriptMapper.class).getClass());
+    bind(ListenerMapper.class).to(Mappers.getMapper(ListenerMapper.class).getClass());
+
     bind(Executor.class).to(JSR223Executor.class);
     bind(TypeRepository.class).to(JSR223TypeRepository.class);
     bind(EventTypeRepository.class).to(DefaultEventTypeRepository.class);
