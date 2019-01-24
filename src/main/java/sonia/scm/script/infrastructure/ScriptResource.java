@@ -119,8 +119,9 @@ public class ScriptResource {
   @Consumes(ScriptMediaType.ONE)
   public Response modify(@PathParam("id") String id, @Valid ScriptDto dto) {
     if (id.equals(dto.getId())) {
-      // TODO keep listeners
-      repository.store(mapper.map(dto));
+      StorableScript storedScript = findScriptById(id);
+      mapper.map(dto, storedScript);
+      repository.store(storedScript);
       return Response.noContent().build();
     }
     return Response.status(Response.Status.BAD_REQUEST).build();

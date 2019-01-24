@@ -37,7 +37,13 @@ public abstract class ScriptMapper {
     @Mapping(target = "executionHistory", ignore = true),
     @Mapping(target = "storeListenerExecutionResults", ignore = true)
   })
-  abstract StorableScript map(ScriptDto dto);
+  abstract void map(ScriptDto dto, @MappingTarget StorableScript script);
+
+  StorableScript map(ScriptDto dto) {
+    StorableScript script = new StorableScript();
+    map(dto, script);
+    return script;
+  }
 
   String field(Optional<String> optional) {
     return optional.orElse(null);

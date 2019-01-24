@@ -112,13 +112,14 @@ class ScriptResourceTest {
   void shouldModify() {
     ScriptDto dto = new ScriptDto();
     dto.setId("42");
-    StorableScript script = ScriptTestData.createHelloWorld();
 
-    when(mapper.map(dto)).thenReturn(script);
+    StorableScript script = ScriptTestData.createHelloWorld();
+    when(repository.findById("42")).thenReturn(Optional.of(script));
 
     Response response = resource.modify("42", dto);
     assertThat(response.getStatus()).isEqualTo(204);
 
+    verify(mapper).map(dto, script);
     verify(repository).store(script);
   }
 
