@@ -10,6 +10,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@SuppressWarnings("squid:S2160") // we need no equals or hashCode
 public class ExecutionHistoryDto extends HalRepresentation {
 
   private List<ExecutionHistoryEntry> entries;

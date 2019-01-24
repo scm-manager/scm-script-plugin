@@ -9,7 +9,6 @@ import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.Mappings;
 import sonia.scm.api.v2.resources.LinkBuilder;
 import sonia.scm.api.v2.resources.ScmPathInfoStore;
 import sonia.scm.script.domain.StorableScript;
@@ -27,16 +26,12 @@ public abstract class ScriptMapper {
   @Inject
   private ScmPathInfoStore scmPathInfoStore;
 
-  @Mappings(
-    @Mapping(target = "attributes", ignore = true)
-  )
+  @Mapping(target = "attributes", ignore = true)
   abstract ScriptDto map(StorableScript script);
 
-  @Mappings({
-    @Mapping(target = "listeners", ignore = true),
-    @Mapping(target = "executionHistory", ignore = true),
-    @Mapping(target = "storeListenerExecutionResults", ignore = true)
-  })
+  @Mapping(target = "listeners", ignore = true)
+  @Mapping(target = "executionHistory", ignore = true)
+  @Mapping(target = "storeListenerExecutionResults", ignore = true)
   abstract void map(ScriptDto dto, @MappingTarget StorableScript script);
 
   StorableScript map(ScriptDto dto) {

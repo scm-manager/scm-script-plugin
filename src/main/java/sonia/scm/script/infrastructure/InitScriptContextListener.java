@@ -14,7 +14,6 @@ import sonia.scm.web.security.PrivilegedAction;
 import javax.inject.Inject;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import java.io.StringWriter;
 import java.util.List;
 
 /**

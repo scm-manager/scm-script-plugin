@@ -13,6 +13,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@SuppressWarnings("squid:S2160") // we need no equals or hashCode
 public class ListenersDto extends HalRepresentation {
 
   private List<ListenerDto> listeners;

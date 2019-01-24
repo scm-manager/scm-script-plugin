@@ -11,6 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@SuppressWarnings("squid:S2160") // we need no equals or hashCode
 public class EventTypesDto extends HalRepresentation {
 
   private List<Class<?>> eventTypes;
