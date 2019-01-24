@@ -13,8 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class EventListenerServiceTest {
@@ -79,6 +78,23 @@ class EventListenerServiceTest {
 
     ExecutionHistoryEntry historyEntry = script.getExecutionHistory().get(0);
     assertThat(historyEntry.getResult().getOutput()).isEqualTo("Hello World");
+  }
+
+  @Test
+  void shouldNotStoreScriptIfNothingWasCaptured() {
+    StorableScript script = script(Integer.class, false);
+    script.setStoreListenerExecutionResults(false);
+
+    ExecutionResult result = new ExecutionResult(true, "Hello World", Instant.now(), Instant.now());
+
+    when(scriptRepository.findAll()).thenReturn(ImmutableList.of(script));
+    when(executor.execute(script, executionContext)).thenReturn(result);
+
+    EventListenerService.Trigger trigger = listenerService.createTrigger(Integer.class, false).get();
+    trigger.execute(executionContext);
+
+    verify(executor).execute(script, executionContext);
+    verify(scriptRepository, never()).store(script);
   }
 
   private StorableScript script(Class<?> eventType, boolean asynchronous) {

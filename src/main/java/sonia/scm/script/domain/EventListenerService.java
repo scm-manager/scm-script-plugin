@@ -50,8 +50,9 @@ public class EventListenerService {
       for (StorableScript script : scripts) {
         ExecutionResult result = executor.execute(script, context);
         LOG.debug("script {} triggered by {} event {}: {}", script, listener.isAsynchronous() ? "asynchronous" : "synchronous", listener.getEventType(), result);
-        script.captureListenerExecution(listener, result);
-        scriptRepository.store(script);
+        if (script.captureListenerExecution(listener, result)) {
+          scriptRepository.store(script);
+        }
       }
     }
 

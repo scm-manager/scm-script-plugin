@@ -113,7 +113,7 @@ public class JSR223Executor implements Executor {
   private ScriptEngine findEngine(String type) {
     ScriptEngine engine = findEngineByLanguage(type);
     if (engine == null) {
-      throw new ScriptTypeNotFoundException("could not find engine for " + type);
+      throw new ScriptTypeNotFoundException(type);
     }
     return engine;
   }

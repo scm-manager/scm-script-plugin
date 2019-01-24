@@ -2,8 +2,6 @@ package sonia.scm.script.infrastructure;
 
 import de.otto.edison.hal.HalRepresentation;
 import de.otto.edison.hal.Links;
-import sonia.scm.ContextEntry;
-import sonia.scm.NotFoundException;
 import sonia.scm.script.domain.EventTypeRepository;
 import sonia.scm.script.domain.ExecutionContext;
 import sonia.scm.script.domain.ExecutionResult;
@@ -50,7 +48,7 @@ public class ScriptResource {
 
   @POST
   @Path("")
-  @Consumes(ScriptMediaType.ONE)
+  @Consumes(ScriptMediaType.SCRIPT)
   @SuppressWarnings("squid:S3655") // id is never empty after store
   public Response create(@Context UriInfo info, @Valid ScriptDto dto) {
     StorableScript script = repository.store(mapper.map(dto));
@@ -60,7 +58,7 @@ public class ScriptResource {
 
   @GET
   @Path("")
-  @Produces(ScriptMediaType.COLLECTION)
+  @Produces(ScriptMediaType.SCRIPT_COLLECTION)
   public Response findAll() {
     HalRepresentation collection = mapper.collection(repository.findAll());
     return Response.ok(collection).build();
@@ -68,7 +66,7 @@ public class ScriptResource {
 
   @GET
   @Path("{id}")
-  @Produces(ScriptMediaType.ONE)
+  @Produces(ScriptMediaType.SCRIPT)
   public Response findById(@PathParam("id") String id) {
     Optional<StorableScript> byId = repository.findById(id);
     if (byId.isPresent()) {
@@ -81,6 +79,7 @@ public class ScriptResource {
   @GET
   @Path("{id}/listeners")
   @Produces(ScriptMediaType.LISTENER_COLLECTION)
+  @SuppressWarnings("squid:S3655") // id is never empty, because scripts from store have always an id
   public Response getListeners(@PathParam("id") String id) {
     StorableScript script = findScriptById(id);
     ListenersDto collectionDto = listenerMapper.toCollection(
@@ -119,7 +118,7 @@ public class ScriptResource {
 
   @PUT
   @Path("{id}")
-  @Consumes(ScriptMediaType.ONE)
+  @Consumes(ScriptMediaType.SCRIPT)
   public Response modify(@PathParam("id") String id, @Valid ScriptDto dto) {
     if (id.equals(dto.getId())) {
       StorableScript storedScript = findScriptById(id);
