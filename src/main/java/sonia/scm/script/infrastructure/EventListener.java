@@ -67,9 +67,7 @@ public class EventListener {
   private Optional<EventListenerService.Trigger> createTrigger(Object event, boolean async) {
     // use administration context to read all scripts and skip the permission check
     AtomicReference<Optional<EventListenerService.Trigger>> optionalTrigger = new AtomicReference<>();
-    administrationContext.runAsAdmin(() -> {
-      optionalTrigger.set(listenerService.createTrigger(event.getClass(), async));
-    });
+    administrationContext.runAsAdmin(() -> optionalTrigger.set(listenerService.createTrigger(event.getClass(), async)));
     return optionalTrigger.get();
   }
 
