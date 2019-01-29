@@ -44,7 +44,7 @@ class EventListenerServiceTest {
     when(scriptRepository.findAll()).thenReturn(scripts);
 
     EventListenerService.Trigger trigger = listenerService.createTrigger(Integer.class, true).get();
-    trigger.execute(executionContext);
+    trigger.execute(executor, executionContext);
 
     verify(executor).execute(script, executionContext);
   }
@@ -71,7 +71,8 @@ class EventListenerServiceTest {
     when(executor.execute(script, executionContext)).thenReturn(result);
 
     EventListenerService.Trigger trigger = listenerService.createTrigger(Integer.class, false).get();
-    trigger.execute(executionContext);
+    trigger.execute(executor, executionContext);
+    trigger.store();
 
     verify(executor).execute(script, executionContext);
     verify(scriptRepository).store(script);
@@ -91,7 +92,7 @@ class EventListenerServiceTest {
     when(executor.execute(script, executionContext)).thenReturn(result);
 
     EventListenerService.Trigger trigger = listenerService.createTrigger(Integer.class, false).get();
-    trigger.execute(executionContext);
+    trigger.execute(executor, executionContext);
 
     verify(executor).execute(script, executionContext);
     verify(scriptRepository, never()).store(script);

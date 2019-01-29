@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -13,12 +14,10 @@ public class EventListenerService {
   private static final Logger LOG = LoggerFactory.getLogger(EventListenerService.class);
 
   private final StorableScriptRepository scriptRepository;
-  private final Executor executor;
 
   @Inject
-  public EventListenerService(StorableScriptRepository scriptRepository, Executor executor) {
+  public EventListenerService(StorableScriptRepository scriptRepository) {
     this.scriptRepository = scriptRepository;
-    this.executor = executor;
   }
 
   public Optional<Trigger> createTrigger(Class<?> eventType, boolean asynchronous) {
@@ -40,19 +39,27 @@ public class EventListenerService {
 
     private final Listener listener;
     private final List<StorableScript> scripts;
+    private final List<StorableScript> needsStoring = new ArrayList<>();
 
     private Trigger(Listener listener, List<StorableScript> scripts) {
       this.listener = listener;
       this.scripts = scripts;
     }
 
-    public void execute(ExecutionContext context) {
+    public void execute(Executor executor, ExecutionContext context) {
       for (StorableScript script : scripts) {
         ExecutionResult result = executor.execute(script, context);
         LOG.debug("script {} triggered by {} event {}: {}", script, listener.isAsynchronous() ? "asynchronous" : "synchronous", listener.getEventType(), result);
         if (script.captureListenerExecution(listener, result)) {
-          scriptRepository.store(script);
+          needsStoring.add(script);
         }
+      }
+    }
+
+    public void store() {
+      for (StorableScript script : needsStoring) {
+        LOG.debug("store script: {}", script);
+        scriptRepository.store(script);
       }
     }
 

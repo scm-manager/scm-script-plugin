@@ -1,5 +1,6 @@
 package sonia.scm.script.infrastructure;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -8,6 +9,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import sonia.scm.script.domain.EventListenerService;
 import sonia.scm.script.domain.ExecutionContext;
+import sonia.scm.script.domain.Executor;
+import sonia.scm.web.security.AdministrationContext;
+import sonia.scm.web.security.PrivilegedAction;
 
 import java.util.Optional;
 
@@ -20,8 +24,23 @@ class EventListenerTest {
   @Mock
   private EventListenerService service;
 
+  @Mock
+  private JSR223InternalExecutor executor;
+
+  @Mock
+  private AdministrationContext administrationContext;
+
   @InjectMocks
   private EventListener eventListener;
+
+  @BeforeEach
+  void setUpAdministrationContext() {
+    doAnswer((ic) -> {
+      PrivilegedAction action = ic.getArgument(0);
+      action.run();
+      return null;
+    }).when(administrationContext).runAsAdmin(any(PrivilegedAction.class));
+  }
 
   @Test
   void shouldHandleAsyncEvent() {
@@ -46,7 +65,7 @@ class EventListenerTest {
     eventListener.subscribeSync("Hello World");
 
     ArgumentCaptor<ExecutionContext> contextArgumentCaptor = ArgumentCaptor.forClass(ExecutionContext.class);
-    verify(trigger).execute(contextArgumentCaptor.capture());
+    verify(trigger).execute(any(Executor.class), contextArgumentCaptor.capture());
 
     ExecutionContext context = contextArgumentCaptor.getValue();
     assertThat(context.getAttributes().get("event")).isEqualTo("Hello World");
