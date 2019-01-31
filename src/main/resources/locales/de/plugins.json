@@ -1,0 +1,59 @@
+{
+  "scm-script-plugin": {
+    "title": "Titel",
+    "titleValidationError": "Titel muss ausgefüllt sein",
+    "titleHelp": "Titel des Skripts, der in der Übersicht angezeigt wird.",
+    "description": "Beschreibung",
+    "descriptionHelp": "Kurze Beschreibung des Skripts.",
+    "content": "Skript",
+    "contentHelp": "Das Skript, das gegen die API von SCM-Manager ausgeführt wird.",
+    "primary-navigation": "Skripte",
+    "script-navigation": {
+      "edit": "Bearbeiten",
+      "listeners": "Listeners",
+      "history": "Verlauf der Ausführung von Listener.",
+      "back": "Zurück"
+    },
+    "delete-nav-action": {
+      "confirm-alert": {
+        "title": "Skript löschen",
+        "message": "Soll das Skript wirklich gelöscht werden?",
+        "submit": "Ja",
+        "cancel": "Nein"
+      },
+      "delete": "Löschen"
+    },
+    "edit-form": {
+      "run": "Ausführen",
+      "save": "Speichern",
+      "save-success": "Skript erfolgreich gespeichert"
+    },
+    "navigation": {
+      "run": "Ausführen",
+      "stored": "Gespeichert",
+      "samples": "Beispiele"
+    },
+    "root-page": {
+      "title": "Skripte",
+      "subtitle": "Ausführung von Skripten mit der API von SCM-Manager"
+    },
+    "store-dialog": {
+      "title": "Gespeicherte Skripte"
+    },
+    "store-form": {
+      "submit": "Speichern",
+      "abort": "Abbrechen"
+    },
+    "editor": {
+      "submit": "Ausführen",
+      "store": "Speichern"
+    },
+    "listeners": {
+      "eventType": "Typ",
+      "asynchronous": "Asynchron",
+      "remove": "Löschen",
+      "submit": "Listener hinzufügen",
+      "storeListenerExecutionResults": "Ergebnisse der Ausführung des Listener aufzeichnen."
+    }
+  }
+}
