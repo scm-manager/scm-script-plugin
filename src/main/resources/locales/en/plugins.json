@@ -6,7 +6,7 @@
     "description": "Description",
     "descriptionHelp": "Short description of script",
     "content": "Script",
-    "contentHelp": "The script which gets executed against the scm-manager api",
+    "contentHelp": "The script which gets executed against the SCM-Manager api",
     "primary-navigation": "Scripts",
     "script-navigation": {
       "edit": "Edit",
@@ -35,7 +35,7 @@
     },
     "root-page": {
       "title": "Scripts",
-      "subtitle": "Execute scripts with the scm-manager api"
+      "subtitle": "Execute scripts with the SCM-Manager api"
     },
     "store-dialog": {
       "title": "Store script"
