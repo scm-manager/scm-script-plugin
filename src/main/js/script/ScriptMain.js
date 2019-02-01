@@ -57,7 +57,7 @@ class ScriptMain extends React.Component<Props, State> {
           <Route
             path={match.url}
             exact={true}
-            render={() => <EditForm script={script} links={links} />}
+            render={() => <EditForm script={script} links={links} onDelete={this.onDelete} />}
           />
           <Route
             path={match.url + "/listeners"}
@@ -71,7 +71,7 @@ class ScriptMain extends React.Component<Props, State> {
           />
         </div>
         <div className="column">
-          <ScriptNavigation script={script} onDelete={this.onDelete} />
+          <ScriptNavigation script={script} />
         </div>
       </div>
     );

@@ -8,7 +8,7 @@ const ScriptNavigation = ({ t }) => {
     <PrimaryNavigationLink
       to="/scripts/run"
       match="/(script|scripts)"
-      label={t("scm-script-plugin.primary-navigation")}
+      label={t("scm-script-plugin.primaryNavigation")}
       key="scripts"
     />
   );

@@ -1,7 +1,10 @@
 //@flow
 import React from "react";
 import { translate } from "react-i18next";
-import { confirmAlert, NavAction } from "@scm-manager/ui-components";
+import {
+  DeleteButton,
+  confirmAlert
+} from "@scm-manager/ui-components";
 import type { Script } from "../types";
 
 type Props = {
@@ -12,7 +15,7 @@ type Props = {
   t: string => string
 };
 
-class DeleteNavAction extends React.Component<Props> {
+class DeleteScript extends React.Component<Props> {
   confirmDelete = () => {
     const { onDelete, t } = this.props;
     confirmAlert({
@@ -36,14 +39,18 @@ class DeleteNavAction extends React.Component<Props> {
     let deleteLink = null;
     if (script._links.delete) {
       deleteLink = (
-        <NavAction
-          action={this.confirmDelete}
-          label={t("scm-script-plugin.delete-nav-action.delete")}
-        />
+        <div className="columns">
+          <div className="column">
+            <DeleteButton
+              label={t("scm-script-plugin.deleteScript.button")}
+              action={this.confirmDelete}
+            />
+          </div>
+        </div>
       );
     }
     return deleteLink;
   }
 }
 
-export default translate("plugins")(DeleteNavAction);
+export default translate("plugins")(DeleteScript);
