@@ -2,10 +2,10 @@ package sonia.scm.script.infrastructure;
 
 import sonia.scm.api.v2.resources.Enrich;
 import sonia.scm.api.v2.resources.Index;
-import sonia.scm.api.v2.resources.LinkAppender;
+import sonia.scm.api.v2.resources.HalAppender;
 import sonia.scm.api.v2.resources.LinkBuilder;
-import sonia.scm.api.v2.resources.LinkEnricher;
-import sonia.scm.api.v2.resources.LinkEnricherContext;
+import sonia.scm.api.v2.resources.HalEnricher;
+import sonia.scm.api.v2.resources.HalEnricherContext;
 import sonia.scm.api.v2.resources.ScmPathInfoStore;
 import sonia.scm.plugin.Extension;
 
@@ -14,19 +14,19 @@ import javax.inject.Provider;
 
 @Extension
 @Enrich(Index.class)
-public class IndexLinkEnricher implements LinkEnricher {
+public class IndexHalEnricher implements HalEnricher {
 
   private final Provider<ScmPathInfoStore> scmPathInfoStore;
 
   @Inject
-  public IndexLinkEnricher(Provider<ScmPathInfoStore> scmPathInfoStore) {
+  public IndexHalEnricher(Provider<ScmPathInfoStore> scmPathInfoStore) {
     this.scmPathInfoStore = scmPathInfoStore;
   }
 
   @Override
-  public void enrich(LinkEnricherContext context, LinkAppender appender) {
+  public void enrich(HalEnricherContext context, HalAppender appender) {
     if (ScriptPermissions.isPermittedToRead()) {
-      appender.appendOne("scripts", createListLink());
+      appender.appendLink("scripts", createListLink());
     }
   }
 
