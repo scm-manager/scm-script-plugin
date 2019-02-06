@@ -179,7 +179,6 @@ class EditForm extends React.Component<Props, State> {
     const { title, description, content, result } = this.state;
     const { t, script, onDelete } = this.props;
 
-    console.log(this.props);
     return (
       <>
         {this.renderNotifications()}
