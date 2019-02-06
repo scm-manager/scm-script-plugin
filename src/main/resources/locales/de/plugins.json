@@ -28,7 +28,7 @@
       "save-success": "Skript erfolgreich gespeichert"
     },
     "deleteScript": {
-      "button": "Delete Script"
+      "button": "Skript löschen"
     },
     "navigation": {
       "navigationLabel": "Skript Navigation",
