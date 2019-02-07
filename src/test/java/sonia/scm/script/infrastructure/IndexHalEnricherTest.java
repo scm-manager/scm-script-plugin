@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import sonia.scm.api.v2.resources.LinkAppender;
+import sonia.scm.api.v2.resources.HalAppender;
 import sonia.scm.api.v2.resources.ScmPathInfoStore;
 
 import java.net.URI;
@@ -17,21 +17,21 @@ import java.net.URI;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class IndexLinkEnricherTest {
+class IndexHalEnricherTest {
 
   @Mock
-  private LinkAppender appender;
+  private HalAppender appender;
 
   @Mock
   private Subject subject;
 
-  private IndexLinkEnricher enricher;
+  private IndexHalEnricher enricher;
 
   @BeforeEach
   void setUp() {
     ScmPathInfoStore pathInfoStore = new ScmPathInfoStore();
     pathInfoStore.set(() -> URI.create("/"));
-    enricher = new IndexLinkEnricher(Providers.of(pathInfoStore));
+    enricher = new IndexHalEnricher(Providers.of(pathInfoStore));
 
     ThreadContext.bind(subject);
   }
@@ -47,14 +47,14 @@ class IndexLinkEnricherTest {
 
     enricher.enrich(null, appender);
 
-    verify(appender).appendOne("scripts", "/v2/plugins/scripts");
+    verify(appender).appendLink("scripts", "/v2/plugins/scripts");
   }
 
   @Test
   void shouldNotAppendAnyLink() {
     enricher.enrich(null, appender);
 
-    verify(appender, never()).appendOne("scripts", "/v2/plugins/scripts");
+    verify(appender, never()).appendLink("scripts", "/v2/plugins/scripts");
   }
 
 }

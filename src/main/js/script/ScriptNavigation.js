@@ -16,7 +16,9 @@ class ScriptNavigation extends React.Component<Props> {
 
     return (
       <Navigation>
-        <Section label={t("scm-script-plugin.scriptNavigation.navigationLabel")}>
+        <Section
+          label={t("scm-script-plugin.scriptNavigation.navigationLabel")}
+        >
           <NavLink
             to={match.url}
             label={t("scm-script-plugin.scriptNavigation.editNavLink")}

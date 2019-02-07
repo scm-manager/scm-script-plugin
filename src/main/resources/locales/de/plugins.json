@@ -2,22 +2,22 @@
   "scm-script-plugin": {
     "title": "Titel",
     "titleValidationError": "Titel muss ausgefüllt sein",
-    "titleHelp": "Titel des Skripts, der in der Übersicht angezeigt wird.",
+    "titleHelp": "Titel des Scripts, der in der Übersicht angezeigt wird.",
     "description": "Beschreibung",
-    "descriptionHelp": "Kurze Beschreibung des Skripts.",
-    "content": "Skript",
-    "contentHelp": "Das Skript, das gegen die API von SCM-Manager ausgeführt wird.",
-    "primaryNavigation": "Skripte",
+    "descriptionHelp": "Kurze Beschreibung des Scripts.",
+    "content": "Script",
+    "contentHelp": "Das Script, das gegen die API von SCM-Manager ausgeführt wird.",
+    "primaryNavigation": "Scripte",
     "scriptNavigation": {
-      "navigationLabel": "Skript Navigation",
-      "editNavLink": "Skript bearbeiten",
+      "navigationLabel": "Script Navigation",
+      "editNavLink": "Script bearbeiten",
       "listenersNavLink": "Listeners",
       "historyNavLink": "Verlauf der Ausführung von Listener."
     },
     "delete-nav-action": {
       "confirm-alert": {
-        "title": "Skript löschen",
-        "message": "Soll das Skript wirklich gelöscht werden?",
+        "title": "Script löschen",
+        "message": "Soll das Script wirklich gelöscht werden?",
         "submit": "Ja",
         "cancel": "Nein"
       }
@@ -25,23 +25,23 @@
     "edit-form": {
       "run": "Ausführen",
       "save": "Speichern",
-      "save-success": "Skript erfolgreich gespeichert"
+      "save-success": "Script erfolgreich gespeichert"
     },
     "deleteScript": {
-      "button": "Skript löschen"
+      "button": "Script löschen"
     },
     "navigation": {
-      "navigationLabel": "Skript Navigation",
+      "navigationLabel": "Script Navigation",
       "run": "Ausführen",
       "stored": "Gespeichert",
       "samples": "Beispiele"
     },
     "root-page": {
-      "title": "Skripte",
-      "subtitle": "Ausführung von Skripten mit der API von SCM-Manager"
+      "title": "Scripte",
+      "subtitle": "Ausführung von Scripten gegen die API des SCM-Manager"
     },
     "store-dialog": {
-      "title": "Gespeicherte Skripte"
+      "title": "Gespeicherte Scripte"
     },
     "store-form": {
       "submit": "Speichern",

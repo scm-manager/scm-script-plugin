@@ -1,10 +1,7 @@
 //@flow
 import React from "react";
 import { translate } from "react-i18next";
-import {
-  DeleteButton,
-  confirmAlert
-} from "@scm-manager/ui-components";
+import { DeleteButton, confirmAlert } from "@scm-manager/ui-components";
 import type { Script } from "../types";
 
 type Props = {

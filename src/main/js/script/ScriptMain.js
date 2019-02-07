@@ -57,7 +57,13 @@ class ScriptMain extends React.Component<Props, State> {
           <Route
             path={match.url}
             exact={true}
-            render={() => <EditForm script={script} links={links} onDelete={this.onDelete} />}
+            render={() => (
+              <EditForm
+                script={script}
+                links={links}
+                onDelete={this.onDelete}
+              />
+            )}
           />
           <Route
             path={match.url + "/listeners"}
