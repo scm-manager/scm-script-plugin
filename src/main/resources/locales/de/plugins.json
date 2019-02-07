@@ -7,12 +7,12 @@
     "descriptionHelp": "Kurze Beschreibung des Scripts.",
     "content": "Script",
     "contentHelp": "Das Script, das gegen die API von SCM-Manager ausgeführt wird.",
-    "primary-navigation": "Scripte",
-    "script-navigation": {
-      "edit": "Bearbeiten",
-      "listeners": "Listeners",
-      "history": "Historie der Listener",
-      "back": "Zurück"
+    "primaryNavigation": "Scripte",
+    "scriptNavigation": {
+      "navigationLabel": "Script Navigation",
+      "editNavLink": "Script bearbeiten",
+      "listenersNavLink": "Listeners",
+      "historyNavLink": "Verlauf der Ausführung von Listener."
     },
     "delete-nav-action": {
       "confirm-alert": {
@@ -20,15 +20,18 @@
         "message": "Soll das Script wirklich gelöscht werden?",
         "submit": "Ja",
         "cancel": "Nein"
-      },
-      "delete": "Löschen"
+      }
     },
     "edit-form": {
       "run": "Ausführen",
       "save": "Speichern",
       "save-success": "Script erfolgreich gespeichert"
     },
+    "deleteScript": {
+      "button": "Script löschen"
+    },
     "navigation": {
+      "navigationLabel": "Script Navigation",
       "run": "Ausführen",
       "stored": "Gespeichert",
       "samples": "Beispiele"

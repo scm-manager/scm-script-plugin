@@ -13,7 +13,7 @@ class MainNavigation extends React.Component<Props> {
     const { t } = this.props;
     return (
       <Navigation>
-        <Section label="Scripts">
+        <Section label={t("scm-script-plugin.navigation.navigationLabel")}>
           <NavLink
             to="/scripts/run"
             label={t("scm-script-plugin.navigation.run")}

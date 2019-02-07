@@ -14,9 +14,11 @@ import ContentEditor from "../components/ContentEditor";
 import { translate } from "react-i18next";
 import Output from "../components/Output";
 import { modify, run } from "../api";
+import DeleteScript from "./DeleteScript";
 
 type Props = {
   script: Script,
+  onDelete: () => void,
   links: ScriptLinks,
 
   // context props
@@ -174,8 +176,8 @@ class EditForm extends React.Component<Props, State> {
   };
 
   render() {
-    const { t } = this.props;
     const { title, description, content, result } = this.state;
+    const { t, script, onDelete } = this.props;
 
     return (
       <>
@@ -209,6 +211,8 @@ class EditForm extends React.Component<Props, State> {
             />
           </div>
           {this.renderControlButtons()}
+          <hr />
+          <DeleteScript script={script} onDelete={onDelete} />
         </form>
         <Output result={result} />
       </>
