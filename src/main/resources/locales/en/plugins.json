@@ -58,5 +58,13 @@
       "submit": "Add Listener",
       "storeListenerExecutionResults": "Capture listener execution results"
     }
+  },
+  "permissions": {
+    "script": {
+      "read,modify,execute": {
+        "displayName": "Run scripts",
+        "description": "May read, modify and run scripts"
+      }
+    }
   }
 }

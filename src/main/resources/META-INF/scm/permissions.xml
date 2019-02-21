@@ -1,0 +1,5 @@
+<permissions>
+  <permission>
+    <value>script:read,modify,execute</value>
+  </permission>
+</permissions>

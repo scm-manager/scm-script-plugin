@@ -58,5 +58,13 @@
       "submit": "Listener hinzufügen",
       "storeListenerExecutionResults": "Ergebnisse der Ausführung des Listener aufzeichnen."
     }
+  },
+  "permissions": {
+    "script": {
+      "read,modify,execute": {
+        "displayName": "Skripte ausführen",
+        "description": "Darf Skripte lesen, ändern und ausführen"
+      }
+    }
   }
 }
