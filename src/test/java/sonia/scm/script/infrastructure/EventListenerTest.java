@@ -44,16 +44,16 @@ class EventListenerTest {
 
   @Test
   void shouldHandleAsyncEvent() {
-    when(service.createTrigger(String.class, true)).thenReturn(Optional.empty());
-
     eventListener.subscribeAsync("Hello World");
+
+    verify(service).createTrigger(String.class, true);
   }
 
   @Test
   void shouldHandleSyncEvent() {
-    when(service.createTrigger(String.class, false)).thenReturn(Optional.empty());
-
     eventListener.subscribeSync("Hello World");
+
+    verify(service).createTrigger(String.class, false);
   }
 
   @Test
