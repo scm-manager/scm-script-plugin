@@ -4,7 +4,7 @@ import type { Script, ScriptExecutionResult, ScriptLinks } from "../types";
 import {
   InputField,
   LabelWithHelpIcon,
-  ButtonGrouped,
+  ButtonGroup,
   Button,
   SubmitButton,
   Textarea,
@@ -169,10 +169,10 @@ class EditForm extends React.Component<Props, State> {
     }
 
     return (
-      <ButtonGrouped>
+      <ButtonGroup connected={false}>
         {run}
         {save}
-      </ButtonGrouped>
+      </ButtonGroup>
     );
   };
 

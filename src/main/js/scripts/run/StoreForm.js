@@ -3,7 +3,7 @@ import React from "react";
 import { translate } from "react-i18next";
 import {
   InputField,
-  ButtonGrouped,
+  ButtonGroup,
   Button,
   SubmitButton,
   Textarea
@@ -88,7 +88,7 @@ class StoreForm extends React.Component<Props, State> {
           onChange={this.onChange}
           value={script.description}
         />
-        <ButtonGrouped>
+        <ButtonGroup connected={false}>
           <SubmitButton
             label={t("scm-script-plugin.store-form.submit")}
             loading={loading}
@@ -99,7 +99,7 @@ class StoreForm extends React.Component<Props, State> {
             action={onAbort}
             disabled={loading}
           />
-        </ButtonGrouped>
+        </ButtonGroup>
       </form>
     );
   }

@@ -6,7 +6,7 @@ import StoreDialog from "./StoreDialog";
 import {
   apiClient,
   ErrorNotification,
-  ButtonGrouped,
+  ButtonGroup,
   Button,
   SubmitButton
 } from "@scm-manager/ui-components";
@@ -156,10 +156,10 @@ class Editor extends React.Component<Props, State> {
     return (
       <div>
         <ContentEditor onChange={this.onScriptChange} value={script} />
-        <ButtonGrouped>
+        <ButtonGroup connected={false}>
           {this.createExecuteButton()}
           {this.createStoreButton()}
-        </ButtonGrouped>
+        </ButtonGroup>
         {body}
         {storeDialog}
       </div>
