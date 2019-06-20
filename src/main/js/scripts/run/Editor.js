@@ -156,7 +156,7 @@ class Editor extends React.Component<Props, State> {
     return (
       <div>
         <ContentEditor onChange={this.onScriptChange} value={script} />
-        <ButtonGroup connected={false}>
+        <ButtonGroup>
           {this.createExecuteButton()}
           {this.createStoreButton()}
         </ButtonGroup>

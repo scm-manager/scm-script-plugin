@@ -169,7 +169,7 @@ class EditForm extends React.Component<Props, State> {
     }
 
     return (
-      <ButtonGroup connected={false}>
+      <ButtonGroup>
         {run}
         {save}
       </ButtonGroup>

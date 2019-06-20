@@ -88,7 +88,7 @@ class StoreForm extends React.Component<Props, State> {
           onChange={this.onChange}
           value={script.description}
         />
-        <ButtonGroup connected={false}>
+        <ButtonGroup>
           <SubmitButton
             label={t("scm-script-plugin.store-form.submit")}
             loading={loading}
