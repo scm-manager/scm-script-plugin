@@ -3,7 +3,7 @@ import React from "react";
 import { Route } from "react-router-dom";
 import { binder } from "@scm-manager/ui-extensions";
 import type { Links } from "@scm-manager/ui-types";
-import ScriptNavLink from "./ScriptNavLink";
+import ScriptNavigation from "./ScriptNavigation";
 import RootPage from "./RootPage";
 
 type PredicateProps = {
@@ -32,4 +32,4 @@ const ScriptRoute = ({ links }) => {
 
 binder.bind("admin.route", ScriptRoute, predicate);
 
-binder.bind("admin.navigation", ScriptNavLink, predicate);
+binder.bind("admin.navigation", ScriptNavigation, predicate);
