@@ -1,13 +1,19 @@
 //@flow
 import React from "react";
 import { translate } from "react-i18next";
-import { InputField, SubmitButton, Textarea } from "@scm-manager/ui-components";
-import Button from "@scm-manager/ui-components/src/buttons/Button";
+import {
+  InputField,
+  ButtonGroup,
+  Button,
+  SubmitButton,
+  Textarea
+} from "@scm-manager/ui-components";
 import type { Script } from "../../types";
 
 type Props = {
   onSubmit: Script => void,
   onAbort: () => void,
+
   // context props
   t: string => string
 };
@@ -60,7 +66,7 @@ class StoreForm extends React.Component<Props, State> {
   };
 
   render() {
-    const { onAbort, t } = this.props;
+    const { t, onAbort } = this.props;
     const { script, loading } = this.state;
 
     return (
@@ -82,16 +88,18 @@ class StoreForm extends React.Component<Props, State> {
           onChange={this.onChange}
           value={script.description}
         />
-        <SubmitButton
-          label={t("scm-script-plugin.store-form.submit")}
-          loading={loading}
-          disabled={!this.isScriptValid()}
-        />
-        <Button
-          label={t("scm-script-plugin.store-form.abort")}
-          action={onAbort}
-          disabled={loading}
-        />
+        <ButtonGroup>
+          <SubmitButton
+            label={t("scm-script-plugin.store-form.submit")}
+            loading={loading}
+            disabled={!this.isScriptValid()}
+          />
+          <Button
+            label={t("scm-script-plugin.store-form.abort")}
+            action={onAbort}
+            disabled={loading}
+          />
+        </ButtonGroup>
       </form>
     );
   }
