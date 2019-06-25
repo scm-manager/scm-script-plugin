@@ -12,7 +12,7 @@
       "navigationLabel": "Script Navigation",
       "editNavLink": "Script bearbeiten",
       "listenersNavLink": "Listeners",
-      "historyNavLink": "Verlauf der Ausführung von Listener."
+      "historyNavLink": "Verlauf der Ausführung von Listener"
     },
     "delete-nav-action": {
       "confirm-alert": {
