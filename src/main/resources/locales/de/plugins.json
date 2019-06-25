@@ -1,5 +1,6 @@
 {
   "scm-script-plugin": {
+    "navLink": "Scripte",
     "title": "Titel",
     "titleValidationError": "Titel muss ausgefüllt sein",
     "titleHelp": "Titel des Scripts, der in der Übersicht angezeigt wird.",
@@ -7,7 +8,6 @@
     "descriptionHelp": "Kurze Beschreibung des Scripts.",
     "content": "Script",
     "contentHelp": "Das Script, das gegen die API von SCM-Manager ausgeführt wird.",
-    "primaryNavigation": "Scripte",
     "scriptNavigation": {
       "navigationLabel": "Script Navigation",
       "editNavLink": "Script bearbeiten",
