@@ -102,7 +102,7 @@ class Editor extends React.Component<Props, State> {
       .then(location => apiClient.get(location))
       .then(resp => resp.json())
       .then(script => script.id)
-      .then(id => history.push("/script/" + id))
+      .then(id => history.push("/admin/script/" + id))
       .catch(error => this.setState({ error }));
   };
 

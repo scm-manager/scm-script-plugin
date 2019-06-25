@@ -15,13 +15,16 @@ class MainRouting extends React.Component<Props> {
     const { links } = this.props;
     return (
       <>
-        <Route path="/scripts/run" component={() => <Editor links={links} />} />
         <Route
-          path="/scripts"
+          path="/admin/scripts/run"
+          component={() => <Editor links={links} />}
+        />
+        <Route
+          path="/admin/scripts"
           component={() => <Stored links={links} />}
           exact={true}
         />
-        <Route path="/scripts/samples" component={SampleRoot} />
+        <Route path="/admin/scripts/samples" component={SampleRoot} />
       </>
     );
   }
