@@ -6,6 +6,7 @@ import EditForm from "./EditForm";
 import { remove } from "../api";
 import ListenersPage from "./ListenersPage";
 import HistoryPage from "./HistoryPage";
+import ScriptTabs from "./ScriptTabs";
 
 type Props = {
   script: Script,
@@ -52,6 +53,7 @@ class ScriptMain extends React.Component<Props, State> {
 
     return (
       <>
+        <ScriptTabs />
         <Route
           path={match.url}
           exact={true}
