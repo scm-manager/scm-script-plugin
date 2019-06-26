@@ -60,7 +60,7 @@ class HistoryPage extends React.Component<Props, State> {
   }
 
   render() {
-    const { script, classes } = this.props;
+    const { classes } = this.props;
     const { history, loading, error } = this.state;
 
     if (error) {
@@ -70,10 +70,7 @@ class HistoryPage extends React.Component<Props, State> {
     }
 
     return (
-      <div>
-        <div className="content">
-          <h3>{script.title}</h3>
-        </div>
+      <>
         {history.map(entry => {
           return (
             <div className={classes.frame}>
@@ -85,7 +82,7 @@ class HistoryPage extends React.Component<Props, State> {
             </div>
           );
         })}
-      </div>
+      </>
     );
   }
 }

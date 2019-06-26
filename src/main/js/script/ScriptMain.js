@@ -53,6 +53,9 @@ class ScriptMain extends React.Component<Props, State> {
 
     return (
       <>
+        <div className="content">
+          <h3>{script.title}</h3>
+        </div>
         <ScriptTabs path={match.url} />
         <Route
           path={match.url}
