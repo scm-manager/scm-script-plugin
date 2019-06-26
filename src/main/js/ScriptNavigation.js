@@ -10,6 +10,11 @@ type Props = {
 };
 
 class ScriptNavigation extends React.Component<Props> {
+  matchesScript = (route: any) => {
+    const regex = new RegExp("/admin/script/.+");
+    return route.location.pathname.match(regex);
+  };
+
   render() {
     const { t } = this.props;
 
@@ -19,6 +24,8 @@ class ScriptNavigation extends React.Component<Props> {
           to="/admin/scripts/run"
           icon="fas fa-puzzle-piece"
           label={t("scm-script-plugin.navLink")}
+          activeWhenMatch={this.matchesScript}
+          activeOnlyWhenExact={false}
         >
           <NavLink
             to="/admin/scripts/run"
@@ -27,6 +34,8 @@ class ScriptNavigation extends React.Component<Props> {
           <NavLink
             to="/admin/scripts"
             label={t("scm-script-plugin.navigation.stored")}
+            activeWhenMatch={this.matchesScript}
+            activeOnlyWhenExact={true}
           />
           <NavLink
             to="/admin/scripts/samples"
