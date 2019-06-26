@@ -4,6 +4,8 @@ import { Link, withRouter } from "react-router-dom";
 import { translate } from "react-i18next";
 
 type Props = {
+  path: string,
+
   // context props
   t: string => string
 };
@@ -26,33 +28,32 @@ export function isUrlSuffixMatching(
 
 class ScriptTabs extends React.Component<Props> {
   navigationClass(suffix: string) {
-    const { location } = this.props;
-    const baseURL = "/admin/script";
-    if (location && isUrlSuffixMatching(baseURL, location.pathname, suffix)) {
+    const { location, path } = this.props;
+    if (location && isUrlSuffixMatching(path, location.pathname, suffix)) {
       return "is-active";
     }
     return "";
   }
 
   render() {
-    const { t } = this.props;
+    const { path, t } = this.props;
 
     return (
       <div className="tabs">
         <ul>
-          <li className={this.navigationClass("edit")}>
-            <Link to="/admin/script">
-              {t("scm-script-plugin.scriptNavigation.editNavLink")}
+          <li className={this.navigationClass("")}>
+            <Link to={path}>
+              {t("scm-script-plugin.scriptTab.edit")}
             </Link>
           </li>
           <li className={this.navigationClass("listeners")}>
-            <Link to="/admin/script/listeners">
-              {t("scm-script-plugin.scriptNavigation.listenersNavLink")}
+            <Link to={path + "/listeners"}>
+              {t("scm-script-plugin.scriptTab.listeners")}
             </Link>
           </li>
           <li className={this.navigationClass("history")}>
-            <Link to="/admin/script/history">
-              {t("scm-script-plugin.scriptNavigation.historyNavLink")}
+            <Link to={path + "/history"}>
+              {t("scm-script-plugin.scriptTab.history")}
             </Link>
           </li>
         </ul>

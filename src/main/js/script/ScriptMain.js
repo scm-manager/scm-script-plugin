@@ -53,7 +53,7 @@ class ScriptMain extends React.Component<Props, State> {
 
     return (
       <>
-        <ScriptTabs />
+        <ScriptTabs path={match.url} />
         <Route
           path={match.url}
           exact={true}

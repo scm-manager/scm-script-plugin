@@ -1,33 +1,36 @@
 //@flow
 import React from "react";
-import { Route } from "react-router-dom";
+import { Route, withRouter } from "react-router-dom";
 import Stored from "./list/Stored";
 import type { ScriptLinks } from "../types";
 import Editor from "./run/Editor";
 import SampleRoot from "./samples/SampleRoot";
 
 type Props = {
-  links: ScriptLinks
+  links: ScriptLinks,
+
+  // context props
+  match: any
 };
 
 class MainRouting extends React.Component<Props> {
   render() {
-    const { links } = this.props;
+    const { links, match } = this.props;
     return (
       <>
         <Route
-          path="/admin/scripts/run"
+          path={match.url + "/run"}
           component={() => <Editor links={links} />}
         />
         <Route
-          path="/admin/scripts"
+          path={match.url}
           component={() => <Stored links={links} />}
           exact={true}
         />
-        <Route path="/admin/scripts/samples" component={SampleRoot} />
+        <Route path={match.url + "/samples"} component={SampleRoot} />
       </>
     );
   }
 }
 
-export default MainRouting;
+export default withRouter(MainRouting);
