@@ -25,7 +25,7 @@ class StoreDialog extends React.Component<Props> {
 
     return (
       <Modal
-        title={t("scm-script-plugin.store-dialog.title")}
+        title={t("scm-script-plugin.storeDialog.title")}
         closeFunction={() => onClose()}
         body={body}
         active={true}

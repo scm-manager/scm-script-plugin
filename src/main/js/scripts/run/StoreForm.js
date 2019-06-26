@@ -90,12 +90,12 @@ class StoreForm extends React.Component<Props, State> {
         />
         <ButtonGroup>
           <SubmitButton
-            label={t("scm-script-plugin.store-form.submit")}
+            label={t("scm-script-plugin.storeForm.submit")}
             loading={loading}
             disabled={!this.isScriptValid()}
           />
           <Button
-            label={t("scm-script-plugin.store-form.abort")}
+            label={t("scm-script-plugin.storeForm.abort")}
             action={onAbort}
             disabled={loading}
           />

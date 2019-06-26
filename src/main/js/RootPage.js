@@ -15,6 +15,7 @@ import MainRouting from "./scripts/MainRouting";
 
 type Props = {
   link: string,
+
   // context props
   location: any,
   t: string => string
@@ -81,8 +82,8 @@ class RootPage extends React.Component<Props, State> {
 
     return (
       <>
-        <Title title={t("scm-script-plugin.root-page.title")} />
-        <Subtitle subtitle={t("scm-script-plugin.root-page.subtitle")} />
+        <Title title={t("scm-script-plugin.rootPage.title")} />
+        <Subtitle subtitle={t("scm-script-plugin.rootPage.subtitle")} />
         {body}
       </>
     );

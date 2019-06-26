@@ -1,6 +1,6 @@
 //@flow
 import React from "react";
-import type { Script, ScriptExecutionResult, ScriptLinks } from "../types";
+import { translate } from "react-i18next";
 import {
   InputField,
   LabelWithHelpIcon,
@@ -11,10 +11,10 @@ import {
   ErrorNotification,
   Notification
 } from "@scm-manager/ui-components";
-import ContentEditor from "../components/ContentEditor";
-import { translate } from "react-i18next";
-import Output from "../components/Output";
 import { modify, run } from "../api";
+import type { Script, ScriptExecutionResult, ScriptLinks } from "../types";
+import ContentEditor from "../components/ContentEditor";
+import Output from "../components/Output";
 import DeleteScript from "./DeleteScript";
 
 type Props = {
@@ -118,7 +118,7 @@ class EditForm extends React.Component<Props, State> {
     if (saveSuccess) {
       successNotification = (
         <Notification type="success">
-          {t("scm-script-plugin.edit-form.save-success")}
+          {t("scm-script-plugin.editForm.saveSuccess")}
         </Notification>
       );
     }
@@ -147,7 +147,7 @@ class EditForm extends React.Component<Props, State> {
     if (links.execute) {
       run = (
         <SubmitButton
-          label={t("scm-script-plugin.edit-form.run")}
+          label={t("scm-script-plugin.editForm.run")}
           action={this.onRun}
           loading={loading}
         />
@@ -159,7 +159,7 @@ class EditForm extends React.Component<Props, State> {
       const btnColor = run ? "default" : "primary";
       save = (
         <Button
-          label={t("scm-script-plugin.edit-form.save")}
+          label={t("scm-script-plugin.editForm.save")}
           color={btnColor}
           action={this.onSave}
           loading={loading}

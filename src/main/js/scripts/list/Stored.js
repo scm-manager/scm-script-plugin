@@ -1,11 +1,9 @@
 //@flow
 import React from "react";
-import type { ScriptCollection, ScriptLinks } from "../../types";
+import { Loading, Notification, ErrorNotification } from "@scm-manager/ui-components";
 import { findAll } from "../../api";
-import ErrorNotification from "@scm-manager/ui-components/src/ErrorNotification";
-import Loading from "@scm-manager/ui-components/src/Loading";
+import type { ScriptCollection, ScriptLinks } from "../../types";
 import ScriptTable from "./ScriptTable";
-import { Notification } from "@scm-manager/ui-components";
 
 type Props = {
   links: ScriptLinks

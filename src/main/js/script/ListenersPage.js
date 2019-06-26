@@ -1,9 +1,9 @@
 //@flow
 import React from "react";
-import type { Listeners, Script, ScriptLinks } from "../types";
 import { translate } from "react-i18next";
 import { Checkbox, Select, SubmitButton } from "@scm-manager/ui-components";
 import { findAllEventTypes, findAllListeners, storeListeners } from "../api";
+import type { Listeners, Script, ScriptLinks } from "../types";
 
 type Props = {
   script: Script,

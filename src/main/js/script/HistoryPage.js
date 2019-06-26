@@ -1,14 +1,14 @@
 //@flow
 import React from "react";
-import type { ExecutionHistoryEntry, Script } from "../types";
-import { findHistory } from "../api";
+import injectSheets from "react-jss";
 import {
   DateFromNow,
   ErrorNotification,
   Loading
 } from "@scm-manager/ui-components";
+import { findHistory } from "../api";
+import type { ExecutionHistoryEntry, Script } from "../types";
 import Output from "../components/Output";
-import injectSheets from "react-jss";
 
 const styles = {
   frame: {
