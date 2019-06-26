@@ -20,7 +20,9 @@ const ScriptRoute = ({ links }) => {
     <>
       <Route
         path="/admin/scripts"
-        component={() => <RootPage link={links.scripts.href} />}
+        component={() => (
+          <RootPage link={links.scripts.href} />
+        )}
       />
       <Route
         path="/admin/script"
