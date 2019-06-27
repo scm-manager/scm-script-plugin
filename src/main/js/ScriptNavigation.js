@@ -23,7 +23,7 @@ class ScriptNavigation extends React.Component<Props> {
       <>
         <SubNavigation
           to={match.url + "/scripts/run"}
-          icon="fas fa-puzzle-piece"
+          icon="fas fa-file-code"
           label={t("scm-script-plugin.navLink")}
           activeWhenMatch={this.matchesScript}
           activeOnlyWhenExact={false}
