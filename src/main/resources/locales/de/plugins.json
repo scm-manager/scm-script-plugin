@@ -1,49 +1,45 @@
 {
   "scm-script-plugin": {
-    "title": "Titel",
-    "titleValidationError": "Titel muss ausgefüllt sein",
-    "titleHelp": "Titel des Scripts, der in der Übersicht angezeigt wird.",
+    "navLink": "Scripte",
+    "title": "Name",
+    "titleValidationError": "Name muss ausgefüllt sein",
+    "titleHelp": "Name des Scripts, der in der Übersicht angezeigt wird.",
     "description": "Beschreibung",
     "descriptionHelp": "Kurze Beschreibung des Scripts.",
     "content": "Script",
     "contentHelp": "Das Script, das gegen die API von SCM-Manager ausgeführt wird.",
-    "primaryNavigation": "Scripte",
-    "scriptNavigation": {
-      "navigationLabel": "Script Navigation",
-      "editNavLink": "Script bearbeiten",
-      "listenersNavLink": "Listeners",
-      "historyNavLink": "Verlauf der Ausführung von Listener"
-    },
-    "delete-nav-action": {
-      "confirm-alert": {
-        "title": "Script löschen",
-        "message": "Soll das Script wirklich gelöscht werden?",
-        "submit": "Ja",
-        "cancel": "Nein"
-      }
-    },
-    "edit-form": {
-      "run": "Ausführen",
-      "save": "Speichern",
-      "save-success": "Script erfolgreich gespeichert"
-    },
-    "deleteScript": {
-      "button": "Script löschen"
-    },
     "navigation": {
-      "navigationLabel": "Script Navigation",
       "run": "Ausführen",
       "stored": "Gespeichert",
       "samples": "Beispiele"
     },
-    "root-page": {
+    "scriptTab": {
+      "edit": "Script bearbeiten",
+      "listeners": "Listeners",
+      "history": "Verlauf der Ausführung von Listener"
+    },
+    "delete": {
+      "confirmAlert": {
+        "title": "Script löschen",
+        "message": "Soll das Script wirklich gelöscht werden?",
+        "submit": "Ja",
+        "cancel": "Nein"
+      },
+      "button": "Script löschen"
+    },
+    "editForm": {
+      "run": "Ausführen",
+      "save": "Speichern",
+      "saveSuccess": "Script erfolgreich gespeichert"
+    },
+    "rootPage": {
       "title": "Scripte",
       "subtitle": "Ausführung von Scripten gegen die API des SCM-Manager"
     },
-    "store-dialog": {
+    "storeDialog": {
       "title": "Gespeicherte Scripte"
     },
-    "store-form": {
+    "storeForm": {
       "submit": "Speichern",
       "abort": "Abbrechen"
     },

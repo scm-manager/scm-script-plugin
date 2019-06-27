@@ -2,15 +2,22 @@
 import React from "react";
 import { Route } from "react-router-dom";
 import { translate } from "react-i18next";
-import { Page, Loading, ErrorNotification } from "@scm-manager/ui-components";
+import {
+  Loading,
+  ErrorNotification,
+  Title,
+  Subtitle
+} from "@scm-manager/ui-components";
 import { findAllScriptLinks } from "./api";
 import type { ScriptLinks } from "./types";
-import Main from "./scripts/Main";
 import ScriptRoot from "./script/ScriptRoot";
+import MainRouting from "./scripts/MainRouting";
 
 type Props = {
   link: string,
+
   // context props
+  location: any,
   t: string => string
 };
 
@@ -54,9 +61,12 @@ class RootPage extends React.Component<Props, State> {
     } else if (links) {
       return (
         <>
-          <Route path="/scripts" component={() => <Main links={links} />} />
           <Route
-            path="/script/:id"
+            path="/admin/scripts"
+            component={() => <MainRouting links={links} />}
+          />
+          <Route
+            path="/admin/script/:id"
             component={() => <ScriptRoot links={links} />}
           />
         </>
@@ -71,12 +81,11 @@ class RootPage extends React.Component<Props, State> {
     const body = this.createBody();
 
     return (
-      <Page
-        title={t("scm-script-plugin.root-page.title")}
-        subtitle={t("scm-script-plugin.root-page.subtitle")}
-      >
+      <>
+        <Title title={t("scm-script-plugin.rootPage.title")} />
+        <Subtitle subtitle={t("scm-script-plugin.rootPage.subtitle")} />
         {body}
-      </Page>
+      </>
     );
   }
 }

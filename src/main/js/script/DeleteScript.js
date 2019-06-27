@@ -16,15 +16,15 @@ class DeleteScript extends React.Component<Props> {
   confirmDelete = () => {
     const { onDelete, t } = this.props;
     confirmAlert({
-      title: t("scm-script-plugin.delete-nav-action.confirm-alert.title"),
-      message: t("scm-script-plugin.delete-nav-action.confirm-alert.message"),
+      title: t("scm-script-plugin.delete.confirmAlert.title"),
+      message: t("scm-script-plugin.delete.confirmAlert.message"),
       buttons: [
         {
-          label: t("scm-script-plugin.delete-nav-action.confirm-alert.submit"),
+          label: t("scm-script-plugin.delete.confirmAlert.submit"),
           onClick: onDelete
         },
         {
-          label: t("scm-script-plugin.delete-nav-action.confirm-alert.cancel"),
+          label: t("scm-script-plugin.delete.confirmAlert.cancel"),
           onClick: () => null
         }
       ]
@@ -39,7 +39,7 @@ class DeleteScript extends React.Component<Props> {
         <div className="columns">
           <div className="column">
             <DeleteButton
-              label={t("scm-script-plugin.deleteScript.button")}
+              label={t("scm-script-plugin.delete.button")}
               action={this.confirmDelete}
             />
           </div>

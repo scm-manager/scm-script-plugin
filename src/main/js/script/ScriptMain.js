@@ -3,10 +3,10 @@ import React from "react";
 import { Route, withRouter } from "react-router-dom";
 import type { Script, ScriptLinks } from "../types";
 import EditForm from "./EditForm";
-import ScriptNavigation from "./ScriptNavigation";
 import { remove } from "../api";
 import ListenersPage from "./ListenersPage";
 import HistoryPage from "./HistoryPage";
+import ScriptTabs from "./ScriptTabs";
 
 type Props = {
   script: Script,
@@ -39,7 +39,7 @@ class ScriptMain extends React.Component<Props, State> {
 
     remove(script._links.delete.href)
       // we do not modify state on success, because we redirect to another page
-      .then(() => history.push("/scripts"))
+      .then(() => history.push("/admin/scripts"))
       .catch(error =>
         this.setState({
           loading: false,
@@ -52,34 +52,29 @@ class ScriptMain extends React.Component<Props, State> {
     const { script, links, match } = this.props;
 
     return (
-      <div className="columns">
-        <div className="column is-three-quarters">
-          <Route
-            path={match.url}
-            exact={true}
-            render={() => (
-              <EditForm
-                script={script}
-                links={links}
-                onDelete={this.onDelete}
-              />
-            )}
-          />
-          <Route
-            path={match.url + "/listeners"}
-            exact={true}
-            render={() => <ListenersPage script={script} links={links} />}
-          />
-          <Route
-            path={match.url + "/history"}
-            exact={true}
-            render={() => <HistoryPage script={script} />}
-          />
+      <>
+        <div className="content">
+          <h3>{script.title}</h3>
         </div>
-        <div className="column">
-          <ScriptNavigation script={script} />
-        </div>
-      </div>
+        <ScriptTabs path={match.url} />
+        <Route
+          path={match.url}
+          exact={true}
+          render={() => (
+            <EditForm script={script} links={links} onDelete={this.onDelete} />
+          )}
+        />
+        <Route
+          path={match.url + "/listeners"}
+          exact={true}
+          render={() => <ListenersPage script={script} links={links} />}
+        />
+        <Route
+          path={match.url + "/history"}
+          exact={true}
+          render={() => <HistoryPage script={script} />}
+        />
+      </>
     );
   }
 }

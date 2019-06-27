@@ -106,7 +106,7 @@ class Editor extends React.Component<Props, State> {
       .then(location => apiClient.get(location))
       .then(resp => resp.json())
       .then(script => script.id)
-      .then(id => history.push("/script/" + id))
+      .then(id => history.push("/admin/script/" + id))
       .catch(error => this.setState({ error }));
   };
 
@@ -141,6 +141,7 @@ class Editor extends React.Component<Props, State> {
   };
 
   render() {
+    const { t } = this.props;
     const { showStoreDialog, script, result, error } = this.state;
 
     const storeDialog = showStoreDialog ? (
@@ -154,7 +155,10 @@ class Editor extends React.Component<Props, State> {
     );
 
     return (
-      <div>
+      <>
+        <div className="content">
+          <h3>{t("scm-script-plugin.navigation.run")}</h3>
+        </div>
         <ContentEditor onChange={this.onScriptChange} value={script} />
         <ButtonGroup>
           {this.createExecuteButton()}
@@ -162,7 +166,7 @@ class Editor extends React.Component<Props, State> {
         </ButtonGroup>
         {body}
         {storeDialog}
-      </div>
+      </>
     );
   }
 }

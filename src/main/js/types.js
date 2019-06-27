@@ -37,15 +37,15 @@ export type ScriptExecutionResult = {
   ended: string
 };
 
+export type Listener = {
+  eventType: string,
+  asynchronous: boolean
+};
+
 export type Listeners = {
   listeners: Listener[],
   storeListenerExecutionResults: boolean,
   _links: Links
-};
-
-export type Listener = {
-  eventType: string,
-  asynchronous: boolean
 };
 
 export type ExecutionHistoryEntry = {

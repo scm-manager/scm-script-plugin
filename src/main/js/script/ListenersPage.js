@@ -1,9 +1,9 @@
 //@flow
 import React from "react";
-import type { Listeners, Script, ScriptLinks } from "../types";
 import { translate } from "react-i18next";
 import { Checkbox, Select, SubmitButton } from "@scm-manager/ui-components";
 import { findAllEventTypes, findAllListeners, storeListeners } from "../api";
+import type { Listeners, Script, ScriptLinks } from "../types";
 
 type Props = {
   script: Script,
@@ -148,7 +148,7 @@ class ListenersPage extends React.Component<Props, State> {
   };
 
   render() {
-    const { script, t } = this.props;
+    const { t } = this.props;
     const { eventTypes, listeners, eventType, asynchronous } = this.state;
 
     const options = eventTypes.map(eventType => {
@@ -164,10 +164,7 @@ class ListenersPage extends React.Component<Props, State> {
     });
 
     return (
-      <div>
-        <div className="content">
-          <h3>{script.title}</h3>
-        </div>
+      <>
         <table className="card-table table is-hoverable is-fullwidth">
           <thead>
             <tr>
@@ -202,7 +199,7 @@ class ListenersPage extends React.Component<Props, State> {
           />
           <SubmitButton label={t("scm-script-plugin.listeners.submit")} />
         </form>
-      </div>
+      </>
     );
   }
 }
