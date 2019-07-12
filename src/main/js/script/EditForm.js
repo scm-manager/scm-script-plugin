@@ -111,22 +111,18 @@ class EditForm extends React.Component<Props, State> {
     });
   };
 
-  renderNotifications = () => {
+  renderSuccessNotifications = () => {
     const { t } = this.props;
-    const { saveSuccess, error } = this.state;
-    let successNotification = null;
-    if (saveSuccess) {
-      successNotification = (
-        <Notification type="success">
-          {t("scm-script-plugin.editForm.saveSuccess")}
-        </Notification>
-      );
-    }
+    const { saveSuccess } = this.state;
 
     return (
       <>
-        <ErrorNotification error={error} />
-        {successNotification}
+        {
+          saveSuccess &&
+          <Notification type="success">
+            {t("scm-script-plugin.editForm.saveSuccess")}
+          </Notification>
+        }
       </>
     );
   };
@@ -138,6 +134,49 @@ class EditForm extends React.Component<Props, State> {
   isScriptValid = () => {
     return this.isTitleValid();
   };
+
+  renderContent = () => {
+    const { title, description, content, result } = this.state;
+    const { t, script, onDelete } = this.props;
+
+    return(
+      <>
+        <form onSubmit={this.onRun}>
+          <InputField
+            name="title"
+            label={t("scm-script-plugin.title")}
+            helpText={t("scm-script-plugin.titleHelp")}
+            value={title}
+            validationError={!this.isTitleValid()}
+            errorMessage={t("scm-script-plugin.titleValidationError")}
+            onChange={this.onValueChange}
+          />
+          <Textarea
+            name="description"
+            label={t("scm-script-plugin.description")}
+            helpText={t("scm-script-plugin.descriptionHelp")}
+            value={description}
+            onChange={this.onValueChange}
+          />
+          <div className="field">
+            <LabelWithHelpIcon
+              label={t("scm-script-plugin.content")}
+              helpText={t("scm-script-plugin.contentHelp")}
+            />
+            <ContentEditor
+              name="content"
+              value={content}
+              onChange={this.onValueChange}
+            />
+          </div>
+          {this.renderControlButtons()}
+          <hr />
+          <DeleteScript script={script} onDelete={onDelete} />
+        </form>
+        <Output result={result} />
+      </>
+    )
+  }
 
   renderControlButtons = () => {
     const { loading } = this.state;
@@ -177,47 +216,20 @@ class EditForm extends React.Component<Props, State> {
   };
 
   render() {
-    const { title, description, content, result } = this.state;
-    const { t, script, onDelete } = this.props;
+    const { error } = this.state;
 
-    return (
-      <>
-        {this.renderNotifications()}
-        <form onSubmit={this.onRun}>
-          <InputField
-            name="title"
-            label={t("scm-script-plugin.title")}
-            helpText={t("scm-script-plugin.titleHelp")}
-            value={title}
-            validationError={!this.isTitleValid()}
-            errorMessage={t("scm-script-plugin.titleValidationError")}
-            onChange={this.onValueChange}
-          />
-          <Textarea
-            name="description"
-            label={t("scm-script-plugin.description")}
-            helpText={t("scm-script-plugin.descriptionHelp")}
-            value={description}
-            onChange={this.onValueChange}
-          />
-          <div className="field">
-            <LabelWithHelpIcon
-              label={t("scm-script-plugin.content")}
-              helpText={t("scm-script-plugin.contentHelp")}
-            />
-            <ContentEditor
-              name="content"
-              value={content}
-              onChange={this.onValueChange}
-            />
-          </div>
-          {this.renderControlButtons()}
-          <hr />
-          <DeleteScript script={script} onDelete={onDelete} />
-        </form>
-        <Output result={result} />
-      </>
-    );
+    if(error) {
+      return (
+        <ErrorNotification error={error} />
+      )
+    } else {
+      return (
+        <>
+          {this.renderSuccessNotifications()}
+          {this.renderContent()}
+        </>
+      );
+    }
   }
 }
 
