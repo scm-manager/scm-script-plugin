@@ -14,7 +14,7 @@
   <packaging>smp</packaging>
   <version>2.0.0-SNAPSHOT</version>
   <name>${project.artifactId}</name>
-  <description>Script support for scm-manager.</description>
+  <description>Script support for scm-manager</description>
   <url>https://bitbucket.org/sdorra/scm-script-plugin</url>
 
   <dependencies>
@@ -75,7 +75,7 @@
           <plugin>
             <groupId>sonia.scm.maven</groupId>
             <artifactId>smp-maven-plugin</artifactId>
-            <version>1.0.0-alpha-4</version>
+            <version>1.0.0-alpha-6</version>
             <extensions>true</extensions>
             <configuration>
               <links>
