@@ -3,8 +3,8 @@ package sonia.scm.script.infrastructure;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Ordering;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import sonia.scm.plugin.InstalledPlugin;
 import sonia.scm.plugin.PluginLoader;
-import sonia.scm.plugin.PluginWrapper;
 import sonia.scm.plugin.ScmModule;
 import sonia.scm.script.domain.EventTypeRepository;
 
@@ -32,9 +32,9 @@ public class DefaultEventTypeRepository implements EventTypeRepository {
       appendEvents(events, module);
     }
 
-    Collection<PluginWrapper> installedPlugins = pluginLoader.getInstalledPlugins();
-    for (PluginWrapper installedPlugin : installedPlugins) {
-      appendEvents(events, installedPlugin.getPlugin());
+    Collection<InstalledPlugin> installedPlugins = pluginLoader.getInstalledPlugins();
+    for (InstalledPlugin installedPlugin : installedPlugins) {
+      appendEvents(events, installedPlugin.getDescriptor());
     }
 
     return classOrdering.sortedCopy(events);

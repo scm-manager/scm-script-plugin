@@ -6,9 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import sonia.scm.plugin.Plugin;
+import sonia.scm.plugin.InstalledPlugin;
+import sonia.scm.plugin.InstalledPluginDescriptor;
 import sonia.scm.plugin.PluginLoader;
-import sonia.scm.plugin.PluginWrapper;
 import sonia.scm.plugin.ScmModule;
 import sonia.scm.script.domain.EventTypeRepository;
 
@@ -31,8 +31,8 @@ class DefaultEventTypeRepositoryTest {
     List<ScmModule> modules = ImmutableList.of(moduleOne, moduleTwo);
     when(pluginLoader.getInstalledModules()).thenReturn(modules);
 
-    PluginWrapper pluginWrapper = createPlugin(Float.class);
-    List<PluginWrapper> plugins = ImmutableList.of(pluginWrapper);
+    InstalledPlugin pluginWrapper = createPlugin(Float.class);
+    List<InstalledPlugin> plugins = ImmutableList.of(pluginWrapper);
     when(pluginLoader.getInstalledPlugins()).thenReturn(plugins);
 
     EventTypeRepository repository = new DefaultEventTypeRepository(pluginLoader);
@@ -47,12 +47,12 @@ class DefaultEventTypeRepositoryTest {
     return moduleOne;
   }
 
-  private PluginWrapper createPlugin(Class<?>... eventTypes) {
-    PluginWrapper pluginWrapper = mock(PluginWrapper.class);
-    Plugin plugin = mock(Plugin.class);
-    when(plugin.getEvents()).thenReturn(Lists.newArrayList(eventTypes));
-    when(pluginWrapper.getPlugin()).thenReturn(plugin);
-    return pluginWrapper;
+  private InstalledPlugin createPlugin(Class<?>... eventTypes) {
+    InstalledPlugin plugin = mock(InstalledPlugin.class);
+    InstalledPluginDescriptor descriptor = mock(InstalledPluginDescriptor.class);
+    when(descriptor.getEvents()).thenReturn(Lists.newArrayList(eventTypes));
+    when(plugin.getDescriptor()).thenReturn(descriptor);
+    return plugin;
   }
 
 }
