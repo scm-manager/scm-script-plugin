@@ -15,7 +15,7 @@
   <version>2.0.0-SNAPSHOT</version>
   <name>${project.artifactId}</name>
   <description>Script support for scm-manager</description>
-  <url>https://bitbucket.org/sdorra/scm-script-plugin</url>
+  <url>https://github.com/scm-manager/scm-script-plugin</url>
 
   <dependencies>
 
