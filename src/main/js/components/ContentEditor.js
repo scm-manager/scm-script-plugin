@@ -3,8 +3,8 @@ import React from "react";
 
 import AceEditor from "react-ace";
 
-import "brace/mode/groovy";
-import "brace/theme/tomorrow";
+import "ace-builds/src-noconflict/mode-groovy";
+import "ace-builds/src-noconflict/theme-tomorrow";
 
 type Props = {
   value?: string,

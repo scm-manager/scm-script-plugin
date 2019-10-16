@@ -1,6 +1,6 @@
 //@flow
 import React from "react";
-import injectSheets from "react-jss";
+import styled from "styled-components";
 import {
   DateFromNow,
   ErrorNotification,
@@ -10,21 +10,17 @@ import { findHistory } from "../api";
 import type { ExecutionHistoryEntry, Script } from "../types";
 import Output from "../components/Output";
 
-const styles = {
-  frame: {
-    paddingBottom: "1rem"
-  },
-  heading: {
-    fontWeight: 700,
-    fontSize: "1.25rem !important"
-  }
-};
+const Frame = styled.div`
+  padding-bottom: 1rem;
+`;
+
+const Heading = styled.h2`
+  font-weight: 700;
+  font-size: 1.25rem !important;
+`;
 
 type Props = {
-  script: Script,
-
-  // context props
-  classes: any
+  script: Script
 };
 
 type State = {
@@ -60,7 +56,6 @@ class HistoryPage extends React.Component<Props, State> {
   }
 
   render() {
-    const { classes } = this.props;
     const { history, loading, error } = this.state;
 
     if (error) {
@@ -73,13 +68,13 @@ class HistoryPage extends React.Component<Props, State> {
       <>
         {history.map(entry => {
           return (
-            <div className={classes.frame}>
-              <h2 className={classes.heading}>
+            <Frame>
+              <Heading>
                 <DateFromNow date={entry.result.started} />
-              </h2>
+              </Heading>
               <p>{entry.listener.eventType}</p>
               <Output result={entry.result} />
-            </div>
+            </Frame>
           );
         })}
       </>
@@ -87,4 +82,4 @@ class HistoryPage extends React.Component<Props, State> {
   }
 }
 
-export default injectSheets(styles)(HistoryPage);
+export default HistoryPage;

@@ -1,36 +1,30 @@
 //@flow
 import React from "react";
-import injectSheets from "react-jss";
-import classNames from "classnames";
+import styled from "styled-components";
 import type { ScriptExecutionResult } from "../types";
-import moment from "moment";
+
+const Figure = styled.figure`
+  margin-top: 1em;
+  position: relative;
+`;
+
+const Figcaption = styled.figcaption`
+  outline: 0;
+  padding-bottom: 0;
+  padding-top: 0;
+  position: absolute;
+  right: .25rem;
+  top: .25rem;
+  font-size: .75rem;
+`;
 
 type Props = {
-  result?: ScriptExecutionResult,
-
-  // context props
-  classes: any
-};
-
-const styles = {
-  figure: {
-    marginTop: "1em",
-    position: "relative"
-  },
-  caption: {
-    outline: 0,
-    paddingBottom: 0,
-    paddingTop: 0,
-    position: "absolute",
-    right: ".25rem",
-    top: ".25rem",
-    fontSize: ".75rem"
-  }
+  result?: ScriptExecutionResult
 };
 
 class Output extends React.Component<Props> {
   createCaption(result: ScriptExecutionResult) {
-    const duration = moment(result.ended).diff(moment(result.started));
+    const duration = Math.abs(new Date(result.ended) - new Date(result.started));
     const prefix = result.success ? "success" : "failed";
     return `${prefix} in ${duration}ms`;
   }
@@ -40,26 +34,21 @@ class Output extends React.Component<Props> {
   }
 
   render() {
-    const { result, classes } = this.props;
+    const { result } = this.props;
     if (!result) {
       return null;
     }
     return (
-      <figure className={classes.figure}>
+      <Figure>
         <pre>
           <code>{result.output}</code>
         </pre>
-        <figcaption
-          className={classNames(
-            classes.caption,
-            this.createCaptionClass(result)
-          )}
-        >
+        <Figcaption className={this.createCaptionClass(result)}>
           {this.createCaption(result)}
-        </figcaption>
-      </figure>
+        </Figcaption>
+      </Figure>
     );
   }
 }
 
-export default injectSheets(styles)(Output);
+export default Output;
