@@ -1,35 +1,24 @@
-//@flow
 import React from "react";
-import { translate } from "react-i18next";
-import { withRouter } from "react-router-dom";
+import { WithTranslation, withTranslation } from "react-i18next";
+import { withRouter, RouteComponentProps } from "react-router-dom";
 import StoreDialog from "./StoreDialog";
-import {
-  apiClient,
-  ErrorNotification,
-  ButtonGroup,
-  Button,
-  SubmitButton
-} from "@scm-manager/ui-components";
+import { apiClient, ErrorNotification, ButtonGroup, Button, SubmitButton } from "@scm-manager/ui-components";
 import Output from "../../components/Output";
 import ContentEditor from "../../components/ContentEditor";
 import { run, store } from "../../api";
-import type { Script, ScriptExecutionResult, ScriptLinks } from "../../types";
+import { Script, ScriptExecutionResult, ScriptLinks } from "../../types";
 
-type Props = {
-  links: ScriptLinks,
-  value?: string,
-
-  // context props
-  t: string => string,
-  history: any
+type Props = WithTranslation & RouteComponentProps & {
+  links: ScriptLinks;
+  value?: string;
 };
 
 type State = {
-  script: string,
-  loading: boolean,
-  result?: ScriptExecutionResult,
-  error?: Error,
-  showStoreDialog: boolean
+  script: string;
+  loading: boolean;
+  result?: ScriptExecutionResult;
+  error?: Error;
+  showStoreDialog: boolean;
 };
 
 class Editor extends React.Component<Props, State> {
@@ -107,7 +96,11 @@ class Editor extends React.Component<Props, State> {
       .then(resp => resp.json())
       .then(script => script.id)
       .then(id => history.push("/admin/script/" + id))
-      .catch(error => this.setState({ error }));
+      .catch(error =>
+        this.setState({
+          error
+        })
+      );
   };
 
   createExecuteButton = () => {
@@ -118,13 +111,7 @@ class Editor extends React.Component<Props, State> {
 
     const { loading } = this.state;
 
-    return (
-      <SubmitButton
-        label={t("scm-script-plugin.editor.submit")}
-        action={this.execute}
-        loading={loading}
-      />
-    );
+    return <SubmitButton label={t("scm-script-plugin.editor.submit")} action={this.execute} loading={loading} />;
   };
 
   createStoreButton = () => {
@@ -132,27 +119,16 @@ class Editor extends React.Component<Props, State> {
     if (!links.create) {
       return;
     }
-    return (
-      <Button
-        label={t("scm-script-plugin.editor.store")}
-        action={this.showStoreDialog}
-      />
-    );
+    return <Button label={t("scm-script-plugin.editor.store")} action={this.showStoreDialog} />;
   };
 
   render() {
     const { t } = this.props;
     const { showStoreDialog, script, result, error } = this.state;
 
-    const storeDialog = showStoreDialog ? (
-      <StoreDialog onSubmit={this.store} onClose={this.closeStoreDialog} />
-    ) : null;
+    const storeDialog = showStoreDialog ? <StoreDialog onSubmit={this.store} onClose={this.closeStoreDialog} /> : null;
 
-    const body = error ? (
-      <ErrorNotification error={error} />
-    ) : (
-      <Output result={result} />
-    );
+    const body = error ? <ErrorNotification error={error} /> : <Output result={result} />;
 
     return (
       <>
@@ -171,4 +147,4 @@ class Editor extends React.Component<Props, State> {
   }
 }
 
-export default translate("plugins")(withRouter(Editor));
+export default withTranslation("plugins")(withRouter(Editor));

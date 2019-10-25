@@ -1,15 +1,11 @@
-//@flow
 import React from "react";
-import { translate } from "react-i18next";
+import { WithTranslation, withTranslation } from "react-i18next";
 import { DeleteButton, confirmAlert } from "@scm-manager/ui-components";
-import type { Script } from "../types";
+import { Script } from "../types";
 
-type Props = {
-  script: Script,
-  onDelete: Script => void,
-
-  // context props
-  t: string => string
+type Props = WithTranslation & {
+  script: Script;
+  onDelete: (p: Script) => void;
 };
 
 class DeleteScript extends React.Component<Props> {
@@ -38,10 +34,7 @@ class DeleteScript extends React.Component<Props> {
       deleteLink = (
         <div className="columns">
           <div className="column">
-            <DeleteButton
-              label={t("scm-script-plugin.delete.button")}
-              action={this.confirmDelete}
-            />
+            <DeleteButton label={t("scm-script-plugin.delete.button")} action={this.confirmDelete} />
           </div>
         </div>
       );
@@ -50,4 +43,4 @@ class DeleteScript extends React.Component<Props> {
   }
 }
 
-export default translate("plugins")(DeleteScript);
+export default withTranslation("plugins")(DeleteScript);

@@ -1,13 +1,8 @@
-//@flow
 import React from "react";
 import styled from "styled-components";
-import {
-  DateFromNow,
-  ErrorNotification,
-  Loading
-} from "@scm-manager/ui-components";
+import { DateFromNow, ErrorNotification, Loading } from "@scm-manager/ui-components";
 import { findHistory } from "../api";
-import type { ExecutionHistoryEntry, Script } from "../types";
+import { ExecutionHistoryEntry, Script } from "../types";
 import Output from "../components/Output";
 
 const Frame = styled.div`
@@ -20,13 +15,13 @@ const Heading = styled.h2`
 `;
 
 type Props = {
-  script: Script
+  script: Script;
 };
 
 type State = {
-  loading: boolean,
-  error?: Error,
-  history?: ExecutionHistoryEntry[]
+  loading: boolean;
+  error?: Error;
+  history?: ExecutionHistoryEntry[];
 };
 
 class HistoryPage extends React.Component<Props, State> {

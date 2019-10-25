@@ -1,14 +1,10 @@
-//@flow
 import React from "react";
 import { Link } from "react-router-dom";
-import { translate } from "react-i18next";
-import type { Script } from "../../types";
+import { WithTranslation, withTranslation } from "react-i18next";
+import { Script } from "../../types";
 
-type Props = {
-  scripts: Script[],
-
-  // context props
-  t: string => string
+type Props = WithTranslation & {
+  scripts: Script[];
 };
 
 class ScriptTable extends React.Component<Props> {
@@ -34,14 +30,10 @@ class ScriptTable extends React.Component<Props> {
               return (
                 <tr key={script.id}>
                   <td>
-                    <Link to={`/admin/script/${script.id}`}>
-                      {script.title}
-                    </Link>
+                    <Link to={`/admin/script/${script.id}`}>{script.title}</Link>
                   </td>
                   <td>
-                    <Link to={`/admin/script/${script.id}`}>
-                      {script.description}
-                    </Link>
+                    <Link to={`/admin/script/${script.id}`}>{script.description}</Link>
                   </td>
                 </tr>
               );
@@ -53,4 +45,4 @@ class ScriptTable extends React.Component<Props> {
   }
 }
 
-export default translate("plugins")(ScriptTable);
+export default withTranslation("plugins")(ScriptTable);

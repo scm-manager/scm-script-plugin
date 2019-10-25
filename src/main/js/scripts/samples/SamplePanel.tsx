@@ -1,10 +1,9 @@
-//@flow
 import React from "react";
-import type { Sample } from "../../types";
+import { Sample } from "../../types";
 import ContentViewer from "../../components/ContentViewer";
 
 type Props = {
-  sample: Sample
+  sample: Sample;
 };
 
 class SamplePanel extends React.Component<Props> {

@@ -1,9 +1,8 @@
-//@flow
 import React from "react";
 import ContentEditor from "./ContentEditor";
 
 type Props = {
-  value: string
+  value: string;
 };
 
 class ContentViewer extends React.Component<Props> {

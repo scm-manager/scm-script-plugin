@@ -1,30 +1,23 @@
-//@flow
 import React from "react";
 import { Route } from "react-router-dom";
-import { translate } from "react-i18next";
-import {
-  Loading,
-  ErrorNotification,
-  Title,
-  Subtitle
-} from "@scm-manager/ui-components";
+import { WithTranslation, withTranslation } from "react-i18next";
+import { Loading, ErrorNotification, Title, Subtitle } from "@scm-manager/ui-components";
 import { findAllScriptLinks } from "./api";
-import type { ScriptLinks } from "./types";
+import { ScriptLinks } from "./types";
 import ScriptRoot from "./script/ScriptRoot";
 import MainRouting from "./scripts/MainRouting";
 
-type Props = {
-  link: string,
+type Props = WithTranslation & {
+  link: string;
 
   // context props
-  location: any,
-  t: string => string
+  location: any;
 };
 
 type State = {
-  loading: boolean,
-  error?: Error,
-  links?: ScriptLinks
+  loading: boolean;
+  error?: Error;
+  links?: ScriptLinks;
 };
 
 class RootPage extends React.Component<Props, State> {
@@ -61,14 +54,8 @@ class RootPage extends React.Component<Props, State> {
     } else if (links) {
       return (
         <>
-          <Route
-            path="/admin/scripts"
-            component={() => <MainRouting links={links} />}
-          />
-          <Route
-            path="/admin/script/:id"
-            component={() => <ScriptRoot links={links} />}
-          />
+          <Route path="/admin/scripts" component={() => <MainRouting links={links} />} />
+          <Route path="/admin/script/:id" component={() => <ScriptRoot links={links} />} />
         </>
       );
     } else {
@@ -90,4 +77,4 @@ class RootPage extends React.Component<Props, State> {
   }
 }
 
-export default translate("plugins")(RootPage);
+export default withTranslation("plugins")(RootPage);

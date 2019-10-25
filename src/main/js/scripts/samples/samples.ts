@@ -1,11 +1,9 @@
-// @flow
-import type { Sample } from "../../types";
+import { Sample } from "../../types";
 
 const samples: Sample[] = [
   {
     title: "List installed plugins",
-    description:
-      "This script uses the plugin api to list all installed plugins",
+    description: "This script uses the plugin api to list all installed plugins",
     type: "Groovy",
     content: `import sonia.scm.plugin.*;
 

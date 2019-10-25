@@ -1,26 +1,16 @@
-//@flow
 import React from "react";
-import { translate } from "react-i18next";
-import {
-  InputField,
-  ButtonGroup,
-  Button,
-  SubmitButton,
-  Textarea
-} from "@scm-manager/ui-components";
-import type { Script } from "../../types";
+import { WithTranslation, withTranslation } from "react-i18next";
+import { InputField, ButtonGroup, Button, SubmitButton, Textarea } from "@scm-manager/ui-components";
+import { Script } from "../../types";
 
-type Props = {
-  onSubmit: Script => void,
-  onAbort: () => void,
-
-  // context props
-  t: string => string
+type Props = WithTranslation & {
+  onSubmit: (p: Script) => void;
+  onAbort: () => void;
 };
 
 type State = {
-  script: Script,
-  loading: boolean
+  script: Script;
+  loading: boolean;
 };
 
 class StoreForm extends React.Component<Props, State> {
@@ -94,15 +84,11 @@ class StoreForm extends React.Component<Props, State> {
             loading={loading}
             disabled={!this.isScriptValid()}
           />
-          <Button
-            label={t("scm-script-plugin.storeForm.abort")}
-            action={onAbort}
-            disabled={loading}
-          />
+          <Button label={t("scm-script-plugin.storeForm.abort")} action={onAbort} disabled={loading} />
         </ButtonGroup>
       </form>
     );
   }
 }
 
-export default translate("plugins")(StoreForm);
+export default withTranslation("plugins")(StoreForm);

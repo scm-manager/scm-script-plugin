@@ -1,18 +1,17 @@
-//@flow
 import React from "react";
 import { Loading, Notification, ErrorNotification } from "@scm-manager/ui-components";
 import { findAll } from "../../api";
-import type { ScriptCollection, ScriptLinks } from "../../types";
+import { ScriptCollection, ScriptLinks } from "../../types";
 import ScriptTable from "./ScriptTable";
 
 type Props = {
-  links: ScriptLinks
+  links: ScriptLinks;
 };
 
 type State = {
-  loading: boolean,
-  error?: Error,
-  collection?: ScriptCollection
+  loading: boolean;
+  error?: Error;
+  collection?: ScriptCollection;
 };
 
 class Stored extends React.Component<Props, State> {

@@ -1,6 +1,5 @@
-//@flow
 import React from "react";
-import { translate } from "react-i18next";
+import { WithTranslation, withTranslation } from "react-i18next";
 import {
   InputField,
   LabelWithHelpIcon,
@@ -12,25 +11,22 @@ import {
   Notification
 } from "@scm-manager/ui-components";
 import { modify, run } from "../api";
-import type { Script, ScriptExecutionResult, ScriptLinks } from "../types";
+import { Script, ScriptExecutionResult, ScriptLinks } from "../types";
 import ContentEditor from "../components/ContentEditor";
 import Output from "../components/Output";
 import DeleteScript from "./DeleteScript";
 
-type Props = {
-  script: Script,
-  onDelete: () => void,
-  links: ScriptLinks,
-
-  // context props
-  t: string => string
+type Props = WithTranslation & {
+  script: Script;
+  onDelete: () => void;
+  links: ScriptLinks;
 };
 
 type State = Script & {
-  loading: boolean,
-  error?: Error,
-  result?: ScriptExecutionResult,
-  saveSuccess: boolean
+  loading: boolean;
+  error?: Error;
+  result?: ScriptExecutionResult;
+  saveSuccess: boolean;
 };
 
 class EditForm extends React.Component<Props, State> {
@@ -116,14 +112,7 @@ class EditForm extends React.Component<Props, State> {
     const { saveSuccess } = this.state;
 
     return (
-      <>
-        {
-          saveSuccess &&
-          <Notification type="success">
-            {t("scm-script-plugin.editForm.saveSuccess")}
-          </Notification>
-        }
-      </>
+      <>{saveSuccess && <Notification type="success">{t("scm-script-plugin.editForm.saveSuccess")}</Notification>}</>
     );
   };
 
@@ -139,7 +128,7 @@ class EditForm extends React.Component<Props, State> {
     const { title, description, content, result } = this.state;
     const { t, script, onDelete } = this.props;
 
-    return(
+    return (
       <>
         <form onSubmit={this.onRun}>
           <InputField
@@ -159,15 +148,8 @@ class EditForm extends React.Component<Props, State> {
             onChange={this.onValueChange}
           />
           <div className="field">
-            <LabelWithHelpIcon
-              label={t("scm-script-plugin.content")}
-              helpText={t("scm-script-plugin.contentHelp")}
-            />
-            <ContentEditor
-              name="content"
-              value={content}
-              onChange={this.onValueChange}
-            />
+            <LabelWithHelpIcon label={t("scm-script-plugin.content")} helpText={t("scm-script-plugin.contentHelp")} />
+            <ContentEditor name="content" value={content} onChange={this.onValueChange} />
           </div>
           {this.renderControlButtons()}
           <hr />
@@ -175,8 +157,8 @@ class EditForm extends React.Component<Props, State> {
         </form>
         <Output result={result} />
       </>
-    )
-  }
+    );
+  };
 
   renderControlButtons = () => {
     const { loading } = this.state;
@@ -184,13 +166,7 @@ class EditForm extends React.Component<Props, State> {
 
     let run = null;
     if (links.execute) {
-      run = (
-        <SubmitButton
-          label={t("scm-script-plugin.editForm.run")}
-          action={this.onRun}
-          loading={loading}
-        />
-      );
+      run = <SubmitButton label={t("scm-script-plugin.editForm.run")} action={this.onRun} loading={loading} />;
     }
 
     let save = null;
@@ -218,10 +194,8 @@ class EditForm extends React.Component<Props, State> {
   render() {
     const { error } = this.state;
 
-    if(error) {
-      return (
-        <ErrorNotification error={error} />
-      )
+    if (error) {
+      return <ErrorNotification error={error} />;
     } else {
       return (
         <>
@@ -233,4 +207,4 @@ class EditForm extends React.Component<Props, State> {
   }
 }
 
-export default translate("plugins")(EditForm);
+export default withTranslation("plugins")(EditForm);

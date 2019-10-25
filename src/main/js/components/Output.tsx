@@ -1,7 +1,6 @@
-//@flow
 import React from "react";
 import styled from "styled-components";
-import type { ScriptExecutionResult } from "../types";
+import { ScriptExecutionResult } from "../types";
 
 const Figure = styled.figure`
   margin-top: 1em;
@@ -13,13 +12,13 @@ const Figcaption = styled.figcaption`
   padding-bottom: 0;
   padding-top: 0;
   position: absolute;
-  right: .25rem;
-  top: .25rem;
-  font-size: .75rem;
+  right: 0.25rem;
+  top: 0.25rem;
+  font-size: 0.75rem;
 `;
 
 type Props = {
-  result?: ScriptExecutionResult
+  result?: ScriptExecutionResult;
 };
 
 class Output extends React.Component<Props> {
@@ -43,9 +42,7 @@ class Output extends React.Component<Props> {
         <pre>
           <code>{result.output}</code>
         </pre>
-        <Figcaption className={this.createCaptionClass(result)}>
-          {this.createCaption(result)}
-        </Figcaption>
+        <Figcaption className={this.createCaptionClass(result)}>{this.createCaption(result)}</Figcaption>
       </Figure>
     );
   }

@@ -1,13 +1,9 @@
-//@flow
 import React from "react";
 import samples from "./samples";
 import SamplePanel from "./SamplePanel";
-import { translate } from "react-i18next";
+import { WithTranslation, withTranslation } from "react-i18next";
 
-type Props = {
-  // context props
-  t: string => string
-};
+type Props = WithTranslation;
 
 class SampleRoot extends React.Component<Props> {
   render() {
@@ -26,4 +22,4 @@ class SampleRoot extends React.Component<Props> {
   }
 }
 
-export default translate("plugins")(SampleRoot);
+export default withTranslation("plugins")(SampleRoot);

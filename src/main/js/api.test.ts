@@ -1,5 +1,3 @@
-// @flow
-
 import { createScriptLinks } from "./api";
 
 describe("test transformToScriptLinks", () => {

@@ -1,16 +1,12 @@
-//@flow
 import React from "react";
-import { translate } from "react-i18next";
+import { WithTranslation, withTranslation } from "react-i18next";
 import StoreForm from "./StoreForm";
-import type { Script } from "../../types";
+import { Script } from "../../types";
 import { Modal } from "@scm-manager/ui-components";
 
-type Props = {
-  onSubmit: Script => void,
-  onClose: () => void,
-
-  // context props
-  t: string => string
+type Props = WithTranslation & {
+  onSubmit: (p: Script) => void;
+  onClose: () => void;
 };
 
 class StoreDialog extends React.Component<Props> {
@@ -34,4 +30,4 @@ class StoreDialog extends React.Component<Props> {
   }
 }
 
-export default translate("plugins")(StoreDialog);
+export default withTranslation("plugins")(StoreDialog);

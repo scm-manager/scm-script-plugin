@@ -1,4 +1,3 @@
-//@flow
 import React from "react";
 
 import AceEditor from "react-ace";
@@ -7,10 +6,10 @@ import "ace-builds/src-noconflict/mode-groovy";
 import "ace-builds/src-noconflict/theme-tomorrow";
 
 type Props = {
-  value?: string,
-  name?: string,
-  readOnly?: boolean,
-  onChange: (value: string, name: string) => void
+  value?: string;
+  name?: string;
+  readOnly?: boolean;
+  onChange: (value: string, name: string) => void;
 };
 
 class ContentEditor extends React.Component<Props> {
@@ -37,7 +36,10 @@ class ContentEditor extends React.Component<Props> {
         name={this.name()}
         value={value ? value : ""}
         className="box"
-        style={{ width: "100%", height: "250px" }}
+        style={{
+          width: "100%",
+          height: "250px"
+        }}
       />
     );
   }

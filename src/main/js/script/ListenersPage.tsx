@@ -1,26 +1,22 @@
-//@flow
 import React from "react";
-import { translate } from "react-i18next";
+import { WithTranslation, withTranslation } from "react-i18next";
 import { Checkbox, Select, SubmitButton } from "@scm-manager/ui-components";
 import { findAllEventTypes, findAllListeners, storeListeners } from "../api";
-import type { Listeners, Script, ScriptLinks } from "../types";
+import { Listeners, Script, ScriptLinks } from "../types";
 
-type Props = {
-  script: Script,
-  links: ScriptLinks,
-
-  // context props
-  t: string => string
+type Props = WithTranslation & {
+  script: Script;
+  links: ScriptLinks;
 };
 
 type State = {
-  loading: boolean,
-  eventTypes: string[],
-  listeners: Listeners,
-  error?: Error,
+  loading: boolean;
+  eventTypes: string[];
+  listeners: Listeners;
+  error?: Error;
 
-  eventType?: string,
-  asynchronous: boolean
+  eventType?: string;
+  asynchronous: boolean;
 };
 
 class ListenersPage extends React.Component<Props, State> {
@@ -41,10 +37,7 @@ class ListenersPage extends React.Component<Props, State> {
   componentDidMount() {
     const { script, links } = this.props;
 
-    Promise.all([
-      findAllEventTypes(links.eventTypes),
-      findAllListeners(script._links.listeners.href)
-    ])
+    Promise.all([findAllEventTypes(links.eventTypes), findAllListeners(script._links.listeners.href)])
       .then(([eventTypes, listeners]) =>
         this.setState({
           eventTypes,
@@ -95,9 +88,7 @@ class ListenersPage extends React.Component<Props, State> {
     }
   };
 
-  onToggleStoreListenerExecutionResultsChange = (
-    storeListenerExecutionResults: boolean
-  ) => {
+  onToggleStoreListenerExecutionResultsChange = (storeListenerExecutionResults: boolean) => {
     this.setState(state => {
       return {
         listeners: {
@@ -130,7 +121,10 @@ class ListenersPage extends React.Component<Props, State> {
     const { eventType, asynchronous, listeners } = this.state;
 
     if (eventType) {
-      listeners.listeners.push({ eventType, asynchronous });
+      listeners.listeners.push({
+        eventType,
+        asynchronous
+      });
 
       storeListeners(listeners._links.update.href, listeners)
         .then(() =>
@@ -204,4 +198,4 @@ class ListenersPage extends React.Component<Props, State> {
   }
 }
 
-export default translate("plugins")(ListenersPage);
+export default withTranslation("plugins")(ListenersPage);

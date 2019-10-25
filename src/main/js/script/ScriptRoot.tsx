@@ -1,22 +1,18 @@
-//@flow
 import React from "react";
-import { withRouter } from "react-router-dom";
+import { withRouter, RouteComponentProps } from "react-router-dom";
 import { findById } from "../api";
-import type { Script, ScriptLinks } from "../types";
+import { Script, ScriptLinks } from "../types";
 import { ErrorNotification, Loading } from "@scm-manager/ui-components";
 import ScriptMain from "./ScriptMain";
 
-type Props = {
-  links: ScriptLinks,
-
-  // context props
-  match: any
+type Props = RouteComponentProps & {
+  links: ScriptLinks;
 };
 
 type State = {
-  loading: boolean,
-  error?: Error,
-  script?: Script
+  loading: boolean;
+  error?: Error;
+  script?: Script;
 };
 
 class ScriptRoot extends React.Component<Props, State> {

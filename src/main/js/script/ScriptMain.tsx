@@ -1,25 +1,20 @@
-//@flow
 import React from "react";
-import { Route, withRouter } from "react-router-dom";
-import type { Script, ScriptLinks } from "../types";
+import { Route, withRouter, RouteComponentProps } from "react-router-dom";
+import { Script, ScriptLinks } from "../types";
 import EditForm from "./EditForm";
 import { remove } from "../api";
 import ListenersPage from "./ListenersPage";
 import HistoryPage from "./HistoryPage";
 import ScriptTabs from "./ScriptTabs";
 
-type Props = {
-  script: Script,
-  links: ScriptLinks,
-
-  // context props
-  match: any,
-  history: any
+type Props = RouteComponentProps & {
+  script: Script;
+  links: ScriptLinks;
 };
 
 type State = {
-  loading: boolean,
-  error?: Error
+  loading: boolean;
+  error?: Error;
 };
 
 class ScriptMain extends React.Component<Props, State> {
@@ -60,20 +55,14 @@ class ScriptMain extends React.Component<Props, State> {
         <Route
           path={match.url}
           exact={true}
-          render={() => (
-            <EditForm script={script} links={links} onDelete={this.onDelete} />
-          )}
+          render={() => <EditForm script={script} links={links} onDelete={this.onDelete} />}
         />
         <Route
           path={match.url + "/listeners"}
           exact={true}
           render={() => <ListenersPage script={script} links={links} />}
         />
-        <Route
-          path={match.url + "/history"}
-          exact={true}
-          render={() => <HistoryPage script={script} />}
-        />
+        <Route path={match.url + "/history"} exact={true} render={() => <HistoryPage script={script} />} />
       </>
     );
   }

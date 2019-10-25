@@ -1,20 +1,9 @@
-// @flow
 import { apiClient } from "@scm-manager/ui-components";
-import type {
-  ExecutionHistoryEntry,
-  Listeners,
-  Script,
-  ScriptExecutionResult,
-  ScriptLinks
-} from "./types";
-import type { Links } from "@scm-manager/ui-types";
+import { ExecutionHistoryEntry, Listeners, Script, ScriptExecutionResult, ScriptLinks } from "./types";
+import { Links } from "@scm-manager/ui-types";
 
 // modifying headers is not supported in the apiclient
-export function run(
-  link: string,
-  language: string,
-  content: string
-): Promise<ScriptExecutionResult> {
+export function run(link: string, language: string, content: string): Promise<ScriptExecutionResult> {
   return fetch(link + "?lang=" + language, {
     credentials: "same-origin",
     headers: {
@@ -51,15 +40,8 @@ export function findAllListeners(link: string): Promise<Listeners> {
   return apiClient.get(link).then(resp => resp.json());
 }
 
-export function storeListeners(
-  link: string,
-  listeners: Listeners
-): Promise<void> {
-  return apiClient.put(
-    link,
-    listeners,
-    "application/vnd.scmm-script-listener-collection+json;v=2"
-  );
+export function storeListeners(link: string, listeners: Listeners): Promise<void> {
+  return apiClient.put(link, listeners, "application/vnd.scmm-script-listener-collection+json;v=2");
 }
 
 export function findAllEventTypes(link: string): Promise<string[]> {
@@ -74,7 +56,7 @@ export function createScriptLinks(list: string, links: Links): ScriptLinks {
     list
   };
 
-  for (let rel in links) {
+  for (const rel in links) {
     scriptLinks[rel] = links[rel].href;
   }
   return scriptLinks;

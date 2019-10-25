@@ -1,13 +1,12 @@
-// @flow
 import React from "react";
 import { Route } from "react-router-dom";
 import { binder } from "@scm-manager/ui-extensions";
-import type { Links } from "@scm-manager/ui-types";
+import { Links } from "@scm-manager/ui-types";
 import ScriptNavigation from "./ScriptNavigation";
 import RootPage from "./RootPage";
 
 type PredicateProps = {
-  links: Links
+  links: Links;
 };
 
 // @VisibleForTesting
@@ -18,16 +17,8 @@ export const predicate = ({ links }: PredicateProps) => {
 const ScriptRoute = ({ links }) => {
   return (
     <>
-      <Route
-        path="/admin/scripts"
-        component={() => (
-          <RootPage link={links.scripts.href} />
-        )}
-      />
-      <Route
-        path="/admin/script"
-        component={() => <RootPage link={links.scripts.href} />}
-      />
+      <Route path="/admin/scripts" component={() => <RootPage link={links.scripts.href} />} />
+      <Route path="/admin/script" component={() => <RootPage link={links.scripts.href} />} />
     </>
   );
 };
