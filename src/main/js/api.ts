@@ -4,16 +4,11 @@ import { Links } from "@scm-manager/ui-types";
 
 // modifying headers is not supported in the apiclient
 export function run(link: string, language: string, content: string): Promise<ScriptExecutionResult> {
-  return fetch(link + "?lang=" + language, {
-    credentials: "same-origin",
-    headers: {
-      Cache: "no-cache",
-      Accept: "application/vnd.scmm-script-execution-result+json;v=2",
-      "Content-Type": "text/plain"
-    },
-    method: "POST",
-    body: content
-  }).then(resp => resp.json());
+  const headers: Record<string, string> = {
+    "Accept": "application/vnd.scmm-script-execution-result+json;v=2"
+  };
+  return apiClient.postText(link + "?lang=" + language, content, headers)
+    .then(resp => resp.json());
 }
 
 export function store(link: string, script: Script) {
