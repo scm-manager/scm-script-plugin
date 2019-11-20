@@ -8,8 +8,9 @@ const samples: Sample[] = [
     content: `import sonia.scm.plugin.*;
 
 PluginManager pluginManager = injector.getInstance(PluginManager.class);
-for (PluginInformation plugin : pluginManager.installed) {
-    println "\${plugin.name}@\${plugin.version}"
+for (InstalledPlugin plugin : pluginManager.installed) {
+    PluginInformation information = plugin.descriptor.information
+    println "\${information.name}@\${information.version}"
 }`
   },
   {
