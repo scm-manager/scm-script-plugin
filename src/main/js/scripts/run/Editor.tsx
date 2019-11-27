@@ -2,16 +2,17 @@ import React from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { withRouter, RouteComponentProps } from "react-router-dom";
 import StoreDialog from "./StoreDialog";
-import { apiClient, ErrorNotification, ButtonGroup, Button, SubmitButton } from "@scm-manager/ui-components";
+import { apiClient, ErrorNotification, ButtonGroup, Button, SubmitButton, Level } from "@scm-manager/ui-components";
 import Output from "../../components/Output";
 import ContentEditor from "../../components/ContentEditor";
 import { run, store } from "../../api";
 import { Script, ScriptExecutionResult, ScriptLinks } from "../../types";
 
-type Props = WithTranslation & RouteComponentProps & {
-  links: ScriptLinks;
-  value?: string;
-};
+type Props = WithTranslation &
+  RouteComponentProps & {
+    links: ScriptLinks;
+    value?: string;
+  };
 
 type State = {
   script: string;
@@ -136,10 +137,14 @@ class Editor extends React.Component<Props, State> {
           <h3>{t("scm-script-plugin.navigation.run")}</h3>
         </div>
         <ContentEditor onChange={this.onScriptChange} value={script} />
-        <ButtonGroup>
-          {this.createExecuteButton()}
-          {this.createStoreButton()}
-        </ButtonGroup>
+        <Level
+          right={
+            <ButtonGroup>
+              {this.createExecuteButton()}
+              {this.createStoreButton()}
+            </ButtonGroup>
+          }
+        />
         {body}
         {storeDialog}
       </>

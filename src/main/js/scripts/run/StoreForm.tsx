@@ -1,6 +1,6 @@
 import React from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
-import { InputField, ButtonGroup, Button, SubmitButton, Textarea } from "@scm-manager/ui-components";
+import { InputField, ButtonGroup, Button, SubmitButton, Textarea, Level } from "@scm-manager/ui-components";
 import { Script } from "../../types";
 
 type Props = WithTranslation & {
@@ -78,14 +78,18 @@ class StoreForm extends React.Component<Props, State> {
           onChange={this.onChange}
           value={script.description}
         />
-        <ButtonGroup>
-          <SubmitButton
-            label={t("scm-script-plugin.storeForm.submit")}
-            loading={loading}
-            disabled={!this.isScriptValid()}
-          />
-          <Button label={t("scm-script-plugin.storeForm.abort")} action={onAbort} disabled={loading} />
-        </ButtonGroup>
+        <Level
+          right={
+            <ButtonGroup>
+              <SubmitButton
+                label={t("scm-script-plugin.storeForm.submit")}
+                loading={loading}
+                disabled={!this.isScriptValid()}
+              />
+              <Button label={t("scm-script-plugin.storeForm.abort")} action={onAbort} disabled={loading} />
+            </ButtonGroup>
+          }
+        />
       </form>
     );
   }
