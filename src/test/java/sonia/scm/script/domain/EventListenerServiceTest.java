@@ -100,7 +100,7 @@ class EventListenerServiceTest {
 
   private StorableScript script(Class<?> eventType, boolean asynchronous) {
     StorableScript script = script();
-    script.addListener(new Listener(eventType, asynchronous));
+    script.addListener(new Listener(eventType.getName(), asynchronous));
     return script;
   }
 

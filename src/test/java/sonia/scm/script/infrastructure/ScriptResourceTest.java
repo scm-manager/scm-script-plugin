@@ -206,7 +206,7 @@ class ScriptResourceTest {
     Response response = resource.setListeners("42", dto);
     assertThat(response.getStatus()).isEqualTo(204);
 
-    assertThat(script.getListeners().get(0).getEventType()).isEqualTo(String.class);
+    assertThat(script.getListeners().get(0).getEventType()).isEqualTo(String.class.getName());
     assertThat(script.isStoreListenerExecutionResults()).isTrue();
     verify(repository).store(script);
   }

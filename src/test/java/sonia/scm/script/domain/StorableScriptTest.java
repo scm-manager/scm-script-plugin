@@ -1,6 +1,5 @@
 package sonia.scm.script.domain;
 
-import com.google.common.collect.Iterables;
 import org.junit.jupiter.api.Test;
 import sonia.scm.script.ScriptTestData;
 
@@ -21,14 +20,13 @@ class StorableScriptTest {
     Listener listener = new Listener(Number.class, false);
     script.addListener(listener);
 
-    assertThat(script.isListeningSynchronous(Number.class)).isTrue();
-    assertThat(script.isListeningSynchronous(Integer.class)).isTrue();
+    assertThat(script.isListeningSynchronous(Number.class.getName())).isTrue();
 
-    assertThat(script.isListeningSynchronous(String.class)).isFalse();
-    assertThat(script.isListeningAsynchronous(Integer.class)).isFalse();
+    assertThat(script.isListeningSynchronous(String.class.getName())).isFalse();
+    assertThat(script.isListeningAsynchronous(Integer.class.getName())).isFalse();
 
     script.removeListener(listener);
-    assertThat(script.isListeningSynchronous(Number.class)).isFalse();
+    assertThat(script.isListeningSynchronous(Number.class.getName())).isFalse();
   }
 
   @Test
@@ -86,7 +84,7 @@ class StorableScriptTest {
     StorableScript script = ScriptTestData.createHelloWorld();
     script.setStoreListenerExecutionResults(true);
 
-    Listener listener = new Listener(String.class, true);
+    Listener listener = new Listener(String.class.getName(), true);
     for (int i = 1; i <= StorableScript.CAPTURE_LIMIT + 10; i++) {
       ExecutionResult result = new ExecutionResult(true, String.valueOf(i), Instant.now(), Instant.now());
       script.captureListenerExecution(listener, result);

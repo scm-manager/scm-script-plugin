@@ -77,22 +77,22 @@ class ListenerMapperTest {
     assertThat(dtos).hasSize(2);
 
     ListenerDto dtoOne = dtos.get(0);
-    assertThat(dtoOne.getEventType()).isEqualTo(String.class);
+    assertThat(dtoOne.getEventType()).isEqualTo(String.class.getName());
     assertThat(dtoOne.isAsynchronous()).isTrue();
 
     ListenerDto dtoTwo = dtos.get(1);
-    assertThat(dtoTwo.getEventType()).isEqualTo(Integer.class);
+    assertThat(dtoTwo.getEventType()).isEqualTo(Integer.class.getName());
     assertThat(dtoTwo.isAsynchronous()).isFalse();
   }
 
   @Test
   void shouldMapListenersFromDto() {
     ListenerDto dtoOne = new ListenerDto();
-    dtoOne.setEventType(String.class);
+    dtoOne.setEventType(String.class.getName());
     dtoOne.setAsynchronous(true);
 
     ListenerDto dtoTwo = new ListenerDto();
-    dtoTwo.setEventType(Integer.class);
+    dtoTwo.setEventType(Integer.class.getName());
     dtoTwo.setAsynchronous(false);
 
     ListenersDto listenersDto = new ListenersDto(ImmutableList.of(dtoOne, dtoTwo), true);
@@ -101,11 +101,11 @@ class ListenerMapperTest {
     assertThat(listeners).hasSize(2);
 
     Listener one = listeners.get(0);
-    assertThat(one.getEventType()).isEqualTo(String.class);
+    assertThat(one.getEventType()).isEqualTo(String.class.getName());
     assertThat(one.isAsynchronous()).isTrue();
 
     Listener two = listeners.get(1);
-    assertThat(two.getEventType()).isEqualTo(Integer.class);
+    assertThat(two.getEventType()).isEqualTo(Integer.class.getName());
     assertThat(two.isAsynchronous()).isFalse();
   }
 }

@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 public class ListenerDto extends HalRepresentation {
 
   @NotNull
-  private Class<?> eventType;
+  private String eventType;
   private boolean asynchronous;
 
 }
