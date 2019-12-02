@@ -20,7 +20,8 @@ public class EventListenerService {
     this.scriptRepository = scriptRepository;
   }
 
-  public Optional<Trigger> createTrigger(Class<?> eventType, boolean asynchronous) {
+  public Optional<Trigger> createTrigger(Class<?> eventClass, boolean asynchronous) {
+    String eventType = eventClass.getName();
     List<StorableScript> scripts = scriptRepository.findAll().stream().filter(script -> {
       if (asynchronous) {
         return script.isListeningAsynchronous(eventType);

@@ -11,18 +11,22 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Listener {
 
-  private Class<?> eventType;
+  private String eventType;
   private boolean asynchronous;
 
   public Listener() {
   }
 
-  public Listener(Class<?> eventType, boolean asynchronous) {
+  public Listener(Class<?> eventClass, boolean asynchronous) {
+    this(eventClass.getName(), asynchronous);
+  }
+
+  public Listener(String eventType, boolean asynchronous) {
     this.eventType = eventType;
     this.asynchronous = asynchronous;
   }
 
-  public Class<?> getEventType() {
+  public String getEventType() {
     return eventType;
   }
 

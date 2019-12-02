@@ -76,19 +76,19 @@ public final class StorableScript extends Script {
     listeners.remove(listener);
   }
 
-  public boolean isListeningSynchronous(Class<?> eventType) {
+  public boolean isListeningSynchronous(String eventType) {
     Listener listener = findListener(eventType);
     return listener != null && !listener.isAsynchronous();
   }
 
-  public boolean isListeningAsynchronous(Class<?> eventType) {
+  public boolean isListeningAsynchronous(String eventType) {
     Listener listener = findListener(eventType);
     return listener != null && listener.isAsynchronous();
   }
 
-  private Listener findListener(Class<?> eventType) {
+  private Listener findListener(String eventType) {
     for (Listener listener : listeners) {
-      if (listener.getEventType().isAssignableFrom(eventType)) {
+      if (eventType.equals(listener.getEventType())) {
         return listener;
       }
     }
