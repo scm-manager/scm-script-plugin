@@ -1,7 +1,6 @@
 import React from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
-import styled from "styled-components";
-import { Checkbox, Select, SubmitButton, Level, AddButton, Icon } from "@scm-manager/ui-components";
+import { Checkbox } from "@scm-manager/ui-components";
 import { findAllEventTypes, findAllListeners, storeListeners } from "../api";
 import { Listener, Listeners, Script, ScriptLinks } from "../types";
 import ListenersTable from "../components/ListenersTable";
@@ -20,11 +19,6 @@ type State = {
   eventType?: string;
   asynchronous: boolean;
 };
-
-const VCenteredTd = styled.td`
-  display: table-cell;
-  vertical-align: middle !important;
-`;
 
 class ListenersPage extends React.Component<Props, State> {
   constructor(props: Props) {
@@ -95,7 +89,6 @@ class ListenersPage extends React.Component<Props, State> {
   };
 
   onSubmit = (e: Event) => {
-    console.log("submit");
     e.preventDefault();
 
     const { eventType, asynchronous, listeners } = this.state;
@@ -122,7 +115,6 @@ class ListenersPage extends React.Component<Props, State> {
   };
 
   onDelete = (listener: Listener) => {
-    console.log("delete");
     const { listeners } = this.state;
     const index = listeners.listeners.indexOf(listener);
     if (index >= 0) {

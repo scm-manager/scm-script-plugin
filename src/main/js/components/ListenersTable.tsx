@@ -38,8 +38,8 @@ class ListenersTable extends React.Component<Props> {
     return (
       <tr key={key}>
         <td>{listener.eventType}</td>
-        <td>{this.checkedIcon(listener.asynchronous)}</td>
-        <VCenteredTd className="is-darker">
+        <VCenteredTd>{this.checkedIcon(listener.asynchronous)}</VCenteredTd>
+        <VCenteredTd>
           <a className="level-item" onClick={onDelete}>
             <span className="icon is-small">
               <i className="fas fa-trash" />
@@ -52,7 +52,6 @@ class ListenersTable extends React.Component<Props> {
 
   renderFormRow = () => {
     const { eventTypes, eventType, asynchronous, onChange, onSubmit, t } = this.props;
-
     const options = eventTypes.map(eventType => {
       return {
         value: eventType,
@@ -62,10 +61,10 @@ class ListenersTable extends React.Component<Props> {
 
     return (
       <tr>
-        <td>
+        <td className="is-darker">
           <Select name="eventType" options={options} value={eventType} onChange={onChange} />
         </td>
-        <VCenteredTd>
+        <VCenteredTd className="is-darker">
           <Checkbox name="asynchronous" checked={asynchronous} onChange={onChange} />
         </VCenteredTd>
         <VCenteredTd className="is-darker">
