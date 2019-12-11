@@ -50,8 +50,9 @@
     "listeners": {
       "eventType": "Typ",
       "asynchronous": "Asynchron",
-      "remove": "Löschen",
-      "submit": "Listener hinzufügen",
+      "action": "Aktion",
+      "remove": "Listener löschen",
+      "add": "Listener hinzufügen",
       "storeListenerExecutionResults": "Ergebnisse der Ausführung des Listener aufzeichnen."
     }
   },

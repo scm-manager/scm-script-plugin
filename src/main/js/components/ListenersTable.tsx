@@ -24,6 +24,10 @@ const VCenteredTd = styled.td`
   vertical-align: middle !important;
 `;
 
+const DarkerVCenteredTd = styled(VCenteredTd)`
+  background-color: whitesmoke;
+`;
+
 class ListenersTable extends React.Component<Props> {
   checkedIcon = (checked: boolean) => {
     if (checked) {
@@ -33,16 +37,16 @@ class ListenersTable extends React.Component<Props> {
   };
 
   renderListenerRow = (listener: Listener, key: number) => {
-    const { onDelete } = this.props;
+    const { onDelete, t } = this.props;
 
     return (
       <tr key={key}>
         <td>{listener.eventType}</td>
         <VCenteredTd>{this.checkedIcon(listener.asynchronous)}</VCenteredTd>
         <VCenteredTd>
-          <a className="level-item" onClick={onDelete}>
+          <a className="level-item" onClick={() => onDelete(listener)}>
             <span className="icon is-small">
-              <i className="fas fa-trash" />
+              <Icon name="trash" color="inherit" title={t("scm-script-plugin.listeners.remove")} />
             </span>
           </a>
         </VCenteredTd>
@@ -66,19 +70,19 @@ class ListenersTable extends React.Component<Props> {
 
     return (
       <tr>
-        <td className="is-darker">
+        <DarkerVCenteredTd>
           <Select name="eventType" options={options} value={eventType} onChange={onChange} />
-        </td>
-        <VCenteredTd className="is-darker">
+        </DarkerVCenteredTd>
+        <DarkerVCenteredTd>
           <Checkbox name="asynchronous" checked={asynchronous} onChange={onChange} />
-        </VCenteredTd>
-        <VCenteredTd className="is-darker">
+        </DarkerVCenteredTd>
+        <DarkerVCenteredTd>
           <a className="level-item" onClick={onSubmit}>
             <span className="icon is-small">
-              <Icon name="plus" color="inherit" title={t("scm-script-plugin.listeners.submit")} />
+              <Icon name="plus" color="inherit" title={t("scm-script-plugin.listeners.add")} />
             </span>
           </a>
-        </VCenteredTd>
+        </DarkerVCenteredTd>
       </tr>
     );
   };
@@ -94,7 +98,7 @@ class ListenersTable extends React.Component<Props> {
               <tr>
                 <th>{t("scm-script-plugin.listeners.eventType")}</th>
                 <th>{t("scm-script-plugin.listeners.asynchronous")}</th>
-                <th />
+                <th>{t("scm-script-plugin.listeners.action")}</th>
               </tr>
             </thead>
             <tbody>
