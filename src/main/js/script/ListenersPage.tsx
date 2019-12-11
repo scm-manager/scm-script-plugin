@@ -127,18 +127,6 @@ class ListenersPage extends React.Component<Props, State> {
     const { t } = this.props;
     const { eventTypes, listeners, eventType, asynchronous } = this.state;
 
-    const options = eventTypes.map(eventType => {
-      return {
-        value: eventType,
-        label: eventType
-      };
-    });
-
-    options.unshift({
-      value: "",
-      label: ""
-    });
-
     return (
       <>
         <ListenersTable

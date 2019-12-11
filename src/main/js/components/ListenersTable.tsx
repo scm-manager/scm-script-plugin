@@ -59,6 +59,11 @@ class ListenersTable extends React.Component<Props> {
       };
     });
 
+    options.unshift({
+      value: "",
+      label: ""
+    });
+
     return (
       <tr>
         <td className="is-darker">
