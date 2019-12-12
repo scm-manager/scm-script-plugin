@@ -8,7 +8,8 @@ import {
   SubmitButton,
   Textarea,
   ErrorNotification,
-  Notification
+  Notification,
+  Level
 } from "@scm-manager/ui-components";
 import { modify, run } from "../api";
 import { Script, ScriptExecutionResult, ScriptLinks } from "../types";
@@ -184,10 +185,14 @@ class EditForm extends React.Component<Props, State> {
     }
 
     return (
-      <ButtonGroup>
-        {run}
-        {save}
-      </ButtonGroup>
+      <Level
+        right={
+          <ButtonGroup>
+            {run}
+            {save}
+          </ButtonGroup>
+        }
+      />
     );
   };
 

@@ -1,6 +1,6 @@
 import React from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
-import { DeleteButton, confirmAlert } from "@scm-manager/ui-components";
+import { DeleteButton, confirmAlert, Level } from "@scm-manager/ui-components";
 import { Script } from "../types";
 
 type Props = WithTranslation & {
@@ -32,11 +32,7 @@ class DeleteScript extends React.Component<Props> {
     let deleteLink = null;
     if (script._links.delete) {
       deleteLink = (
-        <div className="columns">
-          <div className="column">
-            <DeleteButton label={t("scm-script-plugin.delete.button")} action={this.confirmDelete} />
-          </div>
-        </div>
+        <Level right={<DeleteButton label={t("scm-script-plugin.delete.button")} action={this.confirmDelete} />} />
       );
     }
     return deleteLink;

@@ -1,8 +1,9 @@
 import React from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
-import { Checkbox, Select, SubmitButton } from "@scm-manager/ui-components";
+import { Checkbox } from "@scm-manager/ui-components";
 import { findAllEventTypes, findAllListeners, storeListeners } from "../api";
-import { Listeners, Script, ScriptLinks } from "../types";
+import { Listener, Listeners, Script, ScriptLinks } from "../types";
+import ListenersTable from "../components/ListenersTable";
 
 type Props = WithTranslation & {
   script: Script;
@@ -54,51 +55,6 @@ class ListenersPage extends React.Component<Props, State> {
       );
   }
 
-  checkedIcon = checked => {
-    if (checked) {
-      return <i className="fas fa-check" />;
-    }
-    return null;
-  };
-
-  renderListenerRow = (listener, key) => {
-    return (
-      <tr key={key}>
-        <td>{listener.eventType}</td>
-        <td>{this.checkedIcon(listener.asynchronous)}</td>
-        <td>
-          <a className="fas fa-trash" onClick={() => this.onDelete(listener)} />
-        </td>
-      </tr>
-    );
-  };
-
-  onChange = (value: string, name: string) => {
-    this.setState({
-      [name]: value
-    });
-  };
-
-  onDelete = listener => {
-    const { listeners } = this.state;
-    const index = listeners.listeners.indexOf(listener);
-    if (index >= 0) {
-      listeners.listeners.splice(index, 1);
-      this.updateListeners();
-    }
-  };
-
-  onToggleStoreListenerExecutionResultsChange = (storeListenerExecutionResults: boolean) => {
-    this.setState(state => {
-      return {
-        listeners: {
-          ...state.listeners,
-          storeListenerExecutionResults
-        }
-      };
-    }, this.updateListeners);
-  };
-
   updateListeners = () => {
     const { listeners } = this.state;
 
@@ -113,6 +69,23 @@ class ListenersPage extends React.Component<Props, State> {
           error
         })
       );
+  };
+
+  onToggleStoreListenerExecutionResultsChange = (storeListenerExecutionResults: boolean) => {
+    this.setState(state => {
+      return {
+        listeners: {
+          ...state.listeners,
+          storeListenerExecutionResults
+        }
+      };
+    }, this.updateListeners);
+  };
+
+  onChange = (value: string, name: string) => {
+    this.setState({
+      [name]: value
+    });
   };
 
   onSubmit = (e: Event) => {
@@ -141,58 +114,36 @@ class ListenersPage extends React.Component<Props, State> {
     }
   };
 
+  onDelete = (listener: Listener) => {
+    const { listeners } = this.state;
+    const index = listeners.listeners.indexOf(listener);
+    if (index >= 0) {
+      listeners.listeners.splice(index, 1);
+      this.updateListeners();
+    }
+  };
+
   render() {
     const { t } = this.props;
     const { eventTypes, listeners, eventType, asynchronous } = this.state;
 
-    const options = eventTypes.map(eventType => {
-      return {
-        value: eventType,
-        label: eventType
-      };
-    });
-
-    options.unshift({
-      value: "",
-      label: ""
-    });
-
     return (
       <>
-        <table className="card-table table is-hoverable is-fullwidth">
-          <thead>
-            <tr>
-              <th>{t("scm-script-plugin.listeners.eventType")}</th>
-              <th>{t("scm-script-plugin.listeners.asynchronous")}</th>
-              <th>{t("scm-script-plugin.listeners.remove")}</th>
-            </tr>
-          </thead>
-          <tbody>{listeners.listeners.map(this.renderListenerRow)}</tbody>
-        </table>
-        <hr />
+        <ListenersTable
+          eventTypes={eventTypes}
+          listeners={listeners}
+          eventType={eventType}
+          asynchronous={asynchronous}
+          onChange={this.onChange}
+          onSubmit={this.onSubmit}
+          onDelete={this.onDelete}
+        />
         <Checkbox
-          name={"storeListenerExecutionResults"}
+          name="storeListenerExecutionResults"
           label={t("scm-script-plugin.listeners.storeListenerExecutionResults")}
           checked={listeners.storeListenerExecutionResults}
           onChange={this.onToggleStoreListenerExecutionResultsChange}
         />
-        <hr />
-        <form onSubmit={this.onSubmit}>
-          <Select
-            name={"eventType"}
-            label={t("scm-script-plugin.listeners.eventType")}
-            options={options}
-            value={eventType}
-            onChange={this.onChange}
-          />
-          <Checkbox
-            name={"asynchronous"}
-            label={t("scm-script-plugin.listeners.asynchronous")}
-            checked={asynchronous}
-            onChange={this.onChange}
-          />
-          <SubmitButton label={t("scm-script-plugin.listeners.submit")} />
-        </form>
       </>
     );
   }
