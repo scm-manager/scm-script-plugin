@@ -1106,7 +1106,7 @@
   dependencies:
     react "^16.10.2"
 
-"@scm-manager/ui-plugins@latest":
+"@scm-manager/ui-plugins@2.0.0-rc1":
   version "2.0.0-rc1"
   resolved "https://registry.yarnpkg.com/@scm-manager/ui-plugins/-/ui-plugins-2.0.0-rc1.tgz#e7a30493303e269e3bd7dad4e64ed61a15929b9c"
   integrity sha512-uYCs72zQzSRWfHTUV24eQb1QB7kn71vio7Ddb8Ds6hHAQuvrTuwxn6DX5Wfu63hLqtyD2SiVRUrGRKg5rxRtuQ==
