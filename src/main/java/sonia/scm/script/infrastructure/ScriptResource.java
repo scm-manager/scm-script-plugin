@@ -60,7 +60,12 @@ public class ScriptResource {
   @POST
   @Path("")
   @Consumes(ScriptMediaType.SCRIPT)
-  @Operation(summary = "Create new script", description = "Creates a new script.", tags = "Script Plugin")
+  @Operation(
+    summary = "Create new script",
+    description = "Creates a new script.",
+    tags = "Script Plugin",
+    operationId = "script_create_script"
+  )
   @ApiResponse(responseCode = "201", description = "create success")
   @ApiResponse(responseCode = "401", description = "not authenticated / invalid credentials")
   @ApiResponse(responseCode = "403", description = "not authorized / the current user does not have the right privilege")
@@ -82,7 +87,12 @@ public class ScriptResource {
   @GET
   @Path("")
   @Produces(ScriptMediaType.SCRIPT_COLLECTION)
-  @Operation(summary = "Get all scripts", description = "Returns all stored scripts.", tags = "Script Plugin")
+  @Operation(
+    summary = "Get all scripts",
+    description = "Returns all stored scripts.",
+    tags = "Script Plugin",
+    operationId = "script_get_scripts"
+  )
   @ApiResponse(
     responseCode = "200",
     description = "success",
@@ -109,7 +119,12 @@ public class ScriptResource {
   @GET
   @Path("{id}")
   @Produces(ScriptMediaType.SCRIPT)
-  @Operation(summary = "Get single script", description = "Returns a single script.", tags = "Script Plugin")
+  @Operation(
+    summary = "Get single script",
+    description = "Returns a single script.",
+    tags = "Script Plugin",
+    operationId = "script_get_script"
+  )
   @ApiResponse(
     responseCode = "200",
     description = "success",
@@ -148,7 +163,12 @@ public class ScriptResource {
   @GET
   @Path("{id}/listeners")
   @Produces(ScriptMediaType.LISTENER_COLLECTION)
-  @Operation(summary = "Get listeners for script", description = "Returns all listeners for a single script.", tags = "Script Plugin")
+  @Operation(
+    summary = "Get listeners for script",
+    description = "Returns all listeners for a single script.",
+    tags = "Script Plugin",
+    operationId = "script_get_listeners"
+  )
   @ApiResponse(
     responseCode = "200",
     description = "success",
@@ -187,7 +207,12 @@ public class ScriptResource {
   @GET
   @Path("{id}/history")
   @Produces(ScriptMediaType.LISTENER_COLLECTION)
-  @Operation(summary = "Get history for script", description = "Returns the execution history for a single script.", tags = "Script Plugin")
+  @Operation(
+    summary = "Get history for script",
+    description = "Returns the execution history for a single script.",
+    tags = "Script Plugin",
+    operationId = "script_get_script_history"
+  )
   @ApiResponse(
     responseCode = "200",
     description = "success",
@@ -229,7 +254,12 @@ public class ScriptResource {
   @PUT
   @Path("{id}/listeners")
   @Consumes(ScriptMediaType.LISTENER_COLLECTION)
-  @Operation(summary = "Create new listener", description = "Creates a new listener for a stored script.", tags = "Script Plugin")
+  @Operation(
+    summary = "Create new listener",
+    description = "Creates a new listener for a stored script.",
+    tags = "Script Plugin",
+    operationId = "script_create_listener"
+  )
   @ApiResponse(responseCode = "204", description = "no content")
   @ApiResponse(responseCode = "401", description = "not authenticated / invalid credentials")
   @ApiResponse(responseCode = "403", description = "not authorized / the current user does not have the right privilege")
@@ -262,7 +292,12 @@ public class ScriptResource {
   @PUT
   @Path("{id}")
   @Consumes(ScriptMediaType.SCRIPT)
-  @Operation(summary = "Update script", description = "Modifies a stored script.", tags = "Script Plugin")
+  @Operation(
+    summary = "Update script",
+    description = "Modifies a stored script.",
+    tags = "Script Plugin",
+    operationId = "script_modify_script"
+  )
   @ApiResponse(responseCode = "204", description = "no content")
   @ApiResponse(responseCode = "400", description = "bad request / invalid body")
   @ApiResponse(responseCode = "401", description = "not authenticated / invalid credentials")
@@ -287,7 +322,12 @@ public class ScriptResource {
 
   @DELETE
   @Path("{id}")
-  @Operation(summary = "Delete script", description = "Deletes a stored script.", tags = "Script Plugin")
+  @Operation(
+    summary = "Delete script",
+    description = "Deletes a stored script.",
+    tags = "Script Plugin",
+    operationId = "script_delete_script"
+  )
   @ApiResponse(responseCode = "204", description = "delete success")
   @ApiResponse(responseCode = "401", description = "not authenticated / invalid credentials")
   @ApiResponse(responseCode = "403", description = "not authorized / the current user does not have the right privilege")
@@ -308,7 +348,12 @@ public class ScriptResource {
   @Path("run")
   @Consumes(MediaType.TEXT_PLAIN)
   @Produces(ScriptMediaType.EXECUTION_RESULT)
-  @Operation(summary = "Run script", description = "Executes the given script.", tags = "Script Plugin")
+  @Operation(
+    summary = "Run script",
+    description = "Executes the given script.",
+    tags = "Script Plugin",
+    operationId = "script_execute_script"
+  )
   @ApiResponse(
     responseCode = "204",
     description = "no content",
@@ -337,7 +382,8 @@ public class ScriptResource {
   @Operation(
     summary = "Get event types for script",
     description = "Returns a list of event types which can trigger the execution of a script.",
-    tags = "Script Plugin"
+    tags = "Script Plugin",
+    operationId = "script_get_event_types"
   )
   @ApiResponse(
     responseCode = "200",
