@@ -21,6 +21,7 @@ class ScriptNavigation extends React.Component<Props> {
           to={match.url + "/scripts/run"}
           icon="fas fa-file-code"
           label={t("scm-script-plugin.navLink")}
+          title={t("scm-script-plugin.navLink")}
           activeWhenMatch={this.matchesScript}
           activeOnlyWhenExact={false}
           collapsed={menuCollapsed}
