@@ -7,3 +7,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 ### Added
 - Add swagger rest annotations to generate openAPI specs for the scm-openapi-plugin. ([#4](https://github.com/scm-manager/scm-script-plugin/pull/4))
+- Make navigation item collapsable ([#3](https://github.com/scm-manager/scm-script-plugin/pull/5))
