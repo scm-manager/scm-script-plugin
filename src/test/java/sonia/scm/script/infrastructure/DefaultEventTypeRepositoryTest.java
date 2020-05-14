@@ -24,19 +24,22 @@
 package sonia.scm.script.infrastructure;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import sonia.scm.plugin.ClassElement;
 import sonia.scm.plugin.InstalledPlugin;
 import sonia.scm.plugin.InstalledPluginDescriptor;
 import sonia.scm.plugin.PluginLoader;
 import sonia.scm.plugin.ScmModule;
 import sonia.scm.script.domain.EventTypeRepository;
 
+import java.util.Collections;
 import java.util.List;
 
+import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -49,33 +52,38 @@ class DefaultEventTypeRepositoryTest {
 
   @Test
   void shouldReturnAllRegisteredEvents() {
-    ScmModule moduleOne = createModule(String.class, Integer.class);
-    ScmModule moduleTwo = createModule(Long.class);
+    ScmModule moduleOne = createModule(String.class.getName(), Integer.class.getName());
+    ScmModule moduleTwo = createModule(Long.class.getName());
     List<ScmModule> modules = ImmutableList.of(moduleOne, moduleTwo);
     when(pluginLoader.getInstalledModules()).thenReturn(modules);
 
-    InstalledPlugin pluginWrapper = createPlugin(Float.class);
+    InstalledPlugin pluginWrapper = createPlugin(Float.class.getName());
     List<InstalledPlugin> plugins = ImmutableList.of(pluginWrapper);
     when(pluginLoader.getInstalledPlugins()).thenReturn(plugins);
 
     EventTypeRepository repository = new DefaultEventTypeRepository(pluginLoader);
 
-    List<Class<?>> events = repository.findAll();
-    assertThat(events).containsExactly(Float.class, Integer.class, Long.class, String.class);
+    List<String> events = repository.findAll();
+    assertThat(events).containsExactly(Float.class.getName(), Integer.class.getName(), Long.class.getName(), String.class.getName());
   }
 
-  private ScmModule createModule(Class<?>... eventTypes) {
+  private ScmModule createModule(String... eventTypes) {
     ScmModule moduleOne = mock(ScmModule.class);
-    when(moduleOne.getEvents()).thenReturn(Lists.newArrayList(eventTypes));
+    when(moduleOne.getEvents()).thenReturn(toClassElements(eventTypes));
     return moduleOne;
   }
 
-  private InstalledPlugin createPlugin(Class<?>... eventTypes) {
+  private InstalledPlugin createPlugin(String... eventTypes) {
     InstalledPlugin plugin = mock(InstalledPlugin.class);
     InstalledPluginDescriptor descriptor = mock(InstalledPluginDescriptor.class);
-    when(descriptor.getEvents()).thenReturn(Lists.newArrayList(eventTypes));
+    when(descriptor.getEvents()).thenReturn(toClassElements(eventTypes));
     when(plugin.getDescriptor()).thenReturn(descriptor);
     return plugin;
   }
 
+  private Iterable<ClassElement> toClassElements(String... eventTypes) {
+    return stream(eventTypes)
+      .map(s -> new ClassElement(s, null, Collections.emptySet()))
+      .collect(toList());
+  }
 }

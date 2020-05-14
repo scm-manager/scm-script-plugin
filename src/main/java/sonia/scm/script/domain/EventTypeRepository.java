@@ -27,6 +27,6 @@ import java.util.List;
 
 public interface EventTypeRepository {
 
-  List<Class<?>> findAll();
+  List<String> findAll();
 
 }

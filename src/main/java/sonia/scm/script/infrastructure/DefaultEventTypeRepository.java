@@ -23,9 +23,9 @@
  */
 package sonia.scm.script.infrastructure;
 
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Ordering;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import sonia.scm.plugin.ClassElement;
 import sonia.scm.plugin.InstalledPlugin;
 import sonia.scm.plugin.PluginLoader;
 import sonia.scm.plugin.ScmModule;
@@ -47,8 +47,8 @@ public class DefaultEventTypeRepository implements EventTypeRepository {
   }
 
   @Override
-  public List<Class<?>> findAll() {
-    Set<Class<?>> events = new HashSet<>();
+  public List<String> findAll() {
+    Set<String> events = new HashSet<>();
 
     Collection<ScmModule> modules = pluginLoader.getInstalledModules();
     for (ScmModule module : modules) {
@@ -63,23 +63,23 @@ public class DefaultEventTypeRepository implements EventTypeRepository {
     return classOrdering.sortedCopy(events);
   }
 
-  private void appendEvents(Set<Class<?>> events, ScmModule module) {
-    Iterable<Class<?>> moduleEvents = module.getEvents();
+  private void appendEvents(Set<String> events, ScmModule module) {
+    Iterable<ClassElement> moduleEvents = module.getEvents();
     if (moduleEvents != null) {
-      Iterables.addAll(events, moduleEvents);
+      moduleEvents.forEach(e -> events.add(e.getClazz()));
     }
   }
 
-  private final Ordering<Class<?>> classOrdering = new Ordering<Class<?>>() {
+  private final Ordering<String> classOrdering = new Ordering<String>() {
     @Override
-    public int compare(@Nullable Class<?> left, @Nullable Class<?> right) {
+    public int compare(@Nullable String left, @Nullable String right) {
       if (left == null) {
         return (right == null) ? 0 : -1;
       }
       if (right == null) {
         return 1;
       }
-      return left.getName().compareTo(right.getName());
+      return left.compareTo(right);
     }
   };
 
