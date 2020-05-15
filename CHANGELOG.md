@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 ### Changed
 - Changeover to MIT license ([#6](https://github.com/scm-manager/scm-script-plugin/pull/6))
+- Adapt to new SCM-Manager event API ([#7](https://github.com/scm-manager/scm-script-plugin/pull/7))
 
 ## 2.0.0-rc5 - 2020-03-13
 ### Added

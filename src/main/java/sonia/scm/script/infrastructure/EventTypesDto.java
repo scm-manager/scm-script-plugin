@@ -37,9 +37,9 @@ import java.util.List;
 @SuppressWarnings("squid:S2160") // we need no equals or hashCode
 public class EventTypesDto extends HalRepresentation {
 
-  private List<Class<?>> eventTypes;
+  private List<String> eventTypes;
 
-  public EventTypesDto(Links links, List<Class<?>> eventTypes) {
+  public EventTypesDto(Links links, List<String> eventTypes) {
     super(links);
     this.eventTypes = eventTypes;
   }

@@ -53,7 +53,12 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyBoolean;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ScriptResourceTest {
@@ -188,10 +193,10 @@ class ScriptResourceTest {
 
     UriInfo info = mock(UriInfo.class);
     when(info.getAbsolutePath()).thenReturn(location);
-    when(eventTypeRepository.findAll()).thenReturn(ImmutableList.of(String.class, Integer.class));
+    when(eventTypeRepository.findAll()).thenReturn(ImmutableList.of(String.class.getName(), Integer.class.getName()));
 
     EventTypesDto types = resource.findAllEventTypes(info);
-    assertThat(types.getEventTypes()).containsOnly(String.class, Integer.class);
+    assertThat(types.getEventTypes()).containsOnly(String.class.getName(), Integer.class.getName());
     assertThat(types.getLinks().getLinkBy("self").get().getHref()).isEqualTo("/v2/plugins/scripts/eventTypes");
   }
 
