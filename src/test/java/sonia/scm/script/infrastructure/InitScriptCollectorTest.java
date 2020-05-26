@@ -27,7 +27,7 @@ import com.google.common.base.Charsets;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junitpioneer.jupiter.TempDirectory;
+import org.junit.jupiter.api.io.TempDir;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import sonia.scm.script.domain.InitScript;
@@ -42,7 +42,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@ExtendWith({MockitoExtension.class, TempDirectory.class})
+@ExtendWith(MockitoExtension.class)
 class InitScriptCollectorTest {
 
   @Mock
@@ -53,7 +53,7 @@ class InitScriptCollectorTest {
   private Path directory;
 
   @BeforeEach
-  void prepare(@TempDirectory.TempDir Path directory) {
+  void prepare(@TempDir Path directory) {
     this.directory = directory;
     collector = new InitScriptCollector(factory, directory);
   }

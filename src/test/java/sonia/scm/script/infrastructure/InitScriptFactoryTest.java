@@ -27,7 +27,7 @@ import com.google.common.base.Charsets;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junitpioneer.jupiter.TempDirectory;
+import org.junit.jupiter.api.io.TempDir;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -35,17 +35,14 @@ import sonia.scm.script.domain.InitScript;
 import sonia.scm.script.domain.TypeRepository;
 
 import java.io.IOException;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-@ExtendWith({MockitoExtension.class, TempDirectory.class})
+@ExtendWith(MockitoExtension.class)
 class InitScriptFactoryTest {
 
   @Mock
@@ -57,7 +54,7 @@ class InitScriptFactoryTest {
   private Path directory;
 
   @BeforeEach
-  void createTempDirectory(@TempDirectory.TempDir Path directory) {
+  void createTempDirectory(@TempDir Path directory) {
 
     this.directory = directory;
   }
