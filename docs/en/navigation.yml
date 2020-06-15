@@ -1,0 +1,5 @@
+- section: Structure
+  entries:
+    - /run/
+    - /stored/
+    - /samples/
