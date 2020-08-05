@@ -75,27 +75,28 @@ class JSR223InternalExecutor implements Executor {
 
   @Override
   public ExecutionResult execute(Script script, ExecutionContext context) {
-    ScriptEngine engine = findEngine(script.getType());
-    SimpleScriptContext scriptContext = createScriptContext(context);
+    ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+    Thread.currentThread().setContextClassLoader(pluginLoader.getUberClassLoader());
+    try {
+      ScriptEngine engine = findEngine(script.getType());
+      SimpleScriptContext scriptContext = createScriptContext(context);
 
-    return executeScript(engine, scriptContext, script.getContent());
+      return executeScript(engine, scriptContext, script.getContent());
+    } finally {
+      Thread.currentThread().setContextClassLoader(contextClassLoader);
+    }
   }
 
   private ExecutionResult executeScript(ScriptEngine engine, SimpleScriptContext scriptContext, String content) {
     StringWriter writer = new StringWriter();
     applyWriter(scriptContext, writer);
 
-    ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-
     Instant started = now();
     try {
-      Thread.currentThread().setContextClassLoader(pluginLoader.getUberClassLoader());
       engine.eval(content, scriptContext);
       return success(started, writer);
     } catch (ScriptException e) {
       return failed(started, writer, e);
-    } finally {
-      Thread.currentThread().setContextClassLoader(contextClassLoader);
     }
   }
 
