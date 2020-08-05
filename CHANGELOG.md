@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 
 ### Fixed
+- Script execution on java > 11 ([#12](https://github.com/scm-manager/scm-script-plugin/pull/12)) 
 - Loading of plugin classes in a script ([#13](https://github.com/scm-manager/scm-script-plugin/pull/13))
 
 ### Added
