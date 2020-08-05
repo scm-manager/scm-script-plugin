@@ -25,6 +25,7 @@ package sonia.scm.script.infrastructure;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sonia.scm.event.ScmEventBus;
 import sonia.scm.plugin.Extension;
 import sonia.scm.script.domain.ExecutionContext;
 import sonia.scm.script.domain.ExecutionResult;
@@ -55,12 +56,14 @@ public class InitScriptContextListener implements ServletContextListener {
   private final AdministrationContext administrationContext;
   private final InitScriptCollector collector;
   private final Executor executor;
+  private final ScmEventBus eventBus;
 
   @Inject
-  public InitScriptContextListener(AdministrationContext administrationContext, InitScriptCollector collector, Executor executor) {
+  public InitScriptContextListener(AdministrationContext administrationContext, InitScriptCollector collector, Executor executor, ScmEventBus eventBus) {
     this.administrationContext = administrationContext;
     this.collector = collector;
     this.executor = executor;
+    this.eventBus = eventBus;
   }
 
   @Override
@@ -70,7 +73,13 @@ public class InitScriptContextListener implements ServletContextListener {
   }
 
   private PrivilegedAction executeScripts(List<InitScript> scripts) {
-    return () -> scripts.forEach(this::executeScript);
+    return () -> {
+      scripts.forEach(this::executeScript);
+      // Fire started event.
+      // We have to do this in a PrivilegedAction,
+      // because we need a shiro context which is not available in a ServletContextListener without PrivilegedAction.
+      eventBus.post(new ScmStartedEvent());
+    };
   }
 
   private void executeScript(InitScript script) {
