@@ -59,7 +59,7 @@
   <dependencies>
     <!--
     We depend on the scm-el-plugin,
-    that we are able to use an expression language for out build parameters
+    that we are able to use an expression language for scripts
     -->
     <dependency>
       <groupId>sonia.scm.plugins</groupId>
