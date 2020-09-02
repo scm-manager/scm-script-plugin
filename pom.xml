@@ -57,15 +57,6 @@
   </build>
 
   <dependencies>
-    <!--
-    We depend on the scm-el-plugin,
-    that we are able to use an expression language for scripts
-    -->
-    <dependency>
-      <groupId>sonia.scm.plugins</groupId>
-      <artifactId>scm-el-plugin</artifactId>
-      <version>1.0.0</version>
-    </dependency>
 
     <dependency>
       <groupId>javax.validation</groupId>
