@@ -21,56 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+// @ts-nocheck
+// copy of ace/theme/arduino-tomorrow
+import css from '!!raw-loader!./EditorTheme.css';
 
-// @ts-ignore
-import React from "react";
+ace.define("ace/theme/arduino-light", ["require", "exports", "module", "ace/lib/dom"], function(
+  require,
+  exports,
+  module
+) {
+  exports.isDark = false;
+  exports.cssClass = "ace-arduino-light";
+  exports.cssText = css;
 
-import AceEditor from "react-ace";
-
-import "ace-builds/src-noconflict/mode-groovy";
-import "./EditorTheme.js";
-
-type Props = {
-  value?: string;
-  name?: string;
-  readOnly?: boolean;
-  onChange: (value: string, name: string) => void;
-};
-
-class ContentEditor extends React.Component<Props> {
-  name = () => {
-    // @ts-ignore
-    const { name } = this.props;
-    return name ? name : "contentEditor";
-  };
-
-  onChange = (value: string) => {
-    // @ts-ignore
-    const { onChange } = this.props;
-    onChange(value, this.name());
-  };
-
-  render() {
-    // @ts-ignore
-    const { readOnly, value } = this.props;
-
-    return (
-      <AceEditor
-        mode="groovy"
-        theme="arduino-light"
-        onChange={this.onChange}
-        showGutter={true}
-        readOnly={readOnly}
-        name={this.name()}
-        value={value ? value : ""}
-        className="box"
-        style={{
-          width: "100%",
-          height: "250px"
-        }}
-      />
-    );
-  }
-}
-
-export default ContentEditor;
+  var dom = require("../lib/dom");
+  dom.importCssString(exports.cssText, exports.cssClass);
+});
+(function() {
+  ace.require(["ace/theme/arduino-light"], function(m) {
+    if (typeof module == "object" && typeof exports == "object" && module) {
+      module.exports = m;
+    }
+  });
+})();
