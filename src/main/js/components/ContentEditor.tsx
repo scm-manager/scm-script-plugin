@@ -25,49 +25,28 @@
 // @ts-ignore
 import React from "react";
 
-import AceEditor from "react-ace";
+import {CodeEditor} from "@scm-manager/scm-code-editor-plugin";
 
 import "ace-builds/src-noconflict/mode-groovy";
 import "./EditorTheme.js";
 
 type Props = {
   value?: string;
-  name?: string;
   readOnly?: boolean;
-  onChange: (value: string, name: string) => void;
+  onChange: (value: string) => void;
 };
 
 class ContentEditor extends React.Component<Props> {
-  name = () => {
-    // @ts-ignore
-    const { name } = this.props;
-    return name ? name : "contentEditor";
-  };
-
-  onChange = (value: string) => {
-    // @ts-ignore
-    const { onChange } = this.props;
-    onChange(value, this.name());
-  };
-
   render() {
     // @ts-ignore
-    const { readOnly, value } = this.props;
+    const {readOnly, value, onChange} = this.props;
 
     return (
-      <AceEditor
-        mode="groovy"
-        theme="arduino-light"
-        onChange={this.onChange}
-        showGutter={true}
-        readOnly={readOnly}
-        name={this.name()}
-        value={value ? value : ""}
-        className="box"
-        style={{
-          width: "100%",
-          height: "250px"
-        }}
+      <CodeEditor
+        language="groovy"
+        onChange={onChange}
+        disabled={readOnly}
+        content={value || ""}
       />
     );
   }
