@@ -25,10 +25,10 @@
 // @ts-ignore
 import React from "react";
 
+// @ts-ignore
 import {CodeEditor} from "@scm-manager/scm-code-editor-plugin";
 
 import "ace-builds/src-noconflict/mode-groovy";
-import "./EditorTheme.js";
 
 type Props = {
   value?: string;
