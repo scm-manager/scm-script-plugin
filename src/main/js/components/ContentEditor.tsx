@@ -25,7 +25,6 @@
 // @ts-ignore
 import React from "react";
 
-// @ts-ignore
 import {CodeEditor} from "@scm-manager/scm-code-editor-plugin";
 
 import "ace-builds/src-noconflict/mode-groovy";
@@ -45,7 +44,7 @@ class ContentEditor extends React.Component<Props> {
       <CodeEditor
         language="groovy"
         onChange={onChange}
-        disabled={readOnly}
+        disabled={readOnly || false}
         content={value || ""}
       />
     );
