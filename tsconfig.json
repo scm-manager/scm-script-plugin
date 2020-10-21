@@ -1,7 +1,4 @@
 {
-  "compilerOptions": {
-      "jsx": "react"
-  },
   "extends": "@scm-manager/tsconfig",
   "include": [
     "./src/main/js"
