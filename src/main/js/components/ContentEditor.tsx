@@ -21,48 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 import React from "react";
-
-import AceEditor from "react-ace";
-
-import "ace-builds/src-noconflict/mode-groovy";
-import "ace-builds/src-noconflict/theme-tomorrow";
+import { CodeEditor } from "@scm-manager/scm-code-editor-plugin";
+import styled from "styled-components";
 
 type Props = {
   value?: string;
-  name?: string;
   readOnly?: boolean;
-  onChange: (value: string, name: string) => void;
+  onChange: (value: string) => void;
 };
 
+const StyledCodeEditor = styled(CodeEditor)`
+  width: 100%;
+  height: 250px;
+`;
+
 class ContentEditor extends React.Component<Props> {
-  name = () => {
-    const { name } = this.props;
-    return name ? name : "contentEditor";
-  };
-
-  onChange = (value: string) => {
-    const { onChange } = this.props;
-    onChange(value, this.name());
-  };
-
   render() {
-    const { readOnly, value } = this.props;
+    const { readOnly, value, onChange } = this.props;
 
     return (
-      <AceEditor
-        mode="groovy"
-        theme="tomorrow"
-        onChange={this.onChange}
-        showGutter={true}
-        readOnly={readOnly}
-        name={this.name()}
-        value={value ? value : ""}
+      <StyledCodeEditor
         className="box"
-        style={{
-          width: "100%",
-          height: "250px"
-        }}
+        language="groovy"
+        onChange={onChange}
+        disabled={readOnly || false}
+        content={value || ""}
       />
     );
   }

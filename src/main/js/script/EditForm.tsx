@@ -125,11 +125,23 @@ class EditForm extends React.Component<Props, State> {
     });
   };
 
-  onValueChange = (value: string, name: string) => {
+  onContentChange = (value: string) => {
     this.setState({
-      [name]: value
-    });
-  };
+      content: value
+    })
+  }
+
+  onDescriptionChange = (value: string) => {
+    this.setState({
+      description: value
+    })
+  }
+
+  onTitleChange = (value: string) => {
+    this.setState({
+      title: value
+    })
+  }
 
   renderSuccessNotifications = () => {
     const { t } = this.props;
@@ -162,18 +174,18 @@ class EditForm extends React.Component<Props, State> {
             value={title}
             validationError={!this.isTitleValid()}
             errorMessage={t("scm-script-plugin.titleValidationError")}
-            onChange={this.onValueChange}
+            onChange={this.onTitleChange}
           />
           <Textarea
             name="description"
             label={t("scm-script-plugin.description")}
             helpText={t("scm-script-plugin.descriptionHelp")}
             value={description}
-            onChange={this.onValueChange}
+            onChange={this.onDescriptionChange}
           />
           <div className="field">
             <LabelWithHelpIcon label={t("scm-script-plugin.content")} helpText={t("scm-script-plugin.contentHelp")} />
-            <ContentEditor name="content" value={content} onChange={this.onValueChange} />
+            <ContentEditor value={content} onChange={this.onContentChange} />
           </div>
           {this.renderControlButtons()}
           <hr />
