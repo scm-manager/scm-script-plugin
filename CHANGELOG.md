@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 ### Changed
-- Use scm-code-editor-plugin for syntax highlighting ([#24](https://github.com/scm-manager/scm-editor-plugin/pull/24))
+- Use scm-code-editor-plugin for syntax highlighting ([#14](https://github.com/scm-manager/scm-script-plugin/pull/14))
 
 ## [2.1.3] - 2020-09-02
 
