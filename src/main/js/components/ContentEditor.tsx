@@ -24,10 +24,7 @@
 
 // @ts-ignore
 import React from "react";
-
-import {CodeEditor} from "@scm-manager/scm-code-editor-plugin";
-
-import "ace-builds/src-noconflict/mode-groovy";
+import { CodeEditor } from "@scm-manager/scm-code-editor-plugin";
 
 type Props = {
   value?: string;
@@ -38,16 +35,9 @@ type Props = {
 class ContentEditor extends React.Component<Props> {
   render() {
     // @ts-ignore
-    const {readOnly, value, onChange} = this.props;
+    const { readOnly, value, onChange } = this.props;
 
-    return (
-      <CodeEditor
-        language="groovy"
-        onChange={onChange}
-        disabled={readOnly || false}
-        content={value || ""}
-      />
-    );
+    return <CodeEditor language="groovy" onChange={onChange} disabled={readOnly || false} content={value || ""} />;
   }
 }
 
