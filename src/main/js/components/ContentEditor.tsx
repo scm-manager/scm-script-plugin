@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-// @ts-ignore
 import React from "react";
 import { CodeEditor } from "@scm-manager/scm-code-editor-plugin";
+import styled from "styled-components";
 
 type Props = {
   value?: string;
@@ -32,12 +32,24 @@ type Props = {
   onChange: (value: string) => void;
 };
 
+const StyledCodeEditor = styled(CodeEditor)`
+  width: 100%;
+  height: 250px;
+`;
+
 class ContentEditor extends React.Component<Props> {
   render() {
-    // @ts-ignore
     const { readOnly, value, onChange } = this.props;
 
-    return <CodeEditor language="groovy" onChange={onChange} disabled={readOnly || false} content={value || ""} />;
+    return (
+      <StyledCodeEditor
+        className="box"
+        language="groovy"
+        onChange={onChange}
+        disabled={readOnly || false}
+        content={value || ""}
+      />
+    );
   }
 }
 

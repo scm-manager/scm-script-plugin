@@ -1311,10 +1311,10 @@
   dependencies:
     prettier "^1.19.1"
 
-"@scm-manager/scm-code-editor-plugin@1.0.0-20200922-063839":
-  version "1.0.0-20200922-063839"
-  resolved "https://registry.yarnpkg.com/@scm-manager/scm-code-editor-plugin/-/scm-code-editor-plugin-1.0.0-20200922-063839.tgz#a41efdb95cf505c7485efa22689164b11d1468d3"
-  integrity sha512-o08wSQviiwuw4JIrDhCqTQdlVLkTNQx3ZdJ/UWtBvw1IwxKo+Tq0I7LWWVS5lwPfLmBRvhyUqrdKvaDg7WUABQ==
+"@scm-manager/scm-code-editor-plugin@1.0.0-20200922-094155":
+  version "1.0.0-20200922-094155"
+  resolved "https://registry.yarnpkg.com/@scm-manager/scm-code-editor-plugin/-/scm-code-editor-plugin-1.0.0-20200922-094155.tgz#e406d9ff21c9b621c36a60be626bf71daebfe516"
+  integrity sha512-6oWsKz8Iwg5hBmSXhApo1kvoUlGNsa4JJm41AWTSBkZPwUBgMO/NYpkitNwEEP3RrHRORziBM7/UZQM/EydB/w==
   dependencies:
     "@scm-manager/ui-components" "^2.8.0-20200922-060527"
     "@scm-manager/ui-extensions" "^2.8.0-20200922-060527"
