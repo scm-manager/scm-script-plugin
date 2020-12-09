@@ -102,7 +102,7 @@
   </repositories>
 
   <properties>
-    <groovy.version>3.0.5</groovy.version>
+    <groovy.version>3.0.7</groovy.version>
   </properties>
 
 </project>
