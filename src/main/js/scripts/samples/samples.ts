@@ -52,6 +52,30 @@ repository.setDescription("This repository was created via a groovy script");
 Repository created = repositoryManager.create(repository);
 
 println "created repository \${created.namespace}/\${created.name}";`
+  },
+  {
+    title: "Restart",
+    description: "To restart the server, you can use this script",
+    type: "Groovy",
+    content: `import sonia.scm.lifecycle.Restarter
+
+def restarter = injector.getInstance(Restarter)
+println "restarting SCM-Manager"
+restarter.restart(Script, "Manual restart from groovy script")`
+  },
+  {
+    title: "Clear Caches",
+    description: "How to clear all caches (like caches for source listings, commits, etc.)",
+    type: "Groovy",
+    content: `import sonia.scm.cache.CacheManager
+
+def cacheManager = injector.getInstance(CacheManager)
+def caches = cacheManager.caches.values()
+
+for (def cache : caches) {
+  println "clear \${cache.size()} entries from cache \${cache.name}"
+  cache.clear()
+}`
   }
 ];
 
