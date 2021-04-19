@@ -77,8 +77,12 @@ class RootPage extends React.Component<Props, State> {
     } else if (links) {
       return (
         <>
-          <Route path="/admin/scripts" component={() => <MainRouting links={links} />} />
-          <Route path="/admin/script/:id" component={() => <ScriptRoot links={links} />} />
+          <Route path="/admin/scripts">
+            <MainRouting links={links} />
+          </Route>
+          <Route path="/admin/script/:id">
+            <ScriptRoot links={links} />
+          </Route>
         </>
       );
     } else {
