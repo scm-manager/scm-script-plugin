@@ -75,17 +75,15 @@ class ScriptMain extends React.Component<Props, State> {
           <h3>{script.title}</h3>
         </div>
         <ScriptTabs path={match.url} />
-        <Route
-          path={match.url}
-          exact={true}
-          render={() => <EditForm script={script} links={links} onDelete={this.onDelete} />}
-        />
-        <Route
-          path={match.url + "/listeners"}
-          exact={true}
-          render={() => <ListenersPage script={script} links={links} />}
-        />
-        <Route path={match.url + "/history"} exact={true} render={() => <HistoryPage script={script} />} />
+        <Route path={match.url} exact={true}>
+          <EditForm script={script} links={links} onDelete={this.onDelete} />
+        </Route>
+        <Route path={match.url + "/listeners"} exact={true}>
+          <ListenersPage script={script} links={links} />
+        </Route>
+        <Route path={match.url + "/history"} exact={true}>
+          <HistoryPage script={script} />
+        </Route>
       </>
     );
   }

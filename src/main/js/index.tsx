@@ -40,8 +40,12 @@ export const predicate = ({ links }: PredicateProps) => {
 const ScriptRoute = ({ links }) => {
   return (
     <>
-      <Route path="/admin/scripts" component={() => <RootPage link={links.scripts.href} />} />
-      <Route path="/admin/script" component={() => <RootPage link={links.scripts.href} />} />
+      <Route path="/admin/scripts">
+        <RootPage link={links.scripts.href} />
+      </Route>
+      <Route path="/admin/script">
+        <RootPage link={links.scripts.href} />
+      </Route>
     </>
   );
 };

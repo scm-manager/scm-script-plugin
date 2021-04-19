@@ -37,9 +37,15 @@ class MainRouting extends React.Component<Props> {
     const { links, match } = this.props;
     return (
       <>
-        <Route path={match.url + "/run"} component={() => <Editor links={links} />} />
-        <Route path={match.url} component={() => <Stored links={links} />} exact={true} />
-        <Route path={match.url + "/samples"} component={SampleRoot} />
+        <Route path={match.url + "/run"}>
+          <Editor links={links} />
+        </Route>
+        <Route path={match.url} exact={true}>
+          <Stored links={links} />
+        </Route>
+        <Route path={match.url + "/samples"}>
+          <SampleRoot />
+        </Route>
       </>
     );
   }
