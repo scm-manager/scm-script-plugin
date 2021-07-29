@@ -74,7 +74,7 @@ class StorableScriptTest {
     script.setStoreListenerExecutionResults(true);
 
     Listener listener = new Listener(String.class, true);
-    ExecutionResult result = new ExecutionResult(true, "hello world", Instant.now(), Instant.now());
+    ExecutionResult result = new ExecutionResult("hello world", Instant.now(), Instant.now());
 
     boolean captured = script.captureListenerExecution(listener, result);
     assertThat(captured).isTrue();
@@ -93,7 +93,7 @@ class StorableScriptTest {
     script.setStoreListenerExecutionResults(false);
 
     Listener listener = new Listener(String.class, true);
-    ExecutionResult result = new ExecutionResult(true, "hello world", Instant.now(), Instant.now());
+    ExecutionResult result = new ExecutionResult("hello world", Instant.now(), Instant.now());
 
     boolean captured = script.captureListenerExecution(listener, result);
     assertThat(captured).isFalse();
@@ -109,7 +109,7 @@ class StorableScriptTest {
 
     Listener listener = new Listener(String.class.getName(), true);
     for (int i = 1; i <= StorableScript.CAPTURE_LIMIT + 10; i++) {
-      ExecutionResult result = new ExecutionResult(true, String.valueOf(i), Instant.now(), Instant.now());
+      ExecutionResult result = new ExecutionResult(String.valueOf(i), Instant.now(), Instant.now());
       script.captureListenerExecution(listener, result);
     }
 

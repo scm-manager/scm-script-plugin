@@ -170,7 +170,7 @@ class ScriptResourceTest {
 
   @Test
   void shouldExecuteTheScript() {
-    ExecutionResult executionResult = new ExecutionResult(true, "Hello World", Instant.now(), Instant.now());
+    ExecutionResult executionResult = new ExecutionResult("Hello World", Instant.now(), Instant.now());
     when(executor.execute(any(Script.class), any(ExecutionContext.class))).thenReturn(executionResult);
 
     ExecutionResult result = resource.run("Groovy", "println 'Hello World';");
@@ -247,7 +247,7 @@ class ScriptResourceTest {
     StorableScript script = ScriptTestData.createHelloWorld();
     script.setStoreListenerExecutionResults(true);
     Listener listener = new Listener(String.class, false);
-    ExecutionResult result = new ExecutionResult(true, "hello world", Instant.now(), Instant.now());
+    ExecutionResult result = new ExecutionResult("hello world", Instant.now(), Instant.now());
     script.captureListenerExecution(listener, result);
 
     when(repository.findById("42")).thenReturn(Optional.of(script));

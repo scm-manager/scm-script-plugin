@@ -101,16 +101,12 @@ class JSR223InternalExecutor implements Executor {
   }
 
   private ExecutionResult success(Instant started, StringWriter writer) {
-    return createResult(true, started, writer);
+    return new ExecutionResult(createOutput(writer), started, now());
   }
 
   private ExecutionResult failed(Instant started, StringWriter writer, ScriptException e) {
     appendException(writer, e);
-    return createResult(false, started, writer);
-  }
-
-  private ExecutionResult createResult(boolean success, Instant started, StringWriter writer) {
-    return new ExecutionResult(success, createOutput(writer), started, now());
+    return new ExecutionResult(e, createOutput(writer), started, now());
   }
 
   private String createOutput(StringWriter writer) {

@@ -24,18 +24,21 @@
 package sonia.scm.script.domain;
 
 import com.google.common.collect.ImmutableList;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static java.time.Instant.now;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -53,23 +56,44 @@ class EventListenerServiceTest {
   @InjectMocks
   private EventListenerService listenerService;
 
-  @Test
-  void shouldReturnExecutableTrigger() {
-    List<StorableScript> scripts = new ArrayList<>();
+  @Nested
+  class WithScript {
 
-    scripts.add(script());
+    private final List<StorableScript> scripts = new ArrayList<>();
+    private StorableScript script;
 
-    StorableScript script = script(Integer.class, true);
-    scripts.add(script);
-    scripts.add(script(Integer.class, false));
-    scripts.add(script(String.class, true));
+    @BeforeEach
+    void mockStoredScript() {
+      scripts.add(script());
 
-    when(scriptRepository.findAll()).thenReturn(scripts);
+      script = script(Integer.class, true);
+      scripts.add(script);
+      scripts.add(script(Integer.class, false));
+      scripts.add(script(String.class, true));
 
-    EventListenerService.Trigger trigger = listenerService.createTrigger(Integer.class, true).get();
-    trigger.execute(executor, executionContext);
+      when(scriptRepository.findAll()).thenReturn(scripts);
+    }
 
-    verify(executor).execute(script, executionContext);
+    @Test
+    void shouldReturnExecutableTrigger() {
+      when(executor.execute(any(), any())).thenReturn(new ExecutionResult("excellent", now(), now()));
+
+      EventListenerService.Trigger trigger = listenerService.createTrigger(Integer.class, true).get();
+      trigger.execute(executor, executionContext);
+
+      verify(executor).execute(script, executionContext);
+    }
+
+    @Test
+    void shouldThrowExceptionIfExecutableTriggerThrowsException() {
+      when(executor.execute(any(), any())).thenThrow(RuntimeException.class);
+
+      EventListenerService.Trigger trigger = listenerService.createTrigger(Integer.class, true).get();
+
+      assertThrows(RuntimeException.class, () -> trigger.execute(executor, executionContext));
+
+      verify(executor).execute(script, executionContext);
+    }
   }
 
   @Test
@@ -88,7 +112,7 @@ class EventListenerServiceTest {
     StorableScript script = script(Integer.class, false);
     script.setStoreListenerExecutionResults(true);
 
-    ExecutionResult result = new ExecutionResult(true, "Hello World", Instant.now(), Instant.now());
+    ExecutionResult result = new ExecutionResult("Hello World", now(), now());
 
     when(scriptRepository.findAll()).thenReturn(ImmutableList.of(script));
     when(executor.execute(script, executionContext)).thenReturn(result);
@@ -109,7 +133,7 @@ class EventListenerServiceTest {
     StorableScript script = script(Integer.class, false);
     script.setStoreListenerExecutionResults(false);
 
-    ExecutionResult result = new ExecutionResult(true, "Hello World", Instant.now(), Instant.now());
+    ExecutionResult result = new ExecutionResult("Hello World", now(), now());
 
     when(scriptRepository.findAll()).thenReturn(ImmutableList.of(script));
     when(executor.execute(script, executionContext)).thenReturn(result);

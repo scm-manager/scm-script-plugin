@@ -28,9 +28,13 @@ import sonia.scm.xml.XmlInstantAdapter;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Optional;
+
+import static java.util.Optional.of;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -43,15 +47,26 @@ public class ExecutionResult {
   private Instant started;
   @XmlJavaTypeAdapter(XmlInstantAdapter.class)
   private Instant ended;
+  @XmlTransient
+  private Throwable exception;
 
   ExecutionResult() {
   }
 
-  public ExecutionResult(boolean success, String output, Instant started, Instant ended) {
+  public ExecutionResult(String output, Instant started, Instant ended) {
+    this(true, output, started, ended, null);
+  }
+
+  public ExecutionResult(Throwable exception, String output, Instant started, Instant ended) {
+    this(false, output, started, ended, exception);
+  }
+
+  private ExecutionResult(boolean success, String output, Instant started, Instant ended, Throwable exception) {
     this.success = success;
     this.output = output;
     this.started = started;
     this.ended = ended;
+    this.exception = exception;
   }
 
   public boolean isSuccess() {
@@ -68,6 +83,10 @@ public class ExecutionResult {
 
   public Instant getEnded() {
     return ended;
+  }
+
+  public Optional<Throwable> getException() {
+    return of(exception);
   }
 
   @Override
