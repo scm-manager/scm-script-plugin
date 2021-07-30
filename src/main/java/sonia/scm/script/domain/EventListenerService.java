@@ -77,6 +77,9 @@ public class EventListenerService {
         if (script.captureListenerExecution(listener, result)) {
           needsStoring.add(script);
         }
+        if (!result.isSuccess() && result.getException().isPresent()) {
+          throw new TriggeredScriptFailedException(result.getException().get());
+        }
       }
     }
 
@@ -89,4 +92,9 @@ public class EventListenerService {
 
   }
 
+  private static class TriggeredScriptFailedException extends RuntimeException {
+    public TriggeredScriptFailedException(Throwable cause) {
+      super("Triggered script failed with internal exception: " + cause, cause);
+    }
+  }
 }

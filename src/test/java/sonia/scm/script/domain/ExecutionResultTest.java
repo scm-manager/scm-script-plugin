@@ -34,17 +34,20 @@ class ExecutionResultTest {
   @Test
   void shouldCreateSuccessString() {
     ExecutionResult result = createExecutionResult(true);
-    assertThat(result.toString()).isEqualTo("success in 1ms with output: awesome output");
+    assertThat(result).hasToString("success in 1ms with output: awesome output");
   }
 
   @Test
   void shouldCreateFailureString() {
     ExecutionResult result = createExecutionResult(false);
-    assertThat(result.toString()).isEqualTo("failed in 1ms with output: awesome output");
+    assertThat(result).hasToString("failed in 1ms with output: awesome output");
   }
 
   private ExecutionResult createExecutionResult(boolean success) {
-    return new ExecutionResult(success, "awesome output", Instant.ofEpochMilli(42L), Instant.ofEpochMilli(43L));
+    if (success) {
+      return new ExecutionResult("awesome output", Instant.ofEpochMilli(42L), Instant.ofEpochMilli(43L));
+    } else {
+      return new ExecutionResult(new RuntimeException(), "awesome output", Instant.ofEpochMilli(42L), Instant.ofEpochMilli(43L));
+    }
   }
-
 }
