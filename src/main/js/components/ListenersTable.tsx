@@ -67,11 +67,13 @@ class ListenersTable extends React.Component<Props> {
         <td>{listener.eventType}</td>
         <VCenteredTd>{this.checkedIcon(listener.asynchronous)}</VCenteredTd>
         <VCenteredTd>
-          <a className="level-item" onClick={() => onDelete(listener)}>
-            <span className="icon is-small">
-              <Icon name="trash" color="inherit" title={t("scm-script-plugin.listeners.remove")} />
-            </span>
-          </a>
+          <Icon
+            name="trash"
+            className="is-clickable"
+            color="inherit"
+            title={t("scm-script-plugin.listeners.remove")}
+            onClick={() => onDelete(listener)}
+          />
         </VCenteredTd>
       </tr>
     );
@@ -79,10 +81,10 @@ class ListenersTable extends React.Component<Props> {
 
   renderFormRow = () => {
     const { eventTypes, eventType, asynchronous, onChange, onSubmit, t } = this.props;
-    const options = eventTypes.map(eventType => {
+    const options = eventTypes.map(types => {
       return {
-        value: eventType,
-        label: eventType
+        value: types,
+        label: types
       };
     });
 
@@ -100,11 +102,13 @@ class ListenersTable extends React.Component<Props> {
           <Checkbox name="asynchronous" checked={asynchronous} onChange={onChange} />
         </DarkerVCenteredTd>
         <DarkerVCenteredTd>
-          <a className="level-item" onClick={onSubmit}>
-            <span className="icon is-small">
-              <Icon name="plus" color="inherit" title={t("scm-script-plugin.listeners.add")} />
-            </span>
-          </a>
+          <Icon
+            name="plus"
+            color="inherit"
+            className="is-clickable"
+            title={t("scm-script-plugin.listeners.add")}
+            onClick={onSubmit}
+          />
         </DarkerVCenteredTd>
       </tr>
     );
