@@ -24,7 +24,7 @@
 import { apiClient } from "@scm-manager/ui-components";
 import { ExecutionHistoryEntry, Listeners, Script, ScriptExecutionResult, ScriptLinks } from "./types";
 import { Link, Links } from "@scm-manager/ui-types";
-import { useQuery, useQueryClient, useMutation } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 
 const SCRIPT_CONTENT_TYPE = "application/vnd.scmm-script+json;v=2";
 
@@ -117,13 +117,13 @@ export const useUpdateScript = (script: Script) => {
   };
 };
 
-export const useRunScript = (script: Script, callback?: (result: ScriptExecutionResult) => void) => {
+export const useRunScript = (link: string, callback?: (result: ScriptExecutionResult) => void) => {
   const { isLoading, error, mutate } = useMutation<unknown, Error, Script>(async s => {
     const headers: Record<string, string> = {
       Accept: "application/vnd.scmm-script-execution-result+json;v=2"
     };
     const result: ScriptExecutionResult = await apiClient
-      .postText((script._links.execute as Link).href + "?lang=" + s.type, s.content || "", headers)
+      .postText(link + "?lang=" + s.type, s.content || "", headers)
       .then(resp => resp.json());
     if (callback) {
       callback(result);
@@ -159,5 +159,26 @@ export const useDeleteScript = (script: Script, callback?: () => void) => {
     isLoading,
     error,
     deleteScript: () => mutate()
+  };
+};
+
+export const useStoreScript = (link: string, callback?: (id: string) => void) => {
+  const { isLoading, error, mutate } = useMutation<unknown, Error, Script>((script: Script) => {
+    return apiClient
+      .post(link, script, SCRIPT_CONTENT_TYPE)
+      .then(resp => resp.headers.get("Location"))
+      .then(location => apiClient.get(location!))
+      .then(resp => resp.json())
+      .then((s: Script) => {
+        if (callback) {
+          callback(s?.id!);
+        }
+      });
+  });
+
+  return {
+    isLoading,
+    error,
+    store: (script: Script) => mutate(script)
   };
 };

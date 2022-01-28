@@ -51,15 +51,10 @@ const EditForm: FC<Props> = ({ script, links }) => {
   const [result, setResult] = useState<ScriptExecutionResult | undefined>();
   const [saveSuccess, setSaveSuccess] = useState(false);
   const { error: updateError, isLoading: updateLoading, update } = useUpdateScript(script);
-  const { error: runError, isLoading: runLoading, run } = useRunScript(script, r => setResult(r));
+  const { error: runError, isLoading: runLoading, run } = useRunScript(links.execute!, r => setResult(r));
 
   const onRun = async (event: FormEvent<HTMLFormElement>) => {
     onAction(event);
-
-    if (!links.execute) {
-      return;
-    }
-
     run(scriptState);
   };
 
@@ -78,48 +73,6 @@ const EditForm: FC<Props> = ({ script, links }) => {
   const onAction = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setSaveSuccess(false);
-  };
-
-  const renderSuccessNotifications = () => {
-    return (
-      <>{saveSuccess && <Notification type="success">{t("scm-script-plugin.editForm.saveSuccess")}</Notification>}</>
-    );
-  };
-
-  const renderContent = () => {
-    return (
-      <>
-        <form onSubmit={onRun}>
-          <InputField
-            name="title"
-            label={t("scm-script-plugin.title")}
-            helpText={t("scm-script-plugin.titleHelp")}
-            value={scriptState.title}
-            validationError={!scriptState.title}
-            errorMessage={t("scm-script-plugin.titleValidationError")}
-            onChange={title => setScriptState({ ...scriptState, title })}
-          />
-          <Textarea
-            name="description"
-            label={t("scm-script-plugin.description")}
-            helpText={t("scm-script-plugin.descriptionHelp")}
-            value={scriptState.description}
-            onChange={description => setScriptState({ ...scriptState, description })}
-          />
-          <div className="field">
-            <LabelWithHelpIcon label={t("scm-script-plugin.content")} helpText={t("scm-script-plugin.contentHelp")} />
-            <ContentEditor
-              value={scriptState.content}
-              onChange={content => setScriptState({ ...scriptState, content })}
-            />
-          </div>
-          {renderControlButtons()}
-          <hr />
-          <DeleteScript script={script} />
-        </form>
-        <Output result={result} />
-      </>
-    );
   };
 
   const renderControlButtons = () => {
@@ -159,8 +112,36 @@ const EditForm: FC<Props> = ({ script, links }) => {
   } else {
     return (
       <>
-        {renderSuccessNotifications()}
-        {renderContent()}
+        <form onSubmit={onRun}>
+          <InputField
+            name="title"
+            label={t("scm-script-plugin.title")}
+            helpText={t("scm-script-plugin.titleHelp")}
+            value={scriptState.title}
+            validationError={!scriptState.title}
+            errorMessage={t("scm-script-plugin.titleValidationError")}
+            onChange={title => setScriptState({ ...scriptState, title })}
+          />
+          <Textarea
+            name="description"
+            label={t("scm-script-plugin.description")}
+            helpText={t("scm-script-plugin.descriptionHelp")}
+            value={scriptState.description}
+            onChange={description => setScriptState({ ...scriptState, description })}
+          />
+          <div className="field">
+            <LabelWithHelpIcon label={t("scm-script-plugin.content")} helpText={t("scm-script-plugin.contentHelp")} />
+            <ContentEditor
+              value={scriptState.content}
+              onChange={content => setScriptState({ ...scriptState, content })}
+            />
+          </div>
+          {renderControlButtons()}
+          {saveSuccess && <Notification type="success">{t("scm-script-plugin.editForm.saveSuccess")}</Notification>}
+          <hr />
+          <DeleteScript script={script} />
+        </form>
+        <Output result={result} />
       </>
     );
   }
