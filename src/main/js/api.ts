@@ -23,27 +23,13 @@
  */
 import { apiClient } from "@scm-manager/ui-components";
 import { ExecutionHistoryEntry, Listeners, Script, ScriptExecutionResult, ScriptLinks } from "./types";
-import { Links } from "@scm-manager/ui-types";
+import { Link, Links } from "@scm-manager/ui-types";
+import { useQuery, useQueryClient, useMutation } from "react-query";
 
-// modifying headers is not supported in the apiclient
-export function run(link: string, language: string, content: string): Promise<ScriptExecutionResult> {
-  const headers: Record<string, string> = {
-    "Accept": "application/vnd.scmm-script-execution-result+json;v=2"
-  };
-  return apiClient.postText(link + "?lang=" + language, content, headers)
-    .then(resp => resp.json());
-}
+const SCRIPT_CONTENT_TYPE = "application/vnd.scmm-script+json;v=2";
 
 export function store(link: string, script: Script) {
   return apiClient.post(link, script, "application/vnd.scmm-script+json;v=2");
-}
-
-export function modify(link: string, script: Script) {
-  return apiClient.put(link, script, "application/vnd.scmm-script+json;v=2");
-}
-
-export function remove(link: string) {
-  return apiClient.delete(link);
 }
 
 export function findById(id: string) {
@@ -58,7 +44,7 @@ export function findAllListeners(link: string): Promise<Listeners> {
   return apiClient.get(link).then(resp => resp.json());
 }
 
-export function storeListeners(link: string, listeners: Listeners): Promise<void> {
+export function storeListeners(link: string, listeners: Listeners): Promise<Response> {
   return apiClient.put(link, listeners, "application/vnd.scmm-script-listener-collection+json;v=2");
 }
 
@@ -97,3 +83,81 @@ export function findHistory(link: string): Promise<ExecutionHistoryEntry[]> {
       return history.entries || [];
     });
 }
+
+const getScriptCacheKey = (id?: string) => ["script", id || "NEW"];
+const getScriptsCacheKey = () => ["scripts"];
+
+export const useScript = (id: string) => {
+  const { error, isLoading, data } = useQuery<Script, Error>(getScriptCacheKey(id), () => findById(id), {});
+
+  return {
+    error,
+    isLoading,
+    data
+  };
+};
+
+export const useUpdateScript = (script: Script) => {
+  const queryClient = useQueryClient();
+  const { isLoading, error, mutate } = useMutation<unknown, Error, Script>(
+    s => {
+      return apiClient.put((script._links.update as Link).href, s, SCRIPT_CONTENT_TYPE);
+    },
+    {
+      onSuccess: () => {
+        return queryClient.invalidateQueries(getScriptCacheKey(script.id));
+      }
+    }
+  );
+
+  return {
+    isLoading,
+    error,
+    update: (s: Script) => mutate(s)
+  };
+};
+
+export const useRunScript = (script: Script, callback?: (result: ScriptExecutionResult) => void) => {
+  const { isLoading, error, mutate } = useMutation<unknown, Error, Script>(async s => {
+    const headers: Record<string, string> = {
+      Accept: "application/vnd.scmm-script-execution-result+json;v=2"
+    };
+    const result: ScriptExecutionResult = await apiClient
+      .postText((script._links.execute as Link).href + "?lang=" + s.type, s.content || "", headers)
+      .then(resp => resp.json());
+    if (callback) {
+      callback(result);
+    }
+    return result;
+  });
+
+  return {
+    isLoading,
+    error,
+    run: (s: Script) => mutate(s)
+  };
+};
+
+export const useDeleteScript = (script: Script, callback?: () => void) => {
+  const queryClient = useQueryClient();
+  const { isLoading, error, mutate } = useMutation<unknown, Error, void>(
+    () => {
+      const response = apiClient.delete((script._links.delete as Link).href);
+      if (callback) {
+        callback();
+      }
+      return response;
+    },
+    {
+      onSuccess: () => {
+        return queryClient.removeQueries(getScriptCacheKey(script.id));
+      }
+    }
+  );
+
+  return {
+    isLoading,
+    error,
+    deleteScript: () => mutate()
+  };
+};
