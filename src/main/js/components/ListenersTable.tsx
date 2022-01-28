@@ -47,10 +47,6 @@ const VCenteredTd = styled.td`
   vertical-align: middle !important;
 `;
 
-const DarkerVCenteredTd = styled(VCenteredTd)`
-  background-color: whitesmoke;
-`;
-
 class ListenersTable extends React.Component<Props> {
   checkedIcon = (checked: boolean) => {
     if (checked) {
@@ -95,13 +91,13 @@ class ListenersTable extends React.Component<Props> {
 
     return (
       <tr>
-        <DarkerVCenteredTd>
+        <VCenteredTd className={"has-background-secondary-less"}>
           <Select name="eventType" options={options} value={eventType} onChange={onChange} />
-        </DarkerVCenteredTd>
-        <DarkerVCenteredTd>
+        </VCenteredTd>
+        <VCenteredTd className={"has-background-secondary-less"}>
           <Checkbox name="asynchronous" checked={asynchronous} onChange={onChange} />
-        </DarkerVCenteredTd>
-        <DarkerVCenteredTd>
+        </VCenteredTd>
+        <VCenteredTd className={"has-background-secondary-less"}>
           <Icon
             name="plus"
             color="inherit"
@@ -109,7 +105,7 @@ class ListenersTable extends React.Component<Props> {
             title={t("scm-script-plugin.listeners.add")}
             onClick={onSubmit}
           />
-        </DarkerVCenteredTd>
+        </VCenteredTd>
       </tr>
     );
   };
