@@ -22,19 +22,11 @@
  * SOFTWARE.
  */
 import { apiClient } from "@scm-manager/ui-components";
-import { ExecutionHistoryEntry, Listeners, Script, ScriptExecutionResult, ScriptLinks } from "./types";
+import {ExecutionHistoryEntry, Listeners, Script, ScriptCollection, ScriptExecutionResult, ScriptLinks} from "./types";
 import { Link, Links } from "@scm-manager/ui-types";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 
 const SCRIPT_CONTENT_TYPE = "application/vnd.scmm-script+json;v=2";
-
-export function store(link: string, script: Script) {
-  return apiClient.post(link, script, "application/vnd.scmm-script+json;v=2");
-}
-
-export function findById(id: string) {
-  return apiClient.get("/plugins/scripts/" + id).then(resp => resp.json());
-}
 
 export function findAll(link: string) {
   return apiClient.get(link).then(resp => resp.json());
@@ -87,8 +79,22 @@ export function findHistory(link: string): Promise<ExecutionHistoryEntry[]> {
 const getScriptCacheKey = (id?: string) => ["script", id || "NEW"];
 const getScriptsCacheKey = () => ["scripts"];
 
-export const useScript = (id: string) => {
-  const { error, isLoading, data } = useQuery<Script, Error>(getScriptCacheKey(id), () => findById(id), {});
+export const useScript = (link: string, id: string) => {
+  const { error, isLoading, data } = useQuery<Script, Error>(getScriptCacheKey(id), () =>
+    apiClient.get("/plugins/scripts/" + id).then(resp => resp.json())
+  );
+
+  return {
+    error,
+    isLoading,
+    data
+  };
+};
+
+export const useScripts = (link: string) => {
+  const { error, isLoading, data } = useQuery<ScriptCollection, Error>(getScriptsCacheKey(), () =>
+    apiClient.get(link).then(resp => resp.json())
+  );
 
   return {
     error,
