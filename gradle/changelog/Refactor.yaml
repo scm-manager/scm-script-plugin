@@ -1,0 +1,2 @@
+- type: changed
+  description: Use react-query to prevent stale states and fix some minor issues ([#39](https://github.com/scm-manager/scm-script-plugin/pull/39))
