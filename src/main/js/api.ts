@@ -193,7 +193,8 @@ export const useDeleteScript = (script: Script, callback?: () => void) => {
     },
     {
       onSuccess: () => {
-        return queryClient.removeQueries(getScriptCacheKey(script.id));
+        queryClient.removeQueries(getScriptCacheKey(script.id));
+        return queryClient.invalidateQueries(getScriptsCacheKey());
       }
     }
   );
