@@ -52,7 +52,11 @@ const Editor: FC<Props> = ({ links }) => {
   };
 
   const storeDialog = showStoreModal ? (
-    <StoreDialog onSubmit={(s: Script) => store(s)} onClose={() => setShowStoreModal(false)} storeLoading={storeLoading} />
+    <StoreDialog
+      onSubmit={(s: Script) => store({ ...script, ...s })}
+      onClose={() => setShowStoreModal(false)}
+      storeLoading={storeLoading}
+    />
   ) : null;
 
   const error = runError || storeError;
