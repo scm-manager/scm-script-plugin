@@ -27,25 +27,7 @@ import { Link, Links } from "@scm-manager/ui-types";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 
 const SCRIPT_CONTENT_TYPE = "application/vnd.scmm-script+json;v=2";
-
-export function findAll(link: string) {
-  return apiClient.get(link).then(resp => resp.json());
-}
-
-export function findAllListeners(link: string): Promise<Listeners> {
-  return apiClient.get(link).then(resp => resp.json());
-}
-
-export function storeListeners(link: string, listeners: Listeners): Promise<Response> {
-  return apiClient.put(link, listeners, "application/vnd.scmm-script-listener-collection+json;v=2");
-}
-
-export function findAllEventTypes(link: string): Promise<string[]> {
-  return apiClient
-    .get(link)
-    .then(resp => resp.json())
-    .then(collection => collection.eventTypes);
-}
+const LISTENERS_TYPE = "application/vnd.scmm-script-listener-collection+json;v=2";
 
 export function createScriptLinks(list: string, links: Links): ScriptLinks {
   const scriptLinks = {
@@ -76,10 +58,14 @@ export function findHistory(link: string): Promise<ExecutionHistoryEntry[]> {
     });
 }
 
+// React-Query
+
 const getScriptCacheKey = (id?: string) => ["script", id || "NEW"];
 const getScriptsCacheKey = () => ["scripts"];
+const getListenersCacheKey = () => ["scripts", "listeners"];
+const getEventTypesCacheKey = () => ["scripts", "eventTypes"];
 
-export const useScript = (link: string, id: string) => {
+export const useScript = (id: string) => {
   const { error, isLoading, data } = useQuery<Script, Error>(getScriptCacheKey(id), () =>
     apiClient.get("/plugins/scripts/" + id).then(resp => resp.json())
   );
@@ -94,6 +80,30 @@ export const useScript = (link: string, id: string) => {
 export const useScripts = (link: string) => {
   const { error, isLoading, data } = useQuery<ScriptCollection, Error>(getScriptsCacheKey(), () =>
     apiClient.get(link).then(resp => resp.json())
+  );
+
+  return {
+    error,
+    isLoading,
+    data
+  };
+};
+
+export const useListeners = (link: string) => {
+  const { error, isLoading, data } = useQuery<Listeners, Error>(getListenersCacheKey(), () =>
+    apiClient.get(link).then(resp => resp.json())
+  );
+
+  return {
+    error,
+    isLoading,
+    data
+  };
+};
+
+export const useEventTypes = (link: string) => {
+  const { error, isLoading, data } = useQuery<string[], Error>(getEventTypesCacheKey(), () =>
+    apiClient.get(link).then(resp => resp.json()).then(collection => collection.eventTypes)
   );
 
   return {
@@ -186,5 +196,25 @@ export const useStoreScript = (link: string, callback?: (id: string) => void) =>
     isLoading,
     error,
     store: (script: Script) => mutate(script)
+  };
+};
+
+export const useStoreListeners = (link: string) => {
+  const queryClient = useQueryClient();
+  const { isLoading, error, mutate } = useMutation<unknown, Error, Listeners>(
+    listeners => {
+      return apiClient.put(link, listeners, LISTENERS_TYPE);
+    },
+    {
+      onSuccess: () => {
+        return queryClient.invalidateQueries(getListenersCacheKey());
+      }
+    }
+  );
+
+  return {
+    isLoading,
+    error,
+    store: (l: Listeners) => mutate(l)
   };
 };

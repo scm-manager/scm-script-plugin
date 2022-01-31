@@ -25,7 +25,7 @@ import React, { FC } from "react";
 import { Route, useRouteMatch } from "react-router-dom";
 import { Script, ScriptLinks } from "../types";
 import EditForm from "./EditForm";
-import ListenersPage from "./ListenersPage";
+import { ListenersRoot } from "./ListenersPage";
 import HistoryPage from "./HistoryPage";
 import ScriptTabs from "./ScriptTabs";
 
@@ -47,7 +47,7 @@ const ScriptMain: FC<Props> = ({ script, links }) => {
         <EditForm script={script} links={links} />
       </Route>
       <Route path={match.url + "/listeners"} exact={true}>
-        <ListenersPage script={script} links={links} />
+        <ListenersRoot script={script} links={links} />
       </Route>
       <Route path={match.url + "/history"} exact={true}>
         <HistoryPage script={script} />
