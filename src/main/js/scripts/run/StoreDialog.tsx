@@ -21,36 +21,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React from "react";
-import { WithTranslation, withTranslation } from "react-i18next";
+import React, { FC } from "react";
+import { useTranslation } from "react-i18next";
 import StoreForm from "./StoreForm";
 import { Script } from "../../types";
 import { Modal } from "@scm-manager/ui-components";
 
-type Props = WithTranslation & {
+type Props = {
   onSubmit: (p: Script) => void;
   onClose: () => void;
+  storeLoading: boolean;
 };
 
-class StoreDialog extends React.Component<Props> {
-  render() {
-    const { t, onSubmit, onClose } = this.props;
+const StoreDialog: FC<Props> = ({ onSubmit, onClose, storeLoading }) => {
+  const [t] = useTranslation("plugins");
+  const body = (
+    <div className="content">
+      <StoreForm onSubmit={onSubmit} onAbort={onClose} storeLoading={storeLoading} />
+    </div>
+  );
 
-    const body = (
-      <div className="content">
-        <StoreForm onSubmit={onSubmit} onAbort={onClose} />
-      </div>
-    );
+  return (
+    <Modal title={t("scm-script-plugin.storeDialog.title")} closeFunction={() => onClose()} body={body} active={true} />
+  );
+};
 
-    return (
-      <Modal
-        title={t("scm-script-plugin.storeDialog.title")}
-        closeFunction={() => onClose()}
-        body={body}
-        active={true}
-      />
-    );
-  }
-}
-
-export default withTranslation("plugins")(StoreDialog);
+export default StoreDialog;

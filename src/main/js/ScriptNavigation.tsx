@@ -21,42 +21,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React from "react";
-import { withRouter, RouteComponentProps } from "react-router-dom";
-import { WithTranslation, withTranslation } from "react-i18next";
+import React, { FC } from "react";
+import { useRouteMatch } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { NavLink, SecondaryNavigationItem } from "@scm-manager/ui-components";
 
-type Props = RouteComponentProps & WithTranslation;
+const ScriptNavigation: FC = () => {
+  const match = useRouteMatch();
+  const [t] = useTranslation("plugins");
 
-class ScriptNavigation extends React.Component<Props> {
-  matchesScript = (route: any) => {
-    const regex = new RegExp("/admin/script/.+");
+  const matchesScript = (route: any) => {
+    const regex = "/admin/script/.+";
     return route.location.pathname.match(regex);
   };
 
-  render() {
-    const { match, t } = this.props;
+  return (
+    <SecondaryNavigationItem
+      to={match.url + "/scripts/run"}
+      icon="fas fa-file-code"
+      label={t("scm-script-plugin.navLink")}
+      title={t("scm-script-plugin.navLink")}
+      activeWhenMatch={matchesScript}
+      activeOnlyWhenExact={false}
+    >
+      <NavLink to={match.url + "/scripts/run"} label={t("scm-script-plugin.navigation.run")} />
+      <NavLink
+        to={match.url + "/scripts"}
+        label={t("scm-script-plugin.navigation.stored")}
+        activeWhenMatch={matchesScript}
+        activeOnlyWhenExact={true}
+      />
+      <NavLink to={match.url + "/scripts/samples"} label={t("scm-script-plugin.navigation.samples")} />
+    </SecondaryNavigationItem>
+  );
+};
 
-    return (
-      <SecondaryNavigationItem
-        to={match.url + "/scripts/run"}
-        icon="fas fa-file-code"
-        label={t("scm-script-plugin.navLink")}
-        title={t("scm-script-plugin.navLink")}
-        activeWhenMatch={this.matchesScript}
-        activeOnlyWhenExact={false}
-      >
-        <NavLink to={match.url + "/scripts/run"} label={t("scm-script-plugin.navigation.run")} />
-        <NavLink
-          to={match.url + "/scripts"}
-          label={t("scm-script-plugin.navigation.stored")}
-          activeWhenMatch={this.matchesScript}
-          activeOnlyWhenExact={true}
-        />
-        <NavLink to={match.url + "/scripts/samples"} label={t("scm-script-plugin.navigation.samples")} />
-      </SecondaryNavigationItem>
-    );
-  }
-}
-
-export default withTranslation("plugins")(withRouter(ScriptNavigation));
+export default ScriptNavigation;

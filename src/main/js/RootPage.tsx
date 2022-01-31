@@ -21,58 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React from "react";
+import React, { FC } from "react";
 import { Route } from "react-router-dom";
-import { WithTranslation, withTranslation } from "react-i18next";
-import { Loading, ErrorNotification, Title, Subtitle } from "@scm-manager/ui-components";
-import { findAllScriptLinks } from "./api";
-import { ScriptLinks } from "./types";
+import { useTranslation } from "react-i18next";
+import { ErrorNotification, Loading, Subtitle, Title } from "@scm-manager/ui-components";
 import ScriptRoot from "./script/ScriptRoot";
 import MainRouting from "./scripts/MainRouting";
+import { useScriptLinks } from "./api";
 
-type Props = WithTranslation & {
+type Props = {
   link: string;
-
-  // context props
-  location: any;
 };
 
-type State = {
-  loading: boolean;
-  error?: Error;
-  links?: ScriptLinks;
-};
+const RootPage: FC<Props> = ({ link }) => {
+  const [t] = useTranslation("plugins");
+  const { data: links, isLoading, error } = useScriptLinks(link);
 
-class RootPage extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      loading: true
-    };
-  }
-
-  componentDidMount(): void {
-    const { link } = this.props;
-    findAllScriptLinks(link)
-      .then(links => {
-        this.setState({
-          loading: false,
-          links
-        });
-      })
-      .catch(error => {
-        this.setState({
-          loading: false,
-          error
-        });
-      });
-  }
-
-  createBody = () => {
-    const { loading, error, links } = this.state;
+  const createBody = () => {
     if (error) {
       return <ErrorNotification error={error} />;
-    } else if (loading) {
+    } else if (isLoading) {
       return <Loading />;
     } else if (links) {
       return (
@@ -90,18 +58,13 @@ class RootPage extends React.Component<Props, State> {
     }
   };
 
-  render() {
-    const { t } = this.props;
-    const body = this.createBody();
+  return (
+    <>
+      <Title title={t("scm-script-plugin.rootPage.title")} />
+      <Subtitle subtitle={t("scm-script-plugin.rootPage.subtitle")} />
+      {createBody()}
+    </>
+  );
+};
 
-    return (
-      <>
-        <Title title={t("scm-script-plugin.rootPage.title")} />
-        <Subtitle subtitle={t("scm-script-plugin.rootPage.subtitle")} />
-        {body}
-      </>
-    );
-  }
-}
-
-export default withTranslation("plugins")(RootPage);
+export default RootPage;

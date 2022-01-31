@@ -22,46 +22,24 @@
  * SOFTWARE.
  */
 import { apiClient } from "@scm-manager/ui-components";
-import {ExecutionHistoryEntry, Listeners, Script, ScriptCollection, ScriptExecutionResult, ScriptLinks} from "./types";
-import { Link, Links } from "@scm-manager/ui-types";
+import {
+  ExecutionHistoryEntry,
+  Listeners,
+  Script,
+  ScriptCollection,
+  ScriptExecutionResult,
+  ScriptLinks
+} from "./types";
+import { Link } from "@scm-manager/ui-types";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 
 const SCRIPT_CONTENT_TYPE = "application/vnd.scmm-script+json;v=2";
 const LISTENERS_TYPE = "application/vnd.scmm-script-listener-collection+json;v=2";
 
-export function createScriptLinks(list: string, links: Links): ScriptLinks {
-  const scriptLinks = {
-    list
-  };
-
-  for (const rel in links) {
-    scriptLinks[rel] = links[rel].href;
-  }
-  return scriptLinks;
-}
-
-export function findAllScriptLinks(indexLink: string): Promise<ScriptLinks> {
-  // we need only _links and not the _embedded scripts
-  return apiClient
-    .get(indexLink + "?fields=_links")
-    .then(resp => resp.json())
-    .then(json => json._links)
-    .then(links => createScriptLinks(indexLink, links));
-}
-
-export function findHistory(link: string): Promise<ExecutionHistoryEntry[]> {
-  return apiClient
-    .get(link)
-    .then(resp => resp.json())
-    .then(history => {
-      return history.entries || [];
-    });
-}
-
-// React-Query
-
 const getScriptCacheKey = (id?: string) => ["script", id || "NEW"];
+const getScriptHistoryCacheKey = (id: string) => ["script", id, "history"];
 const getScriptsCacheKey = () => ["scripts"];
+const getScriptLinksCacheKey = () => ["scripts", "links"];
 const getListenersCacheKey = () => ["scripts", "listeners"];
 const getEventTypesCacheKey = () => ["scripts", "eventTypes"];
 
@@ -89,6 +67,33 @@ export const useScripts = (link: string) => {
   };
 };
 
+export const useScriptLinks = (link: string) => {
+  const { error, isLoading, data } = useQuery<ScriptLinks, Error>(getScriptLinksCacheKey(), () =>
+    apiClient
+      .get(link + "?fields=_links")
+      .then(resp => resp.json())
+      .then(json => json._links)
+      .then(links => {
+        const scriptLinks = {
+          list: link,
+          eventTypes: ""
+        };
+
+        for (const rel in links) {
+          // @ts-ignore Cannot No idea how to type this properly
+          scriptLinks[rel] = (links[rel] as Link).href;
+        }
+        return scriptLinks;
+      })
+  );
+
+  return {
+    error,
+    isLoading,
+    data
+  };
+};
+
 export const useListeners = (link: string) => {
   const { error, isLoading, data } = useQuery<Listeners, Error>(getListenersCacheKey(), () =>
     apiClient.get(link).then(resp => resp.json())
@@ -103,7 +108,29 @@ export const useListeners = (link: string) => {
 
 export const useEventTypes = (link: string) => {
   const { error, isLoading, data } = useQuery<string[], Error>(getEventTypesCacheKey(), () =>
-    apiClient.get(link).then(resp => resp.json()).then(collection => collection.eventTypes)
+    apiClient
+      .get(link)
+      .then(resp => resp.json())
+      .then(collection => collection.eventTypes)
+  );
+
+  return {
+    error,
+    isLoading,
+    data
+  };
+};
+
+export const useScriptHistory = (script: Script) => {
+  const { error, isLoading, data } = useQuery<ExecutionHistoryEntry[], Error>(
+    getScriptHistoryCacheKey(script.id!),
+    () =>
+      apiClient
+        .get((script._links.history as Link).href)
+        .then(resp => resp.json())
+        .then(history => {
+          return history.entries || [];
+        })
   );
 
   return {

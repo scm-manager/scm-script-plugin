@@ -53,7 +53,8 @@
       "action": "Aktion",
       "remove": "Listener löschen",
       "add": "Listener hinzufügen",
-      "storeListenerExecutionResults": "Ergebnisse der Ausführung des Listener aufzeichnen."
+      "storeListenerExecutionResults": "Ergebnisse der Ausführung des Listener aufzeichnen.",
+      "noHistory": "Es wurde noch keine Historie erfasst."
     }
   },
   "permissions": {

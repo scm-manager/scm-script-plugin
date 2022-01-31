@@ -21,18 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React from "react";
+import React, { FC } from "react";
 import ContentEditor from "./ContentEditor";
 
 type Props = {
   value: string;
 };
 
-class ContentViewer extends React.Component<Props> {
-  render() {
-    const { value } = this.props;
-    return <ContentEditor value={value} readOnly={true} onChange={() => {}} />;
-  }
-}
+const ContentViewer: FC<Props> = ({ value }) => (
+  <ContentEditor
+    value={value}
+    readOnly={true}
+    onChange={() => {
+      //NOTHING
+    }}
+  />
+);
 
 export default ContentViewer;

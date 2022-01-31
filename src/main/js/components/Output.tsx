@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React from "react";
+import React, { FC } from "react";
 import styled from "styled-components";
 import { ScriptExecutionResult } from "../types";
 
@@ -44,31 +44,28 @@ type Props = {
   result?: ScriptExecutionResult;
 };
 
-class Output extends React.Component<Props> {
-  createCaption(result: ScriptExecutionResult) {
-    const duration = Math.abs(new Date(result.ended) - new Date(result.started));
-    const prefix = result.success ? "success" : "failed";
+const Output: FC<Props> = ({ result }) => {
+  const createCaption = (r: ScriptExecutionResult) => {
+    const duration = Math.abs(new Date(r.ended) - new Date(r.started));
+    const prefix = r.success ? "success" : "failed";
     return `${prefix} in ${duration}ms`;
-  }
+  };
 
-  createCaptionClass(result: ScriptExecutionResult) {
-    return result.success ? "has-text-success" : "has-text-danger";
-  }
+  const createCaptionClass = (r: ScriptExecutionResult) => {
+    return r.success ? "has-text-success" : "has-text-danger";
+  };
 
-  render() {
-    const { result } = this.props;
-    if (!result) {
-      return null;
-    }
-    return (
-      <Figure>
-        <pre>
-          <code>{result.output}</code>
-        </pre>
-        <Figcaption className={this.createCaptionClass(result)}>{this.createCaption(result)}</Figcaption>
-      </Figure>
-    );
+  if (!result) {
+    return null;
   }
-}
+  return (
+    <Figure>
+      <pre>
+        <code>{result.output}</code>
+      </pre>
+      <Figcaption className={createCaptionClass(result)}>{createCaption(result)}</Figcaption>
+    </Figure>
+  );
+};
 
 export default Output;

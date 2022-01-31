@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { Collection, Links } from "@scm-manager/ui-types";
+import { HalRepresentation, Links } from "@scm-manager/ui-types";
 
 export type Sample = {
   title: string;
@@ -39,7 +39,7 @@ export type Script = {
   _links: Links;
 };
 
-export type ScriptCollection = Collection & {
+export type ScriptCollection = HalRepresentation & {
   _embedded: {
     scripts: Script[];
   };

@@ -42,6 +42,7 @@ const ScriptRoot: FC<Props> = ({ links }) => {
   } else if (script) {
     return <ScriptMain links={links} script={script} />;
   }
+  return null;
 };
 
 export default ScriptRoot;
