@@ -47,10 +47,6 @@ const VCenteredTd = styled.td`
   vertical-align: middle !important;
 `;
 
-const DarkerVCenteredTd = styled(VCenteredTd)`
-  background-color: whitesmoke;
-`;
-
 const ListenersTable: FC<Props> = ({
   listeners,
   eventTypes,
@@ -103,13 +99,13 @@ const ListenersTable: FC<Props> = ({
 
     return (
       <tr>
-        <DarkerVCenteredTd>
+        <VCenteredTd className={"has-background-secondary-less"}>
           <Select name="eventType" options={options} value={eventType} onChange={onChangeEventType} />
-        </DarkerVCenteredTd>
-        <DarkerVCenteredTd>
+        </VCenteredTd>
+        <VCenteredTd className={"has-background-secondary-less"}>
           <Checkbox name="asynchronous" checked={asynchronous} onChange={onChangeAsynchronous} />
-        </DarkerVCenteredTd>
-        <DarkerVCenteredTd>
+        </VCenteredTd>
+        <VCenteredTd className={"has-background-secondary-less"}>
           <Icon
             name="plus"
             color="inherit"
@@ -117,7 +113,7 @@ const ListenersTable: FC<Props> = ({
             title={t("scm-script-plugin.listeners.add")}
             onClick={onSubmit}
           />
-        </DarkerVCenteredTd>
+        </VCenteredTd>
       </tr>
     );
   };
