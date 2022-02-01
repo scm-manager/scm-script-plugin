@@ -21,101 +21,85 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React from "react";
-import { WithTranslation, withTranslation } from "react-i18next";
-import { InputField, ButtonGroup, Button, SubmitButton, Textarea, Level } from "@scm-manager/ui-components";
+import React, { FC, FormEvent, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Button, ButtonGroup, InputField, Level, SubmitButton, Textarea } from "@scm-manager/ui-components";
 import { Script } from "../../types";
 
-type Props = WithTranslation & {
+type Props = {
   onSubmit: (p: Script) => void;
   onAbort: () => void;
+  storeLoading: boolean;
 };
 
-type State = {
-  script: Script;
-  loading: boolean;
-};
+const StoreForm: FC<Props> = ({ onSubmit, onAbort, storeLoading }) => {
+  const [t] = useTranslation("plugins");
+  const [script, setScript] = useState<Script>({
+    title: "",
+    description: "",
+    type: "Groovy",
+    _links: {}
+  });
+  const [titleDirty, setTitleDirty] = useState(false);
 
-class StoreForm extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      script: {
-        title: "",
-        description: "",
-        type: "Groovy",
-        _links: {}
-      },
-      loading: false,
-      titleValid: false
-    };
-  }
-
-  onChange = (value, name) => {
-    this.setState(state => {
-      return {
-        script: {
-          ...state.script,
-          [name]: value
-        }
-      };
-    });
+  const onChange = (value: string, name?: string) => {
+    if (name) {
+      if (name === "title") {
+        setTitleDirty(true);
+      }
+      setScript({
+        ...script,
+        [name]: value
+      });
+    }
   };
 
-  onSubmit = (e: Event) => {
+  const submit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    this.setState({
-      loading: true
-    });
-    this.props.onSubmit(this.state.script);
+    onSubmit(script);
   };
 
-  isTitleValid = () => {
-    return !!this.state.script.title;
+  const isTitleInvalid = () => {
+    return titleDirty && !script.title;
   };
 
-  isScriptValid = () => {
-    return this.isTitleValid();
+  const isScriptValid = () => {
+    return !isTitleInvalid();
   };
 
-  render() {
-    const { t, onAbort } = this.props;
-    const { script, loading } = this.state;
+  return (
+    <form onSubmit={submit}>
+      <InputField
+        autofocus={true}
+        name="title"
+        label={t("scm-script-plugin.title")}
+        helpText={t("scm-script-plugin.titleHelp")}
+        onChange={onChange}
+        value={script.title}
+        validationError={isTitleInvalid()}
+        errorMessage={t("scm-script-plugin.titleValidationError")}
+      />
+      <Textarea
+        name="description"
+        label={t("scm-script-plugin.description")}
+        helpText={t("scm-script-plugin.descriptionHelp")}
+        onChange={onChange}
+        value={script.description}
+      />
+      <Level
+        right={
+          <ButtonGroup>
+            <SubmitButton
+              label={t("scm-script-plugin.storeForm.submit")}
+              loading={storeLoading}
+              disabled={!isScriptValid() || !script.title}
+            />
+            <Button label={t("scm-script-plugin.storeForm.abort")} action={onAbort} disabled={storeLoading} />
+          </ButtonGroup>
+        }
+      />
+    </form>
+  );
+};
 
-    return (
-      <form onSubmit={this.onSubmit}>
-        <InputField
-          autofocus={true}
-          name="title"
-          label={t("scm-script-plugin.title")}
-          helpText={t("scm-script-plugin.titleHelp")}
-          onChange={this.onChange}
-          value={script.title}
-          validationError={!this.isTitleValid()}
-          errorMessage={t("scm-script-plugin.titleValidationError")}
-        />
-        <Textarea
-          name="description"
-          label={t("scm-script-plugin.description")}
-          helpText={t("scm-script-plugin.descriptionHelp")}
-          onChange={this.onChange}
-          value={script.description}
-        />
-        <Level
-          right={
-            <ButtonGroup>
-              <SubmitButton
-                label={t("scm-script-plugin.storeForm.submit")}
-                loading={loading}
-                disabled={!this.isScriptValid()}
-              />
-              <Button label={t("scm-script-plugin.storeForm.abort")} action={onAbort} disabled={loading} />
-            </ButtonGroup>
-          }
-        />
-      </form>
-    );
-  }
-}
-
-export default withTranslation("plugins")(StoreForm);
+export default StoreForm;

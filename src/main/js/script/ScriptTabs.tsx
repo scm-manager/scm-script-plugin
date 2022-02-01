@@ -21,11 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React from "react";
-import { Link, withRouter, RouteComponentProps } from "react-router-dom";
-import { WithTranslation, withTranslation } from "react-i18next";
+import React, { FC } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
-type Props = WithTranslation & RouteComponentProps & {
+type Props = {
   path: string;
 };
 
@@ -41,34 +41,32 @@ export function isUrlSuffixMatching(baseURL: string, url: string, suffix: string
   return strippedUrl === suffix;
 }
 
-class ScriptTabs extends React.Component<Props> {
-  navigationClass(suffix: string) {
-    const { location, path } = this.props;
+const ScriptTabs: FC<Props> = ({ path }) => {
+  const [t] = useTranslation("plugins");
+  const location = useLocation();
+
+  const navigationClass = (suffix: string) => {
     if (location && isUrlSuffixMatching(path, location.pathname, suffix)) {
       return "is-active";
     }
     return "";
-  }
+  };
 
-  render() {
-    const { path, t } = this.props;
+  return (
+    <div className="tabs">
+      <ul>
+        <li className={navigationClass("")}>
+          <Link to={path}>{t("scm-script-plugin.scriptTab.edit")}</Link>
+        </li>
+        <li className={navigationClass("listeners")}>
+          <Link to={path + "/listeners"}>{t("scm-script-plugin.scriptTab.listeners")}</Link>
+        </li>
+        <li className={navigationClass("history")}>
+          <Link to={path + "/history"}>{t("scm-script-plugin.scriptTab.history")}</Link>
+        </li>
+      </ul>
+    </div>
+  );
+};
 
-    return (
-      <div className="tabs">
-        <ul>
-          <li className={this.navigationClass("")}>
-            <Link to={path}>{t("scm-script-plugin.scriptTab.edit")}</Link>
-          </li>
-          <li className={this.navigationClass("listeners")}>
-            <Link to={path + "/listeners"}>{t("scm-script-plugin.scriptTab.listeners")}</Link>
-          </li>
-          <li className={this.navigationClass("history")}>
-            <Link to={path + "/history"}>{t("scm-script-plugin.scriptTab.history")}</Link>
-          </li>
-        </ul>
-      </div>
-    );
-  }
-}
-
-export default withTranslation("plugins")(withRouter(ScriptTabs));
+export default ScriptTabs;

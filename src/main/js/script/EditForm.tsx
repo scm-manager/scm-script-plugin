@@ -21,200 +21,84 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React from "react";
-import { WithTranslation, withTranslation } from "react-i18next";
+import React, { FC, FormEvent, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
+  Button,
+  ButtonGroup,
+  ErrorNotification,
   InputField,
   LabelWithHelpIcon,
-  ButtonGroup,
-  Button,
-  SubmitButton,
-  Textarea,
-  ErrorNotification,
+  Level,
   Notification,
-  Level
+  SubmitButton,
+  Textarea
 } from "@scm-manager/ui-components";
-import { modify, run } from "../api";
+import { useRunScript, useUpdateScript } from "../api";
 import { Script, ScriptExecutionResult, ScriptLinks } from "../types";
 import ContentEditor from "../components/ContentEditor";
 import Output from "../components/Output";
 import DeleteScript from "./DeleteScript";
 
-type Props = WithTranslation & {
+type Props = {
   script: Script;
-  onDelete: () => void;
   links: ScriptLinks;
 };
 
-type State = Script & {
-  loading: boolean;
-  error?: Error;
-  result?: ScriptExecutionResult;
-  saveSuccess: boolean;
-};
+const EditForm: FC<Props> = ({ script, links }) => {
+  const [t] = useTranslation("plugins");
+  const [scriptState, setScriptState] = useState<Script>(script);
+  const [result, setResult] = useState<ScriptExecutionResult | undefined>();
+  const [saveSuccess, setSaveSuccess] = useState(false);
+  const { error: updateError, isLoading: updateLoading, update } = useUpdateScript(script);
+  const { error: runError, isLoading: runLoading, run } = useRunScript(links.execute, r => setResult(r));
 
-class EditForm extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      ...props.script,
-      loading: false,
-      saveSuccess: false
-    };
-  }
-
-  onRun = (event: Event) => {
-    this.onAction(event);
-
-    const { script, links } = this.props;
-    const { content } = this.state;
-
-    if (!links.execute) {
-      return;
-    }
-
-    run(links.execute, script.type, content ? content : "")
-      .then(result =>
-        this.setState({
-          loading: false,
-          error: undefined,
-          result
-        })
-      )
-      .catch(error =>
-        this.setState({
-          loading: false,
-          error,
-          result: undefined
-        })
-      );
-  };
-
-  onSave = (event: Event) => {
-    this.onAction(event);
-
-    const script = {
-      ...this.props.script,
-      title: this.state.title,
-      description: this.state.description,
-      content: this.state.content
-    };
-
-    modify(script._links.update.href, script)
-      .then(() =>
-        this.setState({
-          loading: false,
-          error: undefined,
-          saveSuccess: true
-        })
-      )
-      .catch(error =>
-        this.setState({
-          loading: false,
-          error
-        })
-      );
-  };
-
-  onAction = (event: Event) => {
+  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    this.setState({
-      loading: true,
-      error: undefined,
-      saveSuccess: false
+    setSaveSuccess(false);
+    run(scriptState);
+  };
+
+  const onRun = () => {
+    setSaveSuccess(false);
+    run(scriptState);
+  };
+
+  const onSave = () => {
+    setSaveSuccess(false);
+    setScriptState({
+      ...script,
+      title: scriptState.title,
+      description: scriptState.description,
+      content: scriptState.content
     });
+    update(scriptState);
+    setSaveSuccess(true);
   };
 
-  onContentChange = (value: string) => {
-    this.setState({
-      content: value
-    })
-  }
-
-  onDescriptionChange = (value: string) => {
-    this.setState({
-      description: value
-    })
-  }
-
-  onTitleChange = (value: string) => {
-    this.setState({
-      title: value
-    })
-  }
-
-  renderSuccessNotifications = () => {
-    const { t } = this.props;
-    const { saveSuccess } = this.state;
-
-    return (
-      <>{saveSuccess && <Notification type="success">{t("scm-script-plugin.editForm.saveSuccess")}</Notification>}</>
-    );
-  };
-
-  isTitleValid = () => {
-    return !!this.state.title;
-  };
-
-  isScriptValid = () => {
-    return this.isTitleValid();
-  };
-
-  renderContent = () => {
-    const { title, description, content, result } = this.state;
-    const { t, script, onDelete } = this.props;
-
-    return (
-      <>
-        <form onSubmit={this.onRun}>
-          <InputField
-            name="title"
-            label={t("scm-script-plugin.title")}
-            helpText={t("scm-script-plugin.titleHelp")}
-            value={title}
-            validationError={!this.isTitleValid()}
-            errorMessage={t("scm-script-plugin.titleValidationError")}
-            onChange={this.onTitleChange}
-          />
-          <Textarea
-            name="description"
-            label={t("scm-script-plugin.description")}
-            helpText={t("scm-script-plugin.descriptionHelp")}
-            value={description}
-            onChange={this.onDescriptionChange}
-          />
-          <div className="field">
-            <LabelWithHelpIcon label={t("scm-script-plugin.content")} helpText={t("scm-script-plugin.contentHelp")} />
-            <ContentEditor value={content} onChange={this.onContentChange} />
-          </div>
-          {this.renderControlButtons()}
-          <hr />
-          <DeleteScript script={script} onDelete={onDelete} />
-        </form>
-        <Output result={result} />
-      </>
-    );
-  };
-
-  renderControlButtons = () => {
-    const { loading } = this.state;
-    const { script, links, t } = this.props;
-
-    let run = null;
+  const renderControlButtons = () => {
+    let execute = null;
     if (links.execute) {
-      run = <SubmitButton label={t("scm-script-plugin.editForm.run")} action={this.onRun} loading={loading} />;
+      execute = (
+        <SubmitButton
+          label={t("scm-script-plugin.editForm.run")}
+          action={onRun}
+          loading={runLoading}
+          scrollToTop={false}
+        />
+      );
     }
 
     let save = null;
     if (script._links.update) {
-      const btnColor = run ? "default" : "primary";
+      const btnColor = execute ? "default" : "primary";
       save = (
         <Button
           label={t("scm-script-plugin.editForm.save")}
           color={btnColor}
-          action={this.onSave}
-          loading={loading}
-          disabled={!this.isScriptValid()}
+          action={onSave}
+          loading={updateLoading}
+          disabled={!script.title}
         />
       );
     }
@@ -223,7 +107,7 @@ class EditForm extends React.Component<Props, State> {
       <Level
         right={
           <ButtonGroup>
-            {run}
+            {execute}
             {save}
           </ButtonGroup>
         }
@@ -231,20 +115,44 @@ class EditForm extends React.Component<Props, State> {
     );
   };
 
-  render() {
-    const { error } = this.state;
-
-    if (error) {
-      return <ErrorNotification error={error} />;
-    } else {
-      return (
-        <>
-          {this.renderSuccessNotifications()}
-          {this.renderContent()}
-        </>
-      );
-    }
+  if (updateError || runError) {
+    return <ErrorNotification error={updateError || runError} />;
+  } else {
+    return (
+      <>
+        <form onSubmit={onSubmit}>
+          <InputField
+            name="title"
+            label={t("scm-script-plugin.title")}
+            helpText={t("scm-script-plugin.titleHelp")}
+            value={scriptState.title}
+            validationError={!scriptState.title}
+            errorMessage={t("scm-script-plugin.titleValidationError")}
+            onChange={title => setScriptState({ ...scriptState, title })}
+          />
+          <Textarea
+            name="description"
+            label={t("scm-script-plugin.description")}
+            helpText={t("scm-script-plugin.descriptionHelp")}
+            value={scriptState.description}
+            onChange={description => setScriptState({ ...scriptState, description })}
+          />
+          <div className="field">
+            <LabelWithHelpIcon label={t("scm-script-plugin.content")} helpText={t("scm-script-plugin.contentHelp")} />
+            <ContentEditor
+              value={scriptState.content}
+              onChange={content => setScriptState({ ...scriptState, content })}
+            />
+          </div>
+          {renderControlButtons()}
+          {saveSuccess && <Notification type="success">{t("scm-script-plugin.editForm.saveSuccess")}</Notification>}
+          <hr />
+          <DeleteScript script={script} />
+        </form>
+        <Output result={result} />
+      </>
+    );
   }
-}
+};
 
-export default withTranslation("plugins")(EditForm);
+export default EditForm;

@@ -21,19 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React from "react";
-import { WithTranslation, withTranslation } from "react-i18next";
+import React, { FC } from "react";
+import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import { Listeners, Listener } from "../types";
-import { Select, Checkbox, Icon } from "@scm-manager/ui-components";
+import { Listener, Listeners } from "../types";
+import { Checkbox, Icon, Select } from "@scm-manager/ui-components";
 
-type Props = WithTranslation & {
+type Props = {
   eventTypes: string[];
   listeners: Listeners;
   eventType?: string;
   asynchronous: boolean;
-
-  onChange: (value: string, name: string) => void;
+  onChangeEventType: (value: string) => void;
+  onChangeAsynchronous: (value: boolean) => void;
   onSubmit: () => void;
   onDelete: (listener: Listener) => void;
 };
@@ -47,21 +47,30 @@ const VCenteredTd = styled.td`
   vertical-align: middle !important;
 `;
 
-class ListenersTable extends React.Component<Props> {
-  checkedIcon = (checked: boolean) => {
+const ListenersTable: FC<Props> = ({
+  listeners,
+  eventTypes,
+  eventType,
+  asynchronous,
+  onChangeAsynchronous,
+  onChangeEventType,
+  onSubmit,
+  onDelete
+}) => {
+  const [t] = useTranslation("plugins");
+
+  const checkedIcon = (checked: boolean) => {
     if (checked) {
       return <i className="fas fa-check" />;
     }
     return null;
   };
 
-  renderListenerRow = (listener: Listener, key: number) => {
-    const { onDelete, t } = this.props;
-
+  const renderListenerRow = (listener: Listener, key: number) => {
     return (
       <tr key={key}>
         <td>{listener.eventType}</td>
-        <VCenteredTd>{this.checkedIcon(listener.asynchronous)}</VCenteredTd>
+        <VCenteredTd>{checkedIcon(listener.asynchronous)}</VCenteredTd>
         <VCenteredTd>
           <Icon
             name="trash"
@@ -75,8 +84,7 @@ class ListenersTable extends React.Component<Props> {
     );
   };
 
-  renderFormRow = () => {
-    const { eventTypes, eventType, asynchronous, onChange, onSubmit, t } = this.props;
+  const renderFormRow = () => {
     const options = eventTypes.map(types => {
       return {
         value: types,
@@ -92,10 +100,10 @@ class ListenersTable extends React.Component<Props> {
     return (
       <tr>
         <VCenteredTd className={"has-background-secondary-less"}>
-          <Select name="eventType" options={options} value={eventType} onChange={onChange} />
+          <Select name="eventType" options={options} value={eventType} onChange={onChangeEventType} />
         </VCenteredTd>
         <VCenteredTd className={"has-background-secondary-less"}>
-          <Checkbox name="asynchronous" checked={asynchronous} onChange={onChange} />
+          <Checkbox name="asynchronous" checked={asynchronous} onChange={onChangeAsynchronous} />
         </VCenteredTd>
         <VCenteredTd className={"has-background-secondary-less"}>
           <Icon
@@ -110,30 +118,26 @@ class ListenersTable extends React.Component<Props> {
     );
   };
 
-  render() {
-    const { listeners, t } = this.props;
+  return (
+    <>
+      <ScrollingTable>
+        <table className="table is-hoverable is-fullwidth">
+          <thead>
+            <tr>
+              <th>{t("scm-script-plugin.listeners.eventType")}</th>
+              <th>{t("scm-script-plugin.listeners.asynchronous")}</th>
+              <th>{t("scm-script-plugin.listeners.action")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {listeners.listeners.map(renderListenerRow)}
+            {renderFormRow()}
+          </tbody>
+        </table>
+      </ScrollingTable>
+      <hr />
+    </>
+  );
+};
 
-    return (
-      <>
-        <ScrollingTable>
-          <table className="table is-hoverable is-fullwidth">
-            <thead>
-              <tr>
-                <th>{t("scm-script-plugin.listeners.eventType")}</th>
-                <th>{t("scm-script-plugin.listeners.asynchronous")}</th>
-                <th>{t("scm-script-plugin.listeners.action")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {listeners.listeners.map(this.renderListenerRow)}
-              {this.renderFormRow()}
-            </tbody>
-          </table>
-        </ScrollingTable>
-        <hr />
-      </>
-    );
-  }
-}
-
-export default withTranslation("plugins")(ListenersTable);
+export default ListenersTable;

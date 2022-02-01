@@ -21,28 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React from "react";
+import React, { FC } from "react";
 import samples from "./samples";
 import SamplePanel from "./SamplePanel";
-import { WithTranslation, withTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 
-type Props = WithTranslation;
+const SampleRoot: FC = () => {
+  const [t] = useTranslation("plugins");
+  return (
+    <>
+      <div className="content">
+        <h3>{t("scm-script-plugin.navigation.samples")}</h3>
+        <hr />
+      </div>
+      {samples.map((sample, key) => (
+        <SamplePanel sample={sample} key={key} />
+      ))}
+    </>
+  );
+};
 
-class SampleRoot extends React.Component<Props> {
-  render() {
-    const { t } = this.props;
-    return (
-      <>
-        <div className="content">
-          <h3>{t("scm-script-plugin.navigation.samples")}</h3>
-          <hr />
-        </div>
-        {samples.map(sample => (
-          <SamplePanel sample={sample} />
-        ))}
-      </>
-    );
-  }
-}
-
-export default withTranslation("plugins")(SampleRoot);
+export default SampleRoot;

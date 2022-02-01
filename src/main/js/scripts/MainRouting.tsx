@@ -21,34 +21,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React from "react";
-import { Route, withRouter, RouteComponentProps } from "react-router-dom";
+import React, { FC } from "react";
+import { Route, useRouteMatch } from "react-router-dom";
 import Stored from "./list/Stored";
 import { ScriptLinks } from "../types";
 import Editor from "./run/Editor";
 import SampleRoot from "./samples/SampleRoot";
 
-type Props = RouteComponentProps & {
+type Props = {
   links: ScriptLinks;
 };
 
-class MainRouting extends React.Component<Props> {
-  render() {
-    const { links, match } = this.props;
-    return (
-      <>
-        <Route path={match.url + "/run"}>
-          <Editor links={links} />
-        </Route>
-        <Route path={match.url} exact={true}>
-          <Stored links={links} />
-        </Route>
-        <Route path={match.url + "/samples"}>
-          <SampleRoot />
-        </Route>
-      </>
-    );
-  }
-}
+const MainRouting: FC<Props> = ({ links }) => {
+  const match = useRouteMatch();
+  return (
+    <>
+      <Route path={match.url + "/run"}>
+        <Editor links={links} />
+      </Route>
+      <Route path={match.url} exact={true}>
+        <Stored links={links} />
+      </Route>
+      <Route path={match.url + "/samples"}>
+        <SampleRoot />
+      </Route>
+    </>
+  );
+};
 
-export default withRouter(MainRouting);
+export default MainRouting;

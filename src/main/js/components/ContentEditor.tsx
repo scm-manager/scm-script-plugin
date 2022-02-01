@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-import React from "react";
+import React, { FC } from "react";
 import { CodeEditor } from "@scm-manager/scm-code-editor-plugin";
 import styled from "styled-components";
 
@@ -37,20 +37,14 @@ const StyledCodeEditor = styled(CodeEditor)`
   height: 250px;
 `;
 
-class ContentEditor extends React.Component<Props> {
-  render() {
-    const { readOnly, value, onChange } = this.props;
-
-    return (
-      <StyledCodeEditor
-        className="box"
-        language="groovy"
-        onChange={onChange}
-        disabled={readOnly || false}
-        content={value || ""}
-      />
-    );
-  }
-}
+const ContentEditor: FC<Props> = ({ value, readOnly, onChange }) => (
+  <StyledCodeEditor
+    className="box"
+    language="groovy"
+    onChange={onChange}
+    disabled={readOnly || false}
+    content={value || ""}
+  />
+);
 
 export default ContentEditor;

@@ -53,7 +53,8 @@
       "action": "Action",
       "remove": "Remove Listener",
       "add": "Add Listener",
-      "storeListenerExecutionResults": "Capture listener execution results"
+      "storeListenerExecutionResults": "Capture listener execution results",
+      "noHistory": "No history recorded yet"
     }
   },
   "permissions": {

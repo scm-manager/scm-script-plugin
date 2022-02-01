@@ -21,59 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React from "react";
-import { withRouter, RouteComponentProps } from "react-router-dom";
-import { findById } from "../api";
-import { Script, ScriptLinks } from "../types";
+import React, { FC } from "react";
+import { useParams } from "react-router-dom";
+import { useScript } from "../api";
+import { ScriptLinks } from "../types";
 import { ErrorNotification, Loading } from "@scm-manager/ui-components";
 import ScriptMain from "./ScriptMain";
 
-type Props = RouteComponentProps & {
+type Props = {
   links: ScriptLinks;
 };
+const ScriptRoot: FC<Props> = ({ links }) => {
+  const params = useParams<{ id: string }>();
+  const { data: script, isLoading, error } = useScript(params.id);
 
-type State = {
-  loading: boolean;
-  error?: Error;
-  script?: Script;
+  if (error) {
+    return <ErrorNotification error={error} />;
+  } else if (isLoading) {
+    return <Loading />;
+  } else if (script) {
+    return <ScriptMain links={links} script={script} />;
+  }
+  return null;
 };
 
-class ScriptRoot extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      loading: true
-    };
-  }
-
-  componentDidMount(): void {
-    const { match } = this.props;
-    findById(match.params.id)
-      .then(script =>
-        this.setState({
-          loading: false,
-          script
-        })
-      )
-      .catch(error =>
-        this.setState({
-          loading: false,
-          error
-        })
-      );
-  }
-
-  render() {
-    const { links } = this.props;
-    const { error, loading, script } = this.state;
-    if (error) {
-      return <ErrorNotification error={error} />;
-    } else if (loading) {
-      return <Loading />;
-    } else if (script) {
-      return <ScriptMain links={links} script={script} />;
-    }
-  }
-}
-
-export default withRouter(ScriptRoot);
+export default ScriptRoot;
