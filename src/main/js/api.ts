@@ -34,14 +34,15 @@ import { Link } from "@scm-manager/ui-types";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 
 const SCRIPT_CONTENT_TYPE = "application/vnd.scmm-script+json;v=2";
+const SCRIPT_EXECUTION_TYPE = "application/vnd.scmm-script-execution-result+json;v=2";
 const LISTENERS_TYPE = "application/vnd.scmm-script-listener-collection+json;v=2";
 
 const getScriptCacheKey = (id?: string) => ["script", id || "NEW"];
 const getScriptHistoryCacheKey = (id: string) => ["script", id, "history"];
-const getScriptsCacheKey = () => ["scripts"];
-const getScriptLinksCacheKey = () => ["scripts", "links"];
-const getListenersCacheKey = () => ["scripts", "listeners"];
-const getEventTypesCacheKey = () => ["scripts", "eventTypes"];
+const scriptsCacheKey = ["scripts"];
+const scriptLinksCacheKey = ["scripts", "links"];
+const listenersCacheKey = ["scripts", "listeners"];
+const eventTypesCacheKey = ["scripts", "eventTypes"];
 
 export const useScript = (id: string) => {
   const { error, isLoading, data } = useQuery<Script, Error>(getScriptCacheKey(id), () =>
@@ -56,7 +57,7 @@ export const useScript = (id: string) => {
 };
 
 export const useScripts = (link: string) => {
-  const { error, isLoading, data } = useQuery<ScriptCollection, Error>(getScriptsCacheKey(), () =>
+  const { error, isLoading, data } = useQuery<ScriptCollection, Error>(scriptsCacheKey, () =>
     apiClient.get(link).then(resp => resp.json())
   );
 
@@ -68,22 +69,18 @@ export const useScripts = (link: string) => {
 };
 
 export const useScriptLinks = (link: string) => {
-  const { error, isLoading, data } = useQuery<ScriptLinks, Error>(getScriptLinksCacheKey(), () =>
+  const { error, isLoading, data } = useQuery<ScriptLinks, Error>(scriptLinksCacheKey, () =>
     apiClient
       .get(link + "?fields=_links")
       .then(resp => resp.json())
       .then(json => json._links)
       .then(links => {
-        const scriptLinks = {
+        return {
           list: link,
-          eventTypes: ""
+          eventTypes: (links["eventTypes"] as Link).href,
+          create: (links["create"] as Link).href,
+          execute: (links["execute"] as Link).href
         };
-
-        for (const rel in links) {
-          // @ts-ignore Cannot No idea how to type this properly
-          scriptLinks[rel] = (links[rel] as Link).href;
-        }
-        return scriptLinks;
       })
   );
 
@@ -95,7 +92,7 @@ export const useScriptLinks = (link: string) => {
 };
 
 export const useListeners = (link: string) => {
-  const { error, isLoading, data } = useQuery<Listeners, Error>(getListenersCacheKey(), () =>
+  const { error, isLoading, data } = useQuery<Listeners, Error>(listenersCacheKey, () =>
     apiClient.get(link).then(resp => resp.json())
   );
 
@@ -107,7 +104,7 @@ export const useListeners = (link: string) => {
 };
 
 export const useEventTypes = (link: string) => {
-  const { error, isLoading, data } = useQuery<string[], Error>(getEventTypesCacheKey(), () =>
+  const { error, isLoading, data } = useQuery<string[], Error>(eventTypesCacheKey, () =>
     apiClient
       .get(link)
       .then(resp => resp.json())
@@ -122,15 +119,20 @@ export const useEventTypes = (link: string) => {
 };
 
 export const useScriptHistory = (script: Script) => {
-  const { error, isLoading, data } = useQuery<ExecutionHistoryEntry[], Error>(
-    getScriptHistoryCacheKey(script.id!),
-    () =>
-      apiClient
-        .get((script._links.history as Link).href)
-        .then(resp => resp.json())
-        .then(history => {
-          return history.entries || [];
-        })
+  if (!script.id) {
+    throw new Error("Missing script id");
+  }
+  if (!script._links.history) {
+    throw new Error("Script history link missing");
+  }
+
+  const { error, isLoading, data } = useQuery<ExecutionHistoryEntry[], Error>(getScriptHistoryCacheKey(script.id), () =>
+    apiClient
+      .get((script._links.history as Link).href)
+      .then(resp => resp.json())
+      .then(history => {
+        return history.entries || [];
+      })
   );
 
   return {
@@ -141,14 +143,20 @@ export const useScriptHistory = (script: Script) => {
 };
 
 export const useUpdateScript = (script: Script) => {
+  if (!script._links.update) {
+    throw new Error("Script update link missing");
+  }
   const queryClient = useQueryClient();
   const { isLoading, error, mutate } = useMutation<unknown, Error, Script>(
     s => {
       return apiClient.put((script._links.update as Link).href, s, SCRIPT_CONTENT_TYPE);
     },
     {
-      onSuccess: () => {
-        return queryClient.invalidateQueries(getScriptCacheKey(script.id));
+      onSuccess: async () => {
+        await Promise.all([
+          queryClient.invalidateQueries(scriptsCacheKey),
+          queryClient.invalidateQueries(getScriptCacheKey(script.id))
+        ]);
       }
     }
   );
@@ -160,18 +168,24 @@ export const useUpdateScript = (script: Script) => {
   };
 };
 
-export const useRunScript = (link: string, callback?: (result: ScriptExecutionResult) => void) => {
-  const { isLoading, error, mutate } = useMutation<unknown, Error, Script>(async s => {
+export const useRunScript = (link?: string, callback?: (result: ScriptExecutionResult) => void) => {
+  if (!link) {
+    throw new Error("Missing script execution link");
+  }
+
+  const { isLoading, error, mutate } = useMutation<unknown, Error, Script>(s => {
     const headers: Record<string, string> = {
-      Accept: "application/vnd.scmm-script-execution-result+json;v=2"
+      Accept: SCRIPT_EXECUTION_TYPE
     };
-    const result: ScriptExecutionResult = await apiClient
+    return apiClient
       .postText(link + "?lang=" + s.type, s.content || "", headers)
-      .then(resp => resp.json());
-    if (callback) {
-      callback(result);
-    }
-    return result;
+      .then(resp => resp.json())
+      .then(result => {
+        if (callback) {
+          callback(result);
+        }
+        return result;
+      });
   });
 
   return {
@@ -182,19 +196,23 @@ export const useRunScript = (link: string, callback?: (result: ScriptExecutionRe
 };
 
 export const useDeleteScript = (script: Script, callback?: () => void) => {
+  if (!script._links.delete) {
+    throw new Error("Script deletion link missing");
+  }
   const queryClient = useQueryClient();
   const { isLoading, error, mutate } = useMutation<unknown, Error, void>(
     () => {
-      const response = apiClient.delete((script._links.delete as Link).href);
-      if (callback) {
-        callback();
-      }
-      return response;
+      return apiClient.delete((script._links.delete as Link).href).then(response => {
+        if (callback) {
+          callback();
+        }
+        return response;
+      });
     },
     {
       onSuccess: () => {
         queryClient.removeQueries(getScriptCacheKey(script.id));
-        return queryClient.invalidateQueries(getScriptsCacheKey());
+        return queryClient.invalidateQueries(scriptsCacheKey);
       }
     }
   );
@@ -206,16 +224,27 @@ export const useDeleteScript = (script: Script, callback?: () => void) => {
   };
 };
 
-export const useStoreScript = (link: string, callback?: (id: string) => void) => {
+export const useStoreScript = (link?: string, callback?: (id: string) => void) => {
+  if (!link) {
+    throw new Error("Script update link missing");
+  }
   const { isLoading, error, mutate } = useMutation<unknown, Error, Script>((script: Script) => {
     return apiClient
       .post(link, script, SCRIPT_CONTENT_TYPE)
       .then(resp => resp.headers.get("Location"))
-      .then(location => apiClient.get(location!))
+      .then(location => {
+        if (!location) {
+          throw new Error("Could not fetch stored script");
+        }
+        return apiClient.get(location);
+      })
       .then(resp => resp.json())
       .then((s: Script) => {
         if (callback) {
-          callback(s?.id!);
+          if (!s.id) {
+            throw new Error("Missing script id");
+          }
+          callback(s.id);
         }
       });
   });
@@ -230,13 +259,9 @@ export const useStoreScript = (link: string, callback?: (id: string) => void) =>
 export const useStoreListeners = (link: string) => {
   const queryClient = useQueryClient();
   const { isLoading, error, mutate } = useMutation<unknown, Error, Listeners>(
-    listeners => {
-      return apiClient.put(link, listeners, LISTENERS_TYPE);
-    },
+    listeners => apiClient.put(link, listeners, LISTENERS_TYPE),
     {
-      onSuccess: () => {
-        return queryClient.invalidateQueries(getListenersCacheKey());
-      }
+      onSuccess: () => queryClient.invalidateQueries(listenersCacheKey)
     }
   );
 

@@ -46,7 +46,7 @@ type Props = {
 
 const Output: FC<Props> = ({ result }) => {
   const createCaption = (r: ScriptExecutionResult) => {
-    const duration = Math.abs(new Date(r.ended) - new Date(r.started));
+    const duration = Math.abs(new Date(r.ended).getTime() - new Date(r.started).getTime());
     const prefix = r.success ? "success" : "failed";
     return `${prefix} in ${duration}ms`;
   };

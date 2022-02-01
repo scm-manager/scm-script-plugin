@@ -37,16 +37,14 @@ const StyledCodeEditor = styled(CodeEditor)`
   height: 250px;
 `;
 
-const ContentEditor: FC<Props> = ({ value, readOnly, onChange }) => {
-  return (
-    <StyledCodeEditor
-      className="box"
-      language="groovy"
-      onChange={onChange}
-      disabled={readOnly || false}
-      content={value || ""}
-    />
-  );
-};
+const ContentEditor: FC<Props> = ({ value, readOnly, onChange }) => (
+  <StyledCodeEditor
+    className="box"
+    language="groovy"
+    onChange={onChange}
+    disabled={readOnly || false}
+    content={value || ""}
+  />
+);
 
 export default ContentEditor;

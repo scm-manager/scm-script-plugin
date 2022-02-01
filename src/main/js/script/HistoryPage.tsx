@@ -23,11 +23,11 @@
  */
 import React, { FC } from "react";
 import styled from "styled-components";
-import {DateFromNow, ErrorNotification, Loading, Notification} from "@scm-manager/ui-components";
+import { DateFromNow, ErrorNotification, Loading, Notification } from "@scm-manager/ui-components";
 import { useScriptHistory } from "../api";
 import { Script } from "../types";
 import Output from "../components/Output";
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 const Frame = styled.div`
   padding-bottom: 1rem;
@@ -53,22 +53,20 @@ const HistoryPage: FC<Props> = ({ script }) => {
   }
 
   if (history.length === 0) {
-    return <Notification type="info">{t("scm-script-plugin.listeners.noHistory")}</Notification>
+    return <Notification type="info">{t("scm-script-plugin.listeners.noHistory")}</Notification>;
   }
 
   return (
     <>
-      {history.map(entry => {
-        return (
-          <Frame>
-            <Heading>
-              <DateFromNow date={entry.result.started} />
-            </Heading>
-            <p>{entry.listener.eventType}</p>
-            <Output result={entry.result} />
-          </Frame>
-        );
-      })}
+      {history.map((entry, key) => (
+        <Frame key={key}>
+          <Heading>
+            <DateFromNow date={entry.result.started} />
+          </Heading>
+          <p>{entry.listener.eventType}</p>
+          <Output result={entry.result} />
+        </Frame>
+      ))}
     </>
   );
 };

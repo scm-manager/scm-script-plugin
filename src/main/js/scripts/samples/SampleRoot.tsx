@@ -34,8 +34,8 @@ const SampleRoot: FC = () => {
         <h3>{t("scm-script-plugin.navigation.samples")}</h3>
         <hr />
       </div>
-      {samples.map(sample => (
-        <SamplePanel sample={sample} />
+      {samples.map((sample, key) => (
+        <SamplePanel sample={sample} key={key} />
       ))}
     </>
   );

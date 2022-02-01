@@ -51,15 +51,21 @@ const EditForm: FC<Props> = ({ script, links }) => {
   const [result, setResult] = useState<ScriptExecutionResult | undefined>();
   const [saveSuccess, setSaveSuccess] = useState(false);
   const { error: updateError, isLoading: updateLoading, update } = useUpdateScript(script);
-  const { error: runError, isLoading: runLoading, run } = useRunScript(links.execute!, r => setResult(r));
+  const { error: runError, isLoading: runLoading, run } = useRunScript(links.execute, r => setResult(r));
 
-  const onRun = async (event: FormEvent<HTMLFormElement>) => {
-    onAction(event);
+  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setSaveSuccess(false);
     run(scriptState);
   };
 
-  const onSave = (event: FormEvent<HTMLFormElement>) => {
-    onAction(event);
+  const onRun = () => {
+    setSaveSuccess(false);
+    run(scriptState);
+  };
+
+  const onSave = () => {
+    setSaveSuccess(false);
     setScriptState({
       ...script,
       title: scriptState.title,
@@ -70,15 +76,17 @@ const EditForm: FC<Props> = ({ script, links }) => {
     setSaveSuccess(true);
   };
 
-  const onAction = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setSaveSuccess(false);
-  };
-
   const renderControlButtons = () => {
     let execute = null;
     if (links.execute) {
-      execute = <SubmitButton label={t("scm-script-plugin.editForm.run")} action={onRun} loading={runLoading} />;
+      execute = (
+        <SubmitButton
+          label={t("scm-script-plugin.editForm.run")}
+          action={onRun}
+          loading={runLoading}
+          scrollToTop={false}
+        />
+      );
     }
 
     let save = null;
@@ -112,7 +120,7 @@ const EditForm: FC<Props> = ({ script, links }) => {
   } else {
     return (
       <>
-        <form onSubmit={onRun}>
+        <form onSubmit={onSubmit}>
           <InputField
             name="title"
             label={t("scm-script-plugin.title")}

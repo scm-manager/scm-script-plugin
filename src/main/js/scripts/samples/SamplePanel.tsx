@@ -29,14 +29,12 @@ type Props = {
   sample: Sample;
 };
 
-const SamplePanel: FC<Props> = ({ sample }) => {
-  return (
-    <div className="content">
-      <h4>{sample.title}</h4>
-      <p>{sample.description}</p>
-      <ContentViewer value={sample.content} />
-    </div>
-  );
-};
+const SamplePanel: FC<Props> = ({ sample }) => (
+  <div className="content">
+    <h4>{sample.title}</h4>
+    <p>{sample.description}</p>
+    <ContentViewer value={sample.content} />
+  </div>
+);
 
 export default SamplePanel;

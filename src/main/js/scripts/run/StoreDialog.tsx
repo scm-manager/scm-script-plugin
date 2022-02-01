@@ -42,7 +42,7 @@ const StoreDialog: FC<Props> = ({ onSubmit, onClose, storeLoading }) => {
   );
 
   return (
-    <Modal title={t("scm-script-plugin.storeDialog.title")} closeFunction={() => onClose()} body={body} active={true} />
+    <Modal title={t("scm-script-plugin.storeDialog.title")} closeFunction={onClose} body={body} active={true} />
   );
 };
 

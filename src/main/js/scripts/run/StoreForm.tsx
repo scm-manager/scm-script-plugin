@@ -42,14 +42,16 @@ const StoreForm: FC<Props> = ({ onSubmit, onAbort, storeLoading }) => {
   });
   const [titleDirty, setTitleDirty] = useState(false);
 
-  const onChange = (value: string, name: string) => {
-    if (name === "title") {
-      setTitleDirty(true);
+  const onChange = (value: string, name?: string) => {
+    if (name) {
+      if (name === "title") {
+        setTitleDirty(true);
+      }
+      setScript({
+        ...script,
+        [name]: value
+      });
     }
-    setScript({
-      ...script,
-      [name]: value
-    });
   };
 
   const submit = (e: FormEvent<HTMLFormElement>) => {

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 import React, { FC } from "react";
-import { useRouteMatch } from "react-router-dom";
+import {RouteProps, useRouteMatch} from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { NavLink, SecondaryNavigationItem } from "@scm-manager/ui-components";
 
@@ -30,9 +30,9 @@ const ScriptNavigation: FC = () => {
   const match = useRouteMatch();
   const [t] = useTranslation("plugins");
 
-  const matchesScript = (route: any) => {
+  const matchesScript = (route: RouteProps) => {
     const regex = "/admin/script/.+";
-    return route.location.pathname.match(regex);
+    return !!route.location?.pathname.match(regex);
   };
 
   return (

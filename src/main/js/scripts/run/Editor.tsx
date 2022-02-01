@@ -41,8 +41,8 @@ const Editor: FC<Props> = ({ links }) => {
   const [script, setScript] = useState<Script>({ content: "println 'Hello World'", type: "Groovy", _links: {} });
   const [showStoreModal, setShowStoreModal] = useState(false);
   const [result, setResult] = useState<ScriptExecutionResult | undefined>();
-  const { run, isLoading: runLoading, error: runError } = useRunScript(links.execute!, r => setResult(r));
-  const { store, isLoading: storeLoading, error: storeError } = useStoreScript(links.create!, (id: string) =>
+  const { run, isLoading: runLoading, error: runError } = useRunScript(links.execute, r => setResult(r));
+  const { store, isLoading: storeLoading, error: storeError } = useStoreScript(links.create, (id: string) =>
     history.push(`/admin/script/${id}`)
   );
 
