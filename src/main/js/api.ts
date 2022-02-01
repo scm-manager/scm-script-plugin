@@ -78,8 +78,8 @@ export const useScriptLinks = (link: string) => {
         return {
           list: link,
           eventTypes: (links["eventTypes"] as Link).href,
-          create: (links["create"] as Link).href,
-          execute: (links["execute"] as Link).href
+          create: (links["create"] as Link)?.href,
+          execute: (links["execute"] as Link)?.href
         };
       })
   );
