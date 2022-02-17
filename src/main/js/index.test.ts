@@ -21,10 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { predicate } from "./index";
+import { Links } from "@scm-manager/ui-types";
+import { predicate } from "./predicate";
 
 describe("test predicate", () => {
-  const exec = links => {
+  const exec = (links: Links) => {
     return predicate({
       links
     });

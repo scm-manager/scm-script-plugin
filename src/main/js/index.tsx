@@ -24,27 +24,19 @@
 import React from "react";
 import { Route } from "react-router-dom";
 import { binder } from "@scm-manager/ui-extensions";
-import { Links } from "@scm-manager/ui-types";
+import { Link, Links } from "@scm-manager/ui-types";
 import ScriptNavigation from "./ScriptNavigation";
 import RootPage from "./RootPage";
+import { predicate } from "./predicate";
 
-type PredicateProps = {
-  links: Links;
-};
-
-// @VisibleForTesting
-export const predicate = ({ links }: PredicateProps) => {
-  return !!(links && links.scripts);
-};
-
-const ScriptRoute = ({ links }) => {
+const ScriptRoute = ({ links }: { links: Links }) => {
   return (
     <>
       <Route path="/admin/scripts">
-        <RootPage link={links.scripts.href} />
+        <RootPage link={(links.scripts as Link).href} />
       </Route>
       <Route path="/admin/script">
-        <RootPage link={links.scripts.href} />
+        <RootPage link={(links.scripts as Link).href} />
       </Route>
     </>
   );
