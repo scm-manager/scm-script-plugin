@@ -26,7 +26,7 @@ import { useTranslation } from "react-i18next";
 import { ConfirmAlert, DeleteButton, Level } from "@scm-manager/ui-components";
 import { Script } from "../types";
 import { useDeleteScript } from "../api";
-import {useHistory} from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 type Props = {
   script: Script;
@@ -56,6 +56,7 @@ const DeleteScript: FC<Props> = ({ script }) => {
                     onClick: deleteScript
                   },
                   {
+                    className: "is-info",
                     label: t("scm-script-plugin.delete.confirmAlert.cancel"),
                     onClick: () => setShowModal(false)
                   }
