@@ -44,6 +44,7 @@ const ContentEditor: FC<Props> = ({ value, readOnly, onChange }) => (
     onChange={onChange}
     disabled={readOnly || false}
     content={value || ""}
+    initialFocus={true}
   />
 );
 
