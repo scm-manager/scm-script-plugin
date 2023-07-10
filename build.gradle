@@ -27,9 +27,9 @@ plugins {
 }
 
 dependencies {
-  implementation "org.codehaus.groovy:groovy:${groovyVersion}"
-  implementation "org.codehaus.groovy:groovy-json:${groovyVersion}"
-  implementation "org.codehaus.groovy:groovy-jsr223:${groovyVersion}"
+  implementation "org.apache.groovy:groovy:${groovyVersion}"
+  implementation "org.apache.groovy:groovy-json:${groovyVersion}"
+  implementation "org.apache.groovy:groovy-jsr223:${groovyVersion}"
   plugin "sonia.scm.plugins:scm-code-editor-plugin:1.0.0"
 }
 
