@@ -59,11 +59,6 @@ const EditForm: FC<Props> = ({ script, links }) => {
     run(scriptState);
   };
 
-  const onRun = () => {
-    setSaveSuccess(false);
-    run(scriptState);
-  };
-
   const onSave = () => {
     setSaveSuccess(false);
     setScriptState({
@@ -82,7 +77,6 @@ const EditForm: FC<Props> = ({ script, links }) => {
       execute = (
         <SubmitButton
           label={t("scm-script-plugin.editForm.run")}
-          action={onRun}
           loading={runLoading}
           scrollToTop={false}
         />
