@@ -23,6 +23,7 @@ import Output from "../../components/Output";
 import ContentEditor from "../../components/ContentEditor";
 import { useRunScript, useStoreScript } from "../../api";
 import { Script, ScriptExecutionResult, ScriptLinks } from "../../types";
+import { useDocumentTitle } from "@scm-manager/ui-core";
 
 type Props = {
   links: ScriptLinks;
@@ -38,6 +39,7 @@ const Editor: FC<Props> = ({ links }) => {
   const { store, isLoading: storeLoading, error: storeError } = useStoreScript(links.create, (id: string) =>
     history.push(`/admin/script/${id}`)
   );
+  useDocumentTitle(t("scm-script-plugin.navigation.run"), t("scm-script-plugin.rootPage.title"));
 
   const execute = () => {
     setResult(undefined);

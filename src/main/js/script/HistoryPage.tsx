@@ -21,6 +21,7 @@ import { useScriptHistory } from "../api";
 import { Script } from "../types";
 import Output from "../components/Output";
 import { useTranslation } from "react-i18next";
+import { useDocumentTitle } from "@scm-manager/ui-core";
 
 const Frame = styled.div`
   padding-bottom: 1rem;
@@ -38,6 +39,11 @@ type Props = {
 const HistoryPage: FC<Props> = ({ script }) => {
   const [t] = useTranslation("plugins");
   const { data: history, error, isLoading } = useScriptHistory(script);
+  useDocumentTitle(
+    t("scm-script-plugin.scriptTab.historyTitle", { name: script.title }),
+    t("scm-script-plugin.navigation.stored"),
+    t("scm-script-plugin.rootPage.title")
+  );
 
   if (error) {
     return <ErrorNotification error={error} />;

@@ -32,6 +32,7 @@ import { Script, ScriptExecutionResult, ScriptLinks } from "../types";
 import ContentEditor from "../components/ContentEditor";
 import Output from "../components/Output";
 import DeleteScript from "./DeleteScript";
+import { useDocumentTitle } from "@scm-manager/ui-core";
 
 type Props = {
   script: Script;
@@ -45,6 +46,11 @@ const EditForm: FC<Props> = ({ script, links }) => {
   const [saveSuccess, setSaveSuccess] = useState(false);
   const { error: updateError, isLoading: updateLoading, update } = useUpdateScript(script);
   const { error: runError, isLoading: runLoading, run } = useRunScript(links.execute, r => setResult(r));
+  useDocumentTitle(
+    t("scm-script-plugin.scriptTab.editTitle", { name: scriptState.title }),
+    t("scm-script-plugin.navigation.stored"),
+    t("scm-script-plugin.rootPage.title")
+  );
 
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();

@@ -26,7 +26,7 @@ dependencies {
 }
 
 scmPlugin {
-  scmVersion = "3.0.0"
+  scmVersion = "3.7.0"
   displayName = "Script"
   description = "Script support for SCM-Manager"
   author = "Cloudogu GmbH"

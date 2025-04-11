@@ -18,9 +18,11 @@ import React, { FC } from "react";
 import samples from "./samples";
 import SamplePanel from "./SamplePanel";
 import { useTranslation } from "react-i18next";
+import { useDocumentTitle } from "@scm-manager/ui-core";
 
 const SampleRoot: FC = () => {
   const [t] = useTranslation("plugins");
+  useDocumentTitle(t("scm-script-plugin.navigation.samples"), t("scm-script-plugin.rootPage.title"));
   return (
     <>
       <div className="content">

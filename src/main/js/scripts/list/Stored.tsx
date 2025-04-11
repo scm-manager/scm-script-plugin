@@ -19,6 +19,8 @@ import { ErrorNotification, Loading, Notification } from "@scm-manager/ui-compon
 import { useScripts } from "../../api";
 import { ScriptLinks } from "../../types";
 import ScriptTable from "./ScriptTable";
+import { useDocumentTitle } from "@scm-manager/ui-core";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   links: ScriptLinks;
@@ -26,6 +28,8 @@ type Props = {
 
 const Stored: FC<Props> = ({ links }) => {
   const { data, error, isLoading } = useScripts(links.list);
+  const [t] = useTranslation("plugins");
+  useDocumentTitle(t("scm-script-plugin.navigation.stored"), t("scm-script-plugin.rootPage.title"));
 
   if (error) {
     return <ErrorNotification error={error} />;

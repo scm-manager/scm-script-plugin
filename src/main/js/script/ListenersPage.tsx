@@ -21,6 +21,7 @@ import { useEventTypes, useListeners, useStoreListeners } from "../api";
 import { Listener, Listeners, Script, ScriptLinks } from "../types";
 import ListenersTable from "../components/ListenersTable";
 import { Link } from "@scm-manager/ui-types";
+import { useDocumentTitle } from "@scm-manager/ui-core";
 
 type Props = {
   script: Script;
@@ -35,6 +36,12 @@ type PageProps = {
 export const ListenersRoot: FC<Props> = ({ script, links }) => {
   const { error: listenersError, isLoading: listenersLoading, data: listeners } = useListeners((script._links.listeners as Link).href);
   const { error: eventTypesError, isLoading: eventTypesLoading, data: eventTypes } = useEventTypes(links.eventTypes);
+  const [t] = useTranslation("plugins");
+  useDocumentTitle(
+    t("scm-script-plugin.scriptTab.listenersTitle", { name: script.title }),
+    t("scm-script-plugin.navigation.stored"),
+    t("scm-script-plugin.rootPage.title")
+  );
 
   const error = listenersError || eventTypesError;
 

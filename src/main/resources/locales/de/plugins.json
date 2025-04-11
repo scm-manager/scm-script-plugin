@@ -15,8 +15,11 @@
     },
     "scriptTab": {
       "edit": "Script bearbeiten",
+      "editTitle": "Script {{name}} bearbeiten",
       "listeners": "Listeners",
-      "history": "Verlauf der Ausführung von Listener"
+      "listenersTitle": "Listeners für {{name}}",
+      "history": "Verlauf der Ausführung von Listener",
+      "historyTitle": "Verlauf der Ausführung von Listener für {{name}}"
     },
     "delete": {
       "confirmAlert": {
