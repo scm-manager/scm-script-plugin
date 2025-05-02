@@ -16,7 +16,7 @@
 
 import React, { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ConfirmAlert, DeleteButton, Level } from "@scm-manager/ui-components";
+import { Dialog, Level, Button, Icon } from "@scm-manager/ui-core";
 import { Script } from "../types";
 import { useDeleteScript } from "../api";
 import { useHistory } from "react-router-dom";
@@ -37,25 +37,25 @@ const DeleteScript: FC<Props> = ({ script }) => {
       <Level
         right={
           <>
-            <DeleteButton label={t("scm-script-plugin.delete.button")} action={() => setShowModal(true)} />{" "}
-            {showModal ? (
-              <ConfirmAlert
-                title={t("scm-script-plugin.delete.confirmAlert.title")}
-                message={t("scm-script-plugin.delete.confirmAlert.message")}
-                close={() => setShowModal(false)}
-                buttons={[
-                  {
-                    label: t("scm-script-plugin.delete.confirmAlert.submit"),
-                    onClick: deleteScript
-                  },
-                  {
-                    className: "is-info",
-                    label: t("scm-script-plugin.delete.confirmAlert.cancel"),
-                    onClick: () => setShowModal(false)
-                  }
-                ]}
-              />
-            ) : null}
+            <Dialog
+              trigger={
+                <Button variant="signal">
+                  <Icon className="mr-1">times</Icon>
+                  {t("scm-script-plugin.delete.button")}
+                </Button>
+              }
+              title={t("scm-script-plugin.delete.confirmAlert.title")}
+              footer={[
+                <Button onClick={deleteScript}>{t("scm-script-plugin.delete.confirmAlert.submit")}</Button>,
+                <Button variant="primary" autoFocus onClick={() => setShowModal(false)}>
+                  {t("scm-script-plugin.delete.confirmAlert.cancel")}
+                </Button>,
+              ]}
+              open={showModal}
+              onOpenChange={setShowModal}
+            >
+              {t("scm-script-plugin.delete.confirmAlert.message")}
+            </Dialog>
           </>
         }
       />

@@ -54,7 +54,13 @@
       "eventType": "Typ",
       "asynchronous": "Asynchron",
       "action": "Aktion",
-      "remove": "Listener löschen",
+      "remove": {
+        "trigger": "Listener löschen",
+        "title": "Listener löschen",
+        "description": "Soll der Listener wirklich gelöscht werden?",
+        "submit": "Ja",
+        "cancel": "Nein"
+      },
       "add": "Listener hinzufügen",
       "storeListenerExecutionResults": "Ergebnisse der Ausführung des Listener aufzeichnen.",
       "noHistory": "Es wurde noch keine Historie erfasst."

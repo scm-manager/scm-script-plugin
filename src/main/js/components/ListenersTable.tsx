@@ -14,11 +14,12 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { Listener, Listeners } from "../types";
-import { Checkbox, Icon, Select } from "@scm-manager/ui-components";
+import { Checkbox, Select } from "@scm-manager/ui-components";
+import { Dialog, IconButton, Icon, Button } from "@scm-manager/ui-core";
 
 type Props = {
   eventTypes: string[];
@@ -48,9 +49,15 @@ const ListenersTable: FC<Props> = ({
   onChangeAsynchronous,
   onChangeEventType,
   onSubmit,
-  onDelete
+  onDelete,
 }) => {
   const [t] = useTranslation("plugins");
+  const [open, setOpen] = useState(false);
+
+  const confirmDeletion = (listener: Listener) => {
+    onDelete(listener);
+    setOpen(false);
+  };
 
   const checkedIcon = (checked: boolean) => {
     if (checked) {
@@ -65,47 +72,56 @@ const ListenersTable: FC<Props> = ({
         <td>{listener.eventType}</td>
         <VCenteredTd>{checkedIcon(listener.asynchronous)}</VCenteredTd>
         <VCenteredTd>
-          <Icon
-            name="trash"
-            className="is-clickable"
-            color="inherit"
-            title={t("scm-script-plugin.listeners.remove")}
-            onClick={() => onDelete(listener)}
-          />
+          <Dialog
+            trigger={
+              <IconButton title={t("scm-script-plugin.listeners.remove.trigger")}>
+                <Icon>trash</Icon>
+              </IconButton>
+            }
+            title={t("scm-script-plugin.listeners.remove.title")}
+            footer={[
+              <Button onClick={() => confirmDeletion(listener)}>
+                {t("scm-script-plugin.listeners.remove.submit")}
+              </Button>,
+              <Button variant="primary" autoFocus onClick={() => setOpen(false)}>
+                {t("scm-script-plugin.listeners.remove.cancel")}
+              </Button>,
+            ]}
+            open={open}
+            onOpenChange={setOpen}
+          >
+            {t("scm-script-plugin.listeners.remove.description")}
+          </Dialog>
         </VCenteredTd>
       </tr>
     );
   };
 
   const renderFormRow = () => {
-    const options = eventTypes.map(types => {
+    const options = eventTypes.map((types) => {
       return {
         value: types,
-        label: types
+        label: types,
       };
     });
 
     options.unshift({
       value: "",
-      label: ""
+      label: "",
     });
 
     return (
       <tr>
-        <VCenteredTd className={"has-background-secondary-less"}>
+        <VCenteredTd className="has-background-secondary-less">
           <Select name="eventType" options={options} value={eventType} onChange={onChangeEventType} />
         </VCenteredTd>
-        <VCenteredTd className={"has-background-secondary-less"}>
+        <VCenteredTd className="has-background-secondary-less">
           <Checkbox name="asynchronous" checked={asynchronous} onChange={onChangeAsynchronous} />
         </VCenteredTd>
-        <VCenteredTd className={"has-background-secondary-less"}>
-          <Icon
-            name="plus"
-            color="inherit"
-            className="is-clickable"
-            title={t("scm-script-plugin.listeners.add")}
-            onClick={onSubmit}
-          />
+        <VCenteredTd className="has-background-secondary-less">
+          <IconButton title={t("scm-script-plugin.listeners.add")} onClick={onSubmit}>
+            <Icon>plus</Icon>
+          </IconButton>
         </VCenteredTd>
       </tr>
     );

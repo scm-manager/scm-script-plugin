@@ -54,7 +54,13 @@
       "eventType": "Type",
       "asynchronous": "Asynchronous",
       "action": "Action",
-      "remove": "Remove Listener",
+      "remove": {
+        "trigger": "Delete Listener",
+        "title": "Delete Listener",
+        "description": "Do you really want to delete the listener?",
+        "submit": "Yes",
+        "cancel": "No"
+      },
       "add": "Add Listener",
       "storeListenerExecutionResults": "Capture listener execution results",
       "noHistory": "No history recorded yet"
