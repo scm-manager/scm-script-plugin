@@ -27,12 +27,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import sonia.scm.event.ScmEventBus;
 import sonia.scm.script.domain.ExecutionContext;
+import sonia.scm.script.domain.ExecutionResult;
 import sonia.scm.script.domain.Executor;
 import sonia.scm.script.domain.InitScript;
 import sonia.scm.web.security.AdministrationContext;
 import sonia.scm.web.security.PrivilegedAction;
 
 import java.nio.file.Paths;
+import java.time.Instant;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -76,6 +78,12 @@ class InitScriptContextListenerTest {
     List<InitScript> scripts = Lists.newArrayList(one, two);
 
     when(collector.collect()).thenReturn(scripts);
+    when(executor.execute(eq(one), any(ExecutionContext.class))).thenReturn(
+      new ExecutionResult("success", Instant.MIN, Instant.MAX)
+    );
+    when(executor.execute(eq(two), any(ExecutionContext.class))).thenReturn(
+      new ExecutionResult(new Exception("two failed"), "failed", Instant.MIN, Instant.MAX)
+    );
 
     listener.contextInitialized(null);
 

@@ -1,0 +1,2 @@
+- type: fixed
+  description: Logging of exceptions from initialization scripts

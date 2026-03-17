@@ -77,10 +77,16 @@ public class InitScriptContextListener implements ServletContextListener {
 
   private void executeScript(InitScript script) {
     try {
+      LOG.info("executing initialization script {}", script.getPath());
+      LOG.trace("script:\n{}", script.getContent());
       ExecutionResult result = executor.execute(script, ExecutionContext.empty());
-      LOG.debug("{}: {}", script, result);
+      if (!result.isSuccess()) {
+        LOG.error("error running initialization script {}: {}", script.getPath(), result);
+      } else {
+        LOG.debug("result for initialization script {}: {}", script.getPath(), result);
+      }
     } catch (ScriptExecutionException ex) {
-      LOG.error("failed to execute script", ex);
+      LOG.error("failed to execute initialization script {}", script.getPath(), ex);
     }
   }
 
