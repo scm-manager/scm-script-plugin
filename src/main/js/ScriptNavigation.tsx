@@ -15,36 +15,30 @@
  */
 
 import React, { FC } from "react";
-import {RouteProps, useRouteMatch} from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { NavLink, SecondaryNavigationItem } from "@scm-manager/ui-components";
+import { ADMIN_BASE_ROUTE, SCRIPT_BASE_ROUTE, SCRIPT_SUB_ROUTES } from "./routes";
 
 const ScriptNavigation: FC = () => {
-  const match = useRouteMatch();
   const [t] = useTranslation("plugins");
-
-  const matchesScript = (route: RouteProps) => {
-    const regex = "/admin/script/.+";
-    return !!route.location?.pathname.match(regex);
-  };
+  const base = `/${ADMIN_BASE_ROUTE}/${SCRIPT_BASE_ROUTE}/`;
 
   return (
     <SecondaryNavigationItem
-      to={match.url + "/scripts/run"}
+      to={base + SCRIPT_SUB_ROUTES.RUN}
       icon="fas fa-file-code"
       label={t("scm-script-plugin.navLink")}
       title={t("scm-script-plugin.navLink")}
-      activeWhenMatch={matchesScript}
-      activeOnlyWhenExact={false}
+      activeWhenMatch={"/admin/scripts?(/.*)?$"}
     >
-      <NavLink to={match.url + "/scripts/run"} label={t("scm-script-plugin.navigation.run")} />
+      <NavLink to={base + SCRIPT_SUB_ROUTES.RUN} label={t("scm-script-plugin.navigation.run")} />
       <NavLink
-        to={match.url + "/scripts"}
+        to={base}
         label={t("scm-script-plugin.navigation.stored")}
-        activeWhenMatch={matchesScript}
-        activeOnlyWhenExact={true}
+        activeWhenMatch={"/admin/(script/.+|scripts/?)$"}
+        matchWhenExact={true}
       />
-      <NavLink to={match.url + "/scripts/samples"} label={t("scm-script-plugin.navigation.samples")} />
+      <NavLink to={base + SCRIPT_SUB_ROUTES.SAMPLES} label={t("scm-script-plugin.navigation.samples")} />
     </SecondaryNavigationItem>
   );
 };

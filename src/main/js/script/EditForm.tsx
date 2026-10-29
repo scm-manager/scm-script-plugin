@@ -25,31 +25,30 @@ import {
   Level,
   Notification,
   SubmitButton,
-  Textarea
+  Textarea,
 } from "@scm-manager/ui-components";
-import { useRunScript, useUpdateScript } from "../api";
-import { Script, ScriptExecutionResult, ScriptLinks } from "../types";
+import { useDocumentTitle } from "@scm-manager/ui-core";
 import ContentEditor from "../components/ContentEditor";
 import Output from "../components/Output";
+import { useRunScript, useUpdateScript, useCurrentScript, useCurrentScriptLinks } from "../api";
+import { Script, ScriptExecutionResult } from "../types";
 import DeleteScript from "./DeleteScript";
-import { useDocumentTitle } from "@scm-manager/ui-core";
 
-type Props = {
-  script: Script;
-  links: ScriptLinks;
-};
-
-const EditForm: FC<Props> = ({ script, links }) => {
+const EditForm: FC = () => {
   const [t] = useTranslation("plugins");
+  const { data: script } = useCurrentScript();
+  const { data: links } = useCurrentScriptLinks();
+
   const [scriptState, setScriptState] = useState<Script>(script);
   const [result, setResult] = useState<ScriptExecutionResult | undefined>();
   const [saveSuccess, setSaveSuccess] = useState(false);
-  const { error: updateError, isLoading: updateLoading, update } = useUpdateScript(script);
-  const { error: runError, isLoading: runLoading, run } = useRunScript(links.execute, r => setResult(r));
+
+  const { error: updateError, isLoading: updateLoading, update } = useUpdateScript(script as Script);
+  const { error: runError, isLoading: runLoading, run } = useRunScript(links?.execute, (r) => setResult(r));
   useDocumentTitle(
     t("scm-script-plugin.scriptTab.editTitle", { name: scriptState.title }),
     t("scm-script-plugin.navigation.stored"),
-    t("scm-script-plugin.rootPage.title")
+    t("scm-script-plugin.rootPage.title"),
   );
 
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -59,12 +58,13 @@ const EditForm: FC<Props> = ({ script, links }) => {
   };
 
   const onSave = () => {
+    if (!script) return;
     setSaveSuccess(false);
     setScriptState({
       ...script,
       title: scriptState.title,
       description: scriptState.description,
-      content: scriptState.content
+      content: scriptState.content,
     });
     update(scriptState);
     setSaveSuccess(true);
@@ -73,13 +73,7 @@ const EditForm: FC<Props> = ({ script, links }) => {
   const renderControlButtons = () => {
     let execute = null;
     if (links.execute) {
-      execute = (
-        <SubmitButton
-          label={t("scm-script-plugin.editForm.run")}
-          loading={runLoading}
-          scrollToTop={false}
-        />
-      );
+      execute = <SubmitButton label={t("scm-script-plugin.editForm.run")} loading={runLoading} scrollToTop={false} />;
     }
 
     let save = null;
@@ -121,26 +115,26 @@ const EditForm: FC<Props> = ({ script, links }) => {
             value={scriptState.title}
             validationError={!scriptState.title}
             errorMessage={t("scm-script-plugin.titleValidationError")}
-            onChange={title => setScriptState({ ...scriptState, title })}
+            onChange={(title) => setScriptState({ ...scriptState, title })}
           />
           <Textarea
             name="description"
             label={t("scm-script-plugin.description")}
             helpText={t("scm-script-plugin.descriptionHelp")}
             value={scriptState.description}
-            onChange={description => setScriptState({ ...scriptState, description })}
+            onChange={(description) => setScriptState({ ...scriptState, description })}
           />
           <div className="field">
             <LabelWithHelpIcon label={t("scm-script-plugin.content")} helpText={t("scm-script-plugin.contentHelp")} />
             <ContentEditor
               value={scriptState.content}
-              onChange={content => setScriptState({ ...scriptState, content })}
+              onChange={(content) => setScriptState({ ...scriptState, content })}
             />
           </div>
           {renderControlButtons()}
           {saveSuccess && <Notification type="success">{t("scm-script-plugin.editForm.saveSuccess")}</Notification>}
           <hr />
-          <DeleteScript script={script} />
+          <DeleteScript script={script as Script} />
         </form>
         <Output result={result} />
       </>

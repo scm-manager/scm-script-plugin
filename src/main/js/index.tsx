@@ -15,26 +15,77 @@
  */
 
 import React from "react";
-import { Route } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { binder } from "@scm-manager/ui-extensions";
-import { Link, Links } from "@scm-manager/ui-types";
-import ScriptNavigation from "./ScriptNavigation";
 import RootPage from "./RootPage";
-import { predicate } from "./predicate";
+import {
+  ADMIN_BASE_ROUTE,
+  SCRIPT_BASE_ROUTE,
+  SCRIPT_SUB_ROUTES,
+  SINGLE_SCRIPT_BASE_ROUTE,
+  SINGLE_SCRIPT_SUB_ROUTES,
+} from "./routes";
+import Editor from "./scripts/run/Editor";
+import Stored from "./scripts/list/Stored";
+import SampleRoot from "./scripts/samples/SampleRoot";
+import ScriptRoot from "./script/ScriptRoot";
+import EditForm from "./script/EditForm";
+import HistoryPage from "./script/HistoryPage";
+import { ListenersRoot } from "./script/ListenersPage";
+import { Links } from "@scm-manager/ui-types";
+import ScriptNavigation from "./ScriptNavigation";
 
-const ScriptRoute = ({ links }: { links: Links }) => {
-  return (
-    <>
-      <Route path="/admin/scripts">
-        <RootPage link={(links.scripts as Link).href} />
-      </Route>
-      <Route path="/admin/script">
-        <RootPage link={(links.scripts as Link).href} />
-      </Route>
-    </>
-  );
+const scriptRoute = () => [
+  {
+    path: SCRIPT_BASE_ROUTE,
+    element: <RootPage />,
+    children: [
+      {
+        index: true,
+        element: <Stored />,
+      },
+      {
+        path: SCRIPT_SUB_ROUTES.RUN,
+        element: <Editor />,
+      },
+      {
+        path: SCRIPT_SUB_ROUTES.SAMPLES,
+        element: <SampleRoot />,
+      },
+    ],
+  },
+  {
+    path: SINGLE_SCRIPT_BASE_ROUTE,
+    element: <Navigate to={`/${ADMIN_BASE_ROUTE}/${SCRIPT_BASE_ROUTE}`} replace />,
+  },
+  {
+    path: `${SINGLE_SCRIPT_BASE_ROUTE}/:id`,
+    element: <ScriptRoot />,
+    children: [
+      {
+        index: true,
+        element: <EditForm />,
+      },
+      {
+        path: SINGLE_SCRIPT_SUB_ROUTES.LISTENERS,
+        element: <ListenersRoot />,
+      },
+      {
+        path: SINGLE_SCRIPT_SUB_ROUTES.HISTORY,
+        element: <HistoryPage />,
+      },
+    ],
+  },
+];
+
+binder.bind("admin.route", scriptRoute);
+
+type PredicateProps = {
+  links: Links;
 };
 
-binder.bind("admin.route", ScriptRoute, predicate);
+export const predicate = ({ links }: PredicateProps) => {
+  return !!(links && links.scripts);
+};
 
 binder.bind("admin.navigation", ScriptNavigation, predicate);

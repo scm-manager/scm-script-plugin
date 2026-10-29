@@ -16,29 +16,32 @@
 
 import React, { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useHistory } from "react-router-dom";
-import StoreDialog from "./StoreDialog";
-import { Button, ButtonGroup, ErrorNotification, Level, SubmitButton } from "@scm-manager/ui-components";
+import { useNavigate } from "react-router-dom";
+import { useIndexLink } from "@scm-manager/ui-api";
+import { Button, ErrorNotification, useDocumentTitle } from "@scm-manager/ui-core";
 import Output from "../../components/Output";
 import ContentEditor from "../../components/ContentEditor";
-import { useRunScript, useStoreScript } from "../../api";
-import { Script, ScriptExecutionResult, ScriptLinks } from "../../types";
-import { useDocumentTitle } from "@scm-manager/ui-core";
+import { useRunScript, useStoreScript, useScriptLinks } from "../../api";
+import { Script, ScriptExecutionResult } from "../../types";
+import StoreDialog from "./StoreDialog";
 
-type Props = {
-  links: ScriptLinks;
-};
-
-const Editor: FC<Props> = ({ links }) => {
-  const [t] = useTranslation("plugins");
-  const history = useHistory();
+const Editor: FC = () => {
+  const navigate = useNavigate();
   const [script, setScript] = useState<Script>({ content: "println 'Hello World'", type: "Groovy", _links: {} });
   const [showStoreModal, setShowStoreModal] = useState(false);
   const [result, setResult] = useState<ScriptExecutionResult | undefined>();
-  const { run, isLoading: runLoading, error: runError } = useRunScript(links.execute, r => setResult(r));
-  const { store, isLoading: storeLoading, error: storeError } = useStoreScript(links.create, (id: string) =>
-    history.push(`/admin/script/${id}`)
-  );
+  const indexLink = useIndexLink("scripts");
+  const { data: links } = useScriptLinks(indexLink);
+  const executeLink = links?.execute;
+  const createLink = links?.create;
+  const { run, isLoading: runLoading, error: runError } = useRunScript(executeLink, (r) => setResult(r));
+
+  const {
+    store,
+    isLoading: storeLoading,
+    error: storeError,
+  } = useStoreScript(createLink, (id: string) => navigate(`/admin/script/${id}`));
+  const [t] = useTranslation("plugins");
   useDocumentTitle(t("scm-script-plugin.navigation.run"), t("scm-script-plugin.rootPage.title"));
 
   const execute = () => {
@@ -63,29 +66,19 @@ const Editor: FC<Props> = ({ links }) => {
       <div className="content">
         <h3>{t("scm-script-plugin.navigation.run")}</h3>
       </div>
-      <ContentEditor onChange={content => setScript({ ...script, content })} value={script.content} />
-      <Level
-        right={
-          <ButtonGroup>
-            {links.execute ? (
-              <SubmitButton
-                label={t("scm-script-plugin.editor.submit")}
-                action={execute}
-                loading={runLoading}
-                disabled={!links.execute}
-              />
-            ) : null}
-            {links.create ? (
-              <Button
-                label={t("scm-script-plugin.editor.store")}
-                action={() => setShowStoreModal(true)}
-                loading={storeLoading}
-                disabled={!links.create}
-              />
-            ) : null}
-          </ButtonGroup>
-        }
-      />
+      <ContentEditor onChange={(content) => setScript({ ...script, content })} value={script.content} />
+      <div className="buttons is-flex is-justify-content-flex-end">
+        {executeLink ? (
+          <Button variant="primary" onClick={execute} isLoading={runLoading} disabled={!executeLink}>
+            {t("scm-script-plugin.editor.submit")}
+          </Button>
+        ) : null}
+        {createLink ? (
+          <Button onClick={() => setShowStoreModal(true)} isLoading={storeLoading} disabled={!createLink}>
+            {t("scm-script-plugin.editor.store")}
+          </Button>
+        ) : null}
+      </div>
       {body}
       {storeDialog}
     </>

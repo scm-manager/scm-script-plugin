@@ -15,34 +15,26 @@
  */
 
 import React, { FC } from "react";
-import styled from "styled-components";
-import { DateFromNow, ErrorNotification, Loading, Notification } from "@scm-manager/ui-components";
-import { useScriptHistory } from "../api";
-import { Script } from "../types";
-import Output from "../components/Output";
 import { useTranslation } from "react-i18next";
-import { useDocumentTitle } from "@scm-manager/ui-core";
-
-const Frame = styled.div`
-  padding-bottom: 1rem;
-`;
+import styled from "styled-components";
+import { DateFromNow, ErrorNotification, Loading, Notification, useDocumentTitle } from "@scm-manager/ui-core";
+import Output from "../components/Output";
+import { useScriptHistory, useCurrentScript } from "../api";
+import { Script } from "../types";
 
 const Heading = styled.h2`
   font-weight: 700;
   font-size: 1.25rem !important;
 `;
 
-type Props = {
-  script: Script;
-};
-
-const HistoryPage: FC<Props> = ({ script }) => {
+const HistoryPage: FC = () => {
   const [t] = useTranslation("plugins");
-  const { data: history, error, isLoading } = useScriptHistory(script);
+  const { data: script } = useCurrentScript();
+  const { data: history, error, isLoading } = useScriptHistory(script as Script);
   useDocumentTitle(
     t("scm-script-plugin.scriptTab.historyTitle", { name: script.title }),
     t("scm-script-plugin.navigation.stored"),
-    t("scm-script-plugin.rootPage.title")
+    t("scm-script-plugin.rootPage.title"),
   );
 
   if (error) {
@@ -58,13 +50,13 @@ const HistoryPage: FC<Props> = ({ script }) => {
   return (
     <>
       {history.map((entry, key) => (
-        <Frame key={key}>
+        <div className="pb-4" key={key}>
           <Heading>
             <DateFromNow date={entry.result.started} />
           </Heading>
           <p>{entry.listener.eventType}</p>
           <Output result={entry.result} />
-        </Frame>
+        </div>
       ))}
     </>
   );

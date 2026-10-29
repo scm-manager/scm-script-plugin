@@ -14,28 +14,46 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { FC } from "react";
-import { useParams } from "react-router-dom";
-import { useScript } from "../api";
-import { ScriptLinks } from "../types";
-import { ErrorNotification, Loading } from "@scm-manager/ui-components";
-import ScriptMain from "./ScriptMain";
+import React, { FC, ReactNode } from "react";
+import { useParams, Outlet } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { useIndexLink } from "@scm-manager/ui-api";
+import { ErrorNotification, Loading, Subtitle, Title } from "@scm-manager/ui-core";
+import { useScript, useScriptLinks } from "../api";
+import ScriptTabs from "./ScriptTabs";
 
-type Props = {
-  links: ScriptLinks;
-};
-const ScriptRoot: FC<Props> = ({ links }) => {
+const ScriptRoot: FC = () => {
+  const [t] = useTranslation("plugins");
+
   const params = useParams<{ id: string }>();
-  const { data: script, isLoading, error } = useScript(params.id);
+  const indexLink = useIndexLink("scripts");
 
+  const { data: links, isLoading: linksLoading, error: linksError } = useScriptLinks(indexLink);
+  const { data: script, isLoading: scriptLoading, error: scriptError } = useScript(params.id);
+
+  const error = linksError || scriptError;
+  const isLoading = linksLoading || scriptLoading;
+
+  let body: ReactNode;
   if (error) {
-    return <ErrorNotification error={error} />;
+    body = <ErrorNotification error={error} />;
   } else if (isLoading) {
-    return <Loading />;
-  } else if (script) {
-    return <ScriptMain links={links} script={script} />;
+    body = <Loading />;
+  } else if (script && links) {
+    body = <Outlet />;
   }
-  return null;
+
+  return (
+    <>
+      <Title title={t("scm-script-plugin.rootPage.title")} />
+      <Subtitle subtitle={t("scm-script-plugin.rootPage.subtitle")} />
+      <div className="content">
+        <h3>{script?.title}</h3>
+      </div>
+      <ScriptTabs id={params.id} />
+      {body}
+    </>
+  );
 };
 
 export default ScriptRoot;

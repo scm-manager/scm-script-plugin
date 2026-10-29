@@ -15,11 +15,11 @@
  */
 
 import React, { FC, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Dialog, Level, Button, Icon } from "@scm-manager/ui-core";
 import { Script } from "../types";
 import { useDeleteScript } from "../api";
-import { useHistory } from "react-router-dom";
 
 type Props = {
   script: Script;
@@ -27,9 +27,9 @@ type Props = {
 
 const DeleteScript: FC<Props> = ({ script }) => {
   const [t] = useTranslation("plugins");
-  const history = useHistory();
+  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
-  const { deleteScript } = useDeleteScript(script, () => history.push("/admin/scripts"));
+  const { deleteScript } = useDeleteScript(script, () => navigate("/admin/scripts"));
 
   let deleteLink = null;
   if (script._links.delete) {

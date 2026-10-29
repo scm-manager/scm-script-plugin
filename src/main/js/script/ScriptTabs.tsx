@@ -17,9 +17,10 @@
 import React, { FC } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { ADMIN_BASE_ROUTE, SINGLE_SCRIPT_BASE_ROUTE, SINGLE_SCRIPT_SUB_ROUTES } from "../routes";
 
 type Props = {
-  path: string;
+  id: string;
 };
 
 export function isUrlSuffixMatching(baseURL: string, url: string, suffix: string) {
@@ -34,28 +35,29 @@ export function isUrlSuffixMatching(baseURL: string, url: string, suffix: string
   return strippedUrl === suffix;
 }
 
-const ScriptTabs: FC<Props> = ({ path }) => {
+const ScriptTabs: FC<Props> = ({ id }) => {
   const [t] = useTranslation("plugins");
   const location = useLocation();
 
   const navigationClass = (suffix: string) => {
-    if (location && isUrlSuffixMatching(path, location.pathname, suffix)) {
+    if (location && isUrlSuffixMatching(id, location.pathname, suffix)) {
       return "is-active";
     }
     return "";
   };
+  const base = `/${ADMIN_BASE_ROUTE}/${SINGLE_SCRIPT_BASE_ROUTE}/${id}/`;
 
   return (
     <div className="tabs">
       <ul>
         <li className={navigationClass("")}>
-          <Link to={path}>{t("scm-script-plugin.scriptTab.edit")}</Link>
+          <Link to={base}>{t("scm-script-plugin.scriptTab.edit")}</Link>
         </li>
         <li className={navigationClass("listeners")}>
-          <Link to={path + "/listeners"}>{t("scm-script-plugin.scriptTab.listeners")}</Link>
+          <Link to={base + SINGLE_SCRIPT_SUB_ROUTES.LISTENERS}>{t("scm-script-plugin.scriptTab.listeners")}</Link>
         </li>
         <li className={navigationClass("history")}>
-          <Link to={path + "/history"}>{t("scm-script-plugin.scriptTab.history")}</Link>
+          <Link to={base + SINGLE_SCRIPT_SUB_ROUTES.HISTORY}>{t("scm-script-plugin.scriptTab.history")}</Link>
         </li>
       </ul>
     </div>

@@ -15,30 +15,32 @@
  */
 
 import React, { FC } from "react";
-import { ErrorNotification, Loading, Notification } from "@scm-manager/ui-components";
-import { useScripts } from "../../api";
-import { ScriptLinks } from "../../types";
-import ScriptTable from "./ScriptTable";
-import { useDocumentTitle } from "@scm-manager/ui-core";
 import { useTranslation } from "react-i18next";
+import { ErrorNotification, Loading, Notification } from "@scm-manager/ui-core";
+import { useDocumentTitle } from "@scm-manager/ui-core";
+import { useScriptLinks, useScripts } from "../../api";
+import ScriptTable from "./ScriptTable";
+import { useIndexLink } from "@scm-manager/ui-api";
 
-type Props = {
-  links: ScriptLinks;
-};
-
-const Stored: FC<Props> = ({ links }) => {
-  const { data, error, isLoading } = useScripts(links.list);
+const Stored: FC = () => {
+  const indexLink = useIndexLink("scripts");
+  const { data: links, isLoading: linksLoading, error: linksError } = useScriptLinks(indexLink);
+  const scriptsLink = links?.list;
+  const { data: scriptsData, isLoading: scriptsLoading, error: scriptsError } = useScripts(scriptsLink);
   const [t] = useTranslation("plugins");
   useDocumentTitle(t("scm-script-plugin.navigation.stored"), t("scm-script-plugin.rootPage.title"));
+
+  const error = linksError || scriptsError;
+  const isLoading = linksLoading || scriptsLoading;
 
   if (error) {
     return <ErrorNotification error={error} />;
   } else if (isLoading) {
     return <Loading />;
-  } else if (!data || data._embedded.scripts.length === 0) {
+  } else if (!scriptsData || scriptsData._embedded.scripts.length === 0) {
     return <Notification type="info">No stored scripts found</Notification>;
   } else {
-    return <ScriptTable scripts={data._embedded.scripts} />;
+    return <ScriptTable scripts={scriptsData._embedded.scripts} />;
   }
 };
 

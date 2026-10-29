@@ -14,48 +14,32 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { FC } from "react";
-import { Route } from "react-router-dom";
+import React, { FC, ReactNode } from "react";
+import { Outlet } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ErrorNotification, Loading, Subtitle, Title } from "@scm-manager/ui-components";
-import ScriptRoot from "./script/ScriptRoot";
-import MainRouting from "./scripts/MainRouting";
+import { useIndexLink } from "@scm-manager/ui-api";
+import { ErrorNotification, Loading, Subtitle, Title } from "@scm-manager/ui-core";
 import { useScriptLinks } from "./api";
 
-type Props = {
-  link: string;
-};
-
-const RootPage: FC<Props> = ({ link }) => {
+const RootPage: FC = () => {
   const [t] = useTranslation("plugins");
-  const { data: links, isLoading, error } = useScriptLinks(link);
+  const indexLink = useIndexLink("scripts");
+  const { isLoading, error } = useScriptLinks(indexLink);
 
-  const createBody = () => {
-    if (error) {
-      return <ErrorNotification error={error} />;
-    } else if (isLoading) {
-      return <Loading />;
-    } else if (links) {
-      return (
-        <>
-          <Route path="/admin/scripts">
-            <MainRouting links={links} />
-          </Route>
-          <Route path="/admin/script/:id">
-            <ScriptRoot links={links} />
-          </Route>
-        </>
-      );
-    } else {
-      return null;
-    }
-  };
+  let body: ReactNode;
+  if (error) {
+    body = <ErrorNotification error={error} />;
+  } else if (isLoading) {
+    body = <Loading />;
+  } else {
+    body = <Outlet />;
+  }
 
   return (
     <>
       <Title title={t("scm-script-plugin.rootPage.title")} />
       <Subtitle subtitle={t("scm-script-plugin.rootPage.subtitle")} />
-      {createBody()}
+      {body}
     </>
   );
 };

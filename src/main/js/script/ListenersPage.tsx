@@ -16,31 +16,28 @@
 
 import React, { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Checkbox, ErrorNotification, Loading } from "@scm-manager/ui-components";
-import { useEventTypes, useListeners, useStoreListeners } from "../api";
-import { Listener, Listeners, Script, ScriptLinks } from "../types";
-import ListenersTable from "../components/ListenersTable";
+import { Checkbox } from "@scm-manager/ui-components";
+import { ErrorNotification, Loading, useDocumentTitle } from "@scm-manager/ui-core";
 import { Link } from "@scm-manager/ui-types";
-import { useDocumentTitle } from "@scm-manager/ui-core";
+import ListenersTable from "../components/ListenersTable";
+import { useEventTypes, useListeners, useStoreListeners, useCurrentScript, useCurrentScriptLinks } from "../api";
+import { Listener, Listeners } from "../types";
 
-type Props = {
-  script: Script;
-  links: ScriptLinks;
-};
+export const ListenersRoot: FC = () => {
+  const { data: script } = useCurrentScript();
+  const { data: links } = useCurrentScriptLinks();
 
-type PageProps = {
-  listeners: Listeners;
-  eventTypes: string[]
-};
-
-export const ListenersRoot: FC<Props> = ({ script, links }) => {
-  const { error: listenersError, isLoading: listenersLoading, data: listeners } = useListeners((script._links.listeners as Link).href);
-  const { error: eventTypesError, isLoading: eventTypesLoading, data: eventTypes } = useEventTypes(links.eventTypes);
+  const {
+    error: listenersError,
+    isLoading: listenersLoading,
+    data: listeners,
+  } = useListeners((script!._links.listeners as Link).href);
+  const { error: eventTypesError, isLoading: eventTypesLoading, data: eventTypes } = useEventTypes(links!.eventTypes);
   const [t] = useTranslation("plugins");
   useDocumentTitle(
     t("scm-script-plugin.scriptTab.listenersTitle", { name: script.title }),
     t("scm-script-plugin.navigation.stored"),
-    t("scm-script-plugin.rootPage.title")
+    t("scm-script-plugin.rootPage.title"),
   );
 
   const error = listenersError || eventTypesError;
@@ -57,11 +54,14 @@ export const ListenersRoot: FC<Props> = ({ script, links }) => {
   return null;
 };
 
+type PageProps = {
+  listeners: Listeners;
+  eventTypes: string[];
+};
+
 const ListenersPage: FC<PageProps> = ({ listeners, eventTypes }) => {
   const [t] = useTranslation("plugins");
-  const { error: storeError, store } = useStoreListeners(
-    (listeners._links.update as Link).href
-  );
+  const { error: storeError, store } = useStoreListeners((listeners._links.update as Link).href);
   const [asynchronous, setAsynchronous] = useState(true);
   const [eventType, setEventType] = useState<string | undefined>();
 
@@ -73,7 +73,7 @@ const ListenersPage: FC<PageProps> = ({ listeners, eventTypes }) => {
     if (eventType) {
       listeners.listeners.push({
         eventType,
-        asynchronous
+        asynchronous,
       });
       store(listeners);
       setEventType("");
@@ -106,7 +106,7 @@ const ListenersPage: FC<PageProps> = ({ listeners, eventTypes }) => {
         checked={listeners.storeListenerExecutionResults}
         onChange={onToggleStoreListenerExecutionResultsChange}
       />
-      {storeError ? <ErrorNotification error={storeError}/> : null}
+      {storeError ? <ErrorNotification error={storeError} /> : null}
     </>
   );
 };

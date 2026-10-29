@@ -17,7 +17,7 @@
 package sonia.scm.script.infrastructure;
 
 import com.google.common.collect.Ordering;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import jakarta.annotation.Nullable;
 import sonia.scm.plugin.ClassElement;
 import sonia.scm.plugin.InstalledPlugin;
 import sonia.scm.plugin.PluginLoader;

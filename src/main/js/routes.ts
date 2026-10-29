@@ -14,12 +14,16 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import { Links } from "@scm-manager/ui-types";
+export const ADMIN_BASE_ROUTE = "admin";
 
-type PredicateProps = {
-  links: Links;
-};
+export const SCRIPT_BASE_ROUTE = "scripts";
+export const SCRIPT_SUB_ROUTES = {
+  RUN: "run",
+  SAMPLES: "samples",
+} as const;
 
-export const predicate = ({ links }: PredicateProps) => {
-  return !!(links && links.scripts);
-};
+export const SINGLE_SCRIPT_BASE_ROUTE = "script";
+export const SINGLE_SCRIPT_SUB_ROUTES = {
+  LISTENERS: "listeners",
+  HISTORY: "history",
+} as const;
